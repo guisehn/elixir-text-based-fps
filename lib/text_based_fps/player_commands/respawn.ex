@@ -7,7 +7,7 @@ defmodule TextBasedFPS.PlayerCommand.Respawn do
     require_room(state, player, fn room ->
       case Room.respawn_player(room, player.key) do
         {:ok, updated_room} ->
-          updated_state = ServerState.update_room(state, player.room, updated_room)
+          updated_state = ServerState.update_room(state, updated_room)
           {:ok, updated_state, "You're back!"}
 
         {:error, _room, reason} ->

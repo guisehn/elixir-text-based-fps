@@ -21,8 +21,8 @@ defmodule TextBasedFPS.ServerState do
     updated_rooms = Map.put(state.rooms, room_name, updated_room)
     Map.put(state, :rooms, updated_rooms)
   end
-  def update_room(state, room_name, room) when is_map(room) do
-    updated_rooms = Map.put(state.rooms, room_name, room)
+  def update_room(state, room) when is_map(room) do
+    updated_rooms = Map.put(state.rooms, room.name, room)
     Map.put(state, :rooms, updated_rooms)
   end
 
