@@ -12,6 +12,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
 
   defp join_room(state, player, room_name) do
     updated_state = state
+    |> remove_user_from_current_room(player)
     |> find_or_create_room(room_name)
     |> ServerState.update_room(room_name, fn room ->
       {:ok, room} = Room.add_player(room, player.key)
@@ -22,6 +23,13 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
     end)
 
     {:ok, updated_state, nil}
+  end
+
+  defp remove_user_from_current_room(state, player) do
+    case ServerState.remove_player_from_current_room(state, player.key) do
+      {:ok, updated_state} -> updated_state
+      _ -> state
+    end
   end
 
   defp find_or_create_room(state, room_name) do

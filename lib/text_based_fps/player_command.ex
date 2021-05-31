@@ -5,6 +5,7 @@ defmodule TextBasedFPS.PlayerCommand do
   @commands %{
     "room-list" => PlayerCommand.RoomList,
     "join-room" => PlayerCommand.JoinRoom,
+    "leave-room" => PlayerCommand.LeaveRoom,
     "set-name" => PlayerCommand.SetName,
     "health" => PlayerCommand.Health,
     "ammo" => PlayerCommand.Ammo,

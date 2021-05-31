@@ -19,6 +19,11 @@ defmodule TextBasedFPS.Room do
     |> respawn_player(player_key)
   end
 
+  def remove_player(room, player_key) do
+    remove_player_from_map(room, player_key)
+    |> Map.put(:players, Map.delete(room.players, player_key))
+  end
+
   def add_random_object(room, coordinates) do
     object = Enum.random(GameMap.Objects.all())
     update_game_map_matrix(room, fn matrix ->
