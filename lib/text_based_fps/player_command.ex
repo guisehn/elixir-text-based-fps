@@ -1,4 +1,5 @@
 defmodule TextBasedFPS.PlayerCommand do
+  alias TextBasedFPS.Player
   alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.ServerState
 
@@ -25,7 +26,9 @@ defmodule TextBasedFPS.PlayerCommand do
     command = @commands[command_name]
     command_arg = String.trim(Enum.join(command_arg, " "))
 
-    execute(state, player, command, command_arg)
+    state
+    |> ServerState.update_player(player_key, &Player.touch/1)
+    |> execute(player, command, command_arg)
   end
 
   defp execute(state, nil, _command, _command_arg), do: {:error, state, "Player not found"}
