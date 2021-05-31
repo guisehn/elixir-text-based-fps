@@ -14,6 +14,10 @@ defmodule TextBasedFPS.ServerAgent do
     Agent.get_and_update(__MODULE__, &ServerState.add_player/1)
   end
 
+  def remove_player(player_key) do
+    Agent.update(__MODULE__, &(ServerState.remove_player(&1, player_key)))
+  end
+
   def run_command(player_key, command) do
     Agent.get_and_update(
       __MODULE__,

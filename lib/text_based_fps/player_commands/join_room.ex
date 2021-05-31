@@ -26,10 +26,8 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   end
 
   defp remove_user_from_current_room(state, player) do
-    case ServerState.remove_player_from_current_room(state, player.key) do
-      {:ok, updated_state} -> updated_state
-      _ -> state
-    end
+    {_, updated_state} = ServerState.remove_player_from_current_room(state, player.key)
+    updated_state
   end
 
   defp find_or_create_room(state, room_name) do

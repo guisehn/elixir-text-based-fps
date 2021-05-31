@@ -34,11 +34,16 @@ defmodule TextBasedFPS.ServerState do
     Map.put(state, :players, updated_players)
   end
 
+  def remove_player(state, player_key) do
+    {_, state} = remove_player_from_current_room(state, player_key)
+    Map.put(state, :players, Map.delete(state.players, player_key))
+  end
+
   def remove_player_from_current_room(state, player_key) do
     player = get_player(state, player_key)
     remove_player_from_room(state, player_key, player.room)
   end
-  defp remove_player_from_room(state, _player_key, nil), do: {:error, state, :not_in_room}
+  defp remove_player_from_room(state, _player_key, nil), do: {:not_in_room, state}
   defp remove_player_from_room(state, player_key, room_name) do
     updated_room = state |> get_room(room_name) |> Room.remove_player(player_key)
     updated_state = state

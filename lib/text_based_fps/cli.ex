@@ -38,6 +38,10 @@ defmodule TextBasedFPS.CLI do
         IO.inspect ServerAgent.get_state()
         receive_command(current_player_idx, players)
 
+      "remove-player" ->
+        ServerAgent.remove_player(current_player)
+        receive_command(current_player_idx, players)
+
       _ ->
         result = ServerAgent.run_command(current_player, command)
         print_result(result)
