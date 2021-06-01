@@ -1,8 +1,12 @@
 defmodule TextBasedFPS.PlayerCommand.Respawn do
+  alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.Room
   alias TextBasedFPS.ServerState
   import TextBasedFPS.PlayerCommand.Util
 
+  @behaviour PlayerCommand
+
+  @impl PlayerCommand
   def execute(state, player, _) do
     require_room(state, player, fn room ->
       case Room.respawn_player(room, player.key) do

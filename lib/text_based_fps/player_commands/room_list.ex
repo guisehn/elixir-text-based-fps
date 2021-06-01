@@ -1,6 +1,10 @@
 defmodule TextBasedFPS.PlayerCommand.RoomList do
+  alias TextBasedFPS.PlayerCommand
   import TextBasedFPS.PlayerCommand.Util
 
+  @behaviour PlayerCommand
+
+  @impl PlayerCommand
   def execute(state, _, _) do
     case map_size(state.rooms) do
       0 -> {:ok, state, empty_message()}

@@ -1,10 +1,14 @@
 defmodule TextBasedFPS.PlayerCommand.Reload do
+  alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.ServerState
   alias TextBasedFPS.Room
 
   import TextBasedFPS.RoomPlayer, only: [display_ammo: 1, reload_gun: 1]
   import TextBasedFPS.PlayerCommand.Util
 
+  @behaviour PlayerCommand
+
+  @impl PlayerCommand
   def execute(state, player, _) do
     require_alive_player(state, player, fn room ->
       room_player = Room.get_player(room, player.key)

@@ -1,8 +1,12 @@
 defmodule TextBasedFPS.PlayerCommand.Look do
+  alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.GameMap
   alias TextBasedFPS.Room
   import TextBasedFPS.PlayerCommand.Util
 
+  @behaviour PlayerCommand
+
+  @impl PlayerCommand
   def execute(state, player, _) do
     require_alive_player(state, player, fn room ->
       {:ok, state, generate_vision(player, room)}

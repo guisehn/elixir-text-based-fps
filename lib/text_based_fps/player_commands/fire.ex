@@ -1,10 +1,14 @@
 defmodule TextBasedFPS.PlayerCommand.Fire do
+  alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.ServerState
   alias TextBasedFPS.GameMap
   alias TextBasedFPS.Room
   alias TextBasedFPS.RoomPlayer
   import TextBasedFPS.PlayerCommand.Util
 
+  @behaviour PlayerCommand
+
+  @impl PlayerCommand
   def execute(state, player, _) do
     require_alive_player(state, player, fn room ->
       room_player = Room.get_player(room, player.key)

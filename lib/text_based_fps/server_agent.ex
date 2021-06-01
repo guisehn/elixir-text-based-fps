@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.ServerAgent do
-  alias TextBasedFPS.PlayerCommand
+  alias TextBasedFPS.CommandExecutor
   alias TextBasedFPS.ServerState
 
   def start do
@@ -22,7 +22,7 @@ defmodule TextBasedFPS.ServerAgent do
     Agent.get_and_update(
       __MODULE__,
       fn state ->
-        {status, state, message} = PlayerCommand.execute(state, player_key, command)
+        {status, state, message} = CommandExecutor.execute(state, player_key, command)
         {{status, message}, state}
       end
     )
