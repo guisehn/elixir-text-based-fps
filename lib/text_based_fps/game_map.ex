@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.GameMap do
-  @map_file_path "map.txt"
+  @map_file_path "priv/map.txt"
   @absolute_map_file_path Path.expand(@map_file_path, File.cwd!)
 
   defstruct [:matrix, :respawn_positions]

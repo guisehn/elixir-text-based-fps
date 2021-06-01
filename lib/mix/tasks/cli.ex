@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Start do
+defmodule Mix.Tasks.Cli do
   use Mix.Task
 
   @impl Mix.Task
