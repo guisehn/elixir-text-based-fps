@@ -2,7 +2,8 @@ defmodule TextBasedFPS.CLI do
   alias TextBasedFPS.ServerAgent
 
   def start do
-    ServerAgent.start()
+    ServerAgent.start_link([])
+
     player = ServerAgent.add_player()
     player2 = ServerAgent.add_player()
 

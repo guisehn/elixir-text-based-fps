@@ -9,11 +9,14 @@ defmodule TextBasedFPS.ServerState do
     %ServerState{players: %{}, rooms: %{}}
   end
 
-  def add_player(state) do
-    player = Player.new()
-    updated_players = Map.put(state.players, player.key, player)
-    updated_state = Map.put(state, :players, updated_players)
-    {player.key, updated_state}
+  def add_player(state, key \\ nil) do
+    if Map.has_key?(state.players, key) do
+      {key, state}
+    else
+      player = Player.new(key)
+      updated_state = put_in(state.players[player.key], player)
+      {player.key, updated_state}
+    end
   end
 
   def update_room(state, room_name, fun) when is_function(fun) do
@@ -56,29 +59,3 @@ defmodule TextBasedFPS.ServerState do
 
   def get_room(state, room_name), do: state.rooms[room_name]
 end
-
-# %TextBasedFPS.GameState{
-#   players: %{
-#     "dskdisjdsijdsid": %TextBasedFPS.Player{
-#       name: "foo",
-#       room: "oi"
-#     }
-#   },
-#   rooms: %{
-#     "name of the room": %TextBasedFPS.Room{
-#       map: %TextBasedFPS.GameMap{},
-#       players: %{
-#         "dskdisjdsijdsid": %TextBasedFPS.RoomPlayer{
-#           player_key: "dskdisjdsijdsid"
-#           x: ?,
-#           y: ?,
-#           direction: ?,
-#           health: ?,
-#           ammo: {5, 10},
-#           kills: 5,
-#           killed: 10
-#         }
-#       }
-#     }
-#   }
-# }
