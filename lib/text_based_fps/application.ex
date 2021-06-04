@@ -12,7 +12,8 @@ defmodule TextBasedFPS.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: TextBasedFPS.PubSub},
       # Start the Endpoint (http/https)
-      TextBasedFPSWeb.Endpoint
+      TextBasedFPSWeb.Endpoint,
+      TextBasedFPS.ServerAgent
       # Start a worker by calling: TextBasedFPS.Worker.start_link(arg)
       # {TextBasedFPS.Worker, arg}
     ]
