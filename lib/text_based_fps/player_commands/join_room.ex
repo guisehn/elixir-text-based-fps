@@ -15,18 +15,19 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   end
 
   defp join_room(state, player, room_name) do
-    updated_state = state
-    |> remove_user_from_current_room(player)
-    |> find_or_create_room(room_name)
-    |> ServerState.update_room(room_name, fn room ->
-      {:ok, room} = Room.add_player(room, player.key)
-      room
-    end)
-    |> ServerState.update_player(player.key, fn player ->
-      Map.put(player, :room, room_name)
-    end)
+    case find_or_create_room(state, room_name) do
+      {:ok, state} ->
+        state = state
+        |> remove_user_from_current_room(player)
+        |> ServerState.update_room(room_name, fn room ->
+          {:ok, room} = Room.add_player(room, player.key)
+          room
+        end)
+        |> ServerState.update_player(player.key, fn player -> Map.put(player, :room, room_name) end)
+        {:ok, state, success_message(room_name)}
 
-    {:ok, updated_state, success_message(room_name)}
+      {:error, reason} -> {:error, state, reason}
+    end
   end
 
   defp remove_user_from_current_room(state, player) do
@@ -38,10 +39,23 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
     room = state.rooms[room_name]
     find_or_create_room(state, room_name, room)
   end
-  defp find_or_create_room(state, room_name, nil) do
-    Map.put(state, :rooms, Map.put(state.rooms, room_name, Room.new(room_name)))
+  defp find_or_create_room(state, room_name, nil), do: create_room(state, room_name)
+  defp find_or_create_room(state, _room_name, _room), do: {:ok, state}
+
+  defp create_room(state, room_name) do
+    case validate_room_name(state, room_name) do
+      :ok -> {:ok, put_in(state.rooms[room_name], Room.new(room_name))}
+      {:error, reason} -> {:error, reason}
+    end
   end
-  defp find_or_create_room(state, _room_name, _room), do: state
+
+  defp validate_room_name(state, name) do
+    cond do
+      String.length(name) > 20 -> {:error, "Room name cannot exceed 20 characters"}
+      String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, "Room name can only contain letters, numbers and hyphens."}
+      true -> :ok
+    end
+  end
 
   defp name_required_message do
     "You need to have a name before joining a room. Type #{highlight("set-name <name>")} to set your name."
