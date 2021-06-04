@@ -111,4 +111,12 @@ defmodule  TextBasedFPS.Room do
   defp update_game_map_matrix(room, {x, y}, value) do
     update_game_map_matrix(room, fn matrix -> GameMap.Matrix.set(matrix, {x, y}, value) end)
   end
+
+  def validate_name(name) do
+    cond do
+      String.length(name) > 20 -> {:error, "Room name cannot exceed 20 characters"}
+      String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, "Room name can only contain letters, numbers and hyphens."}
+      true -> :ok
+    end
+  end
 end

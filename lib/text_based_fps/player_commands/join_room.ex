@@ -43,17 +43,9 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   defp find_or_create_room(state, _room_name, _room), do: {:ok, state}
 
   defp create_room(state, room_name) do
-    case validate_room_name(state, room_name) do
+    case Room.validate_name(room_name) do
       :ok -> {:ok, put_in(state.rooms[room_name], Room.new(room_name))}
       {:error, reason} -> {:error, reason}
-    end
-  end
-
-  defp validate_room_name(state, name) do
-    cond do
-      String.length(name) > 20 -> {:error, "Room name cannot exceed 20 characters"}
-      String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, "Room name can only contain letters, numbers and hyphens."}
-      true -> :ok
     end
   end
 
