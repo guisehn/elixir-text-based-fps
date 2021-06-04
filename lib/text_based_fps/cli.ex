@@ -7,11 +7,11 @@ defmodule TextBasedFPS.CLI do
     player = ServerAgent.add_player()
     player2 = ServerAgent.add_player()
 
-    ServerAgent.run_command(player, "set-name gui")
-    ServerAgent.run_command(player, "join-room a")
+    ServerAgent.run_command(player, "set-name John")
+    ServerAgent.run_command(player, "join-room spaceship")
 
-    ServerAgent.run_command(player2, "set-name gui2")
-    ServerAgent.run_command(player2, "join-room a")
+    ServerAgent.run_command(player2, "set-name Jane")
+    ServerAgent.run_command(player2, "join-room spaceship")
 
     receive_command(0, [player, player2])
   end
