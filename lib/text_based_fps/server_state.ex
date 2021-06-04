@@ -22,12 +22,10 @@ defmodule TextBasedFPS.ServerState do
   def update_room(state, room_name, fun) when is_function(fun) do
     room = state.rooms[room_name]
     updated_room = fun.(room)
-    updated_rooms = Map.put(state.rooms, room_name, updated_room)
-    Map.put(state, :rooms, updated_rooms)
+    put_in(state.rooms[room_name], updated_room)
   end
   def update_room(state, room) when is_map(room) do
-    updated_rooms = Map.put(state.rooms, room.name, room)
-    Map.put(state, :rooms, updated_rooms)
+    put_in(state.rooms[room.name], room)
   end
 
   def update_player(state, player_key, fun) do
