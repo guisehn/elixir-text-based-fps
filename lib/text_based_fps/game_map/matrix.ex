@@ -60,9 +60,9 @@ defmodule TextBasedFPS.GameMap.Matrix do
 
   @doc """
   Iterate on the map matrix from a coordinate towards a given direction until the end of the map.
-  For each iteration, it'll call `fun`, which should return {:ok, acc} if it should proceed,
+  For each iteration, it'll call `fun`, which should return {:continue, acc} if it should proceed,
   or {:stop, acc}
-  The final accumulated will be returned.
+  The final accumulated value will be returned.
   """
   def iterate_towards(matrix, {x, y}, direction, acc, fun) do
     result = handle_iteration_fun_call(matrix, {x, y}, direction, acc, fun)
