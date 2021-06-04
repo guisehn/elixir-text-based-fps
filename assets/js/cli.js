@@ -10,7 +10,7 @@ class CLI {
     this.playerKey = getPlayerKey()
     this.commandLog = []
     this.commandLogPosition = 0
-    this.socket = new Socket("/socket", {params: {token: window.userToken}})
+    this.socket = new Socket("/socket")
     this.form = document.forms.form
     this.input = this.form.elements.input
     this.terminalContent = document.querySelector("#terminal-content")
