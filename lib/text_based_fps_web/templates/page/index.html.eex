@@ -1,38 +1,46 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>Peace of mind from prototype to production</p>
-</section>
+<main role="main" class="app">
+  <div class="app__content">
+    <div class="terminal">
+      <div class="terminal__title-bar">
+        <div class="terminal__title-bar__decoration">
+          <div class="terminal__title-bar__decoration__circle"></div>
+          <div class="terminal__title-bar__decoration__circle"></div>
+          <div class="terminal__title-bar__decoration__circle"></div>
+        </div>
+        <h1>Text-based FPS</h1>
+      </div>
+      <div class="terminal__cli">
+        <pre class="terminal__content" id="terminal-content"></pre>
+        <form name="form">
+          >&nbsp;<input type="text" class="terminal__input" name="input" autofocus autocomplete="off">
+        </form>
+      </div>
+    </div>
 
-<section class="row">
-  <article class="column">
-    <h2>Resources</h2>
-    <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.5/CHANGELOG.md">v1.5 Changelog</a>
-      </li>
-    </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on Freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-      <li>
-        <a href="https://elixir-slackin.herokuapp.com/">Elixir on Slack</a>
-      </li>
-    </ul>
-  </article>
-</section>
+    <div class="cheat-sheet">
+      <h2>Commands</h2>
+      <ul>
+        <li><span>set-name &lt;new name&gt;</span>: Change name</li>
+        <li><span>join-room &lt;room name&gt;</span>: Join room</li>
+        <li><span>room-list &lt;room name&gt;</span>: View list of rooms</li>
+        <li><span>look</span>: Show the room map and the enemies on your front</li>
+        <li><span>move &lt;north/south/west/east&gt;</span>: Move to another place</li>
+        <li><span>turn &lt;north/south/west/east/around&gt;</span>: Turn to another direction so you can see and shoot your enemies</li>
+        <li><span>fire</span>: Shoot towards your current direction</li>
+        <li><span>ammo</span>: Show how much ammo you have</li>
+        <li><span>reload</span>: Reload your gun</li>
+        <li><span>health</span>: Show how much health you have</li>
+        <li><span>score</span>: Show score table</li>
+        <li><span>respawn</span>: Respawn if you're dead</li>
+        <li><span>leave-room</span>: Leave the room</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="app__footer">
+    <a href="https://guisehn.com/" target="_blank">Guilherme Sehn</a> wrote this app to practice Elixir.
+    Source code <a href="https://github.com/guisehn/elixir-text-based-fps/" target="_blank">available on GitHub</a>.
+    Based on a <a href="http://eigen.pri.ee/shooter/" target="_blank">similar game</a> by
+    <a href="http://eigen.pri.ee/" target="_blank">Eigen Lenk</a>
+  </footer>
+</main>

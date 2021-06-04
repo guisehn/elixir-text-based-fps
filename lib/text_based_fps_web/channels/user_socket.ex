@@ -3,6 +3,7 @@ defmodule TextBasedFPSWeb.UserSocket do
 
   ## Channels
   # channel "room:*", TextBasedFPSWeb.RoomChannel
+  channel "game:*", TextBasedFPSWeb.GameChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -16,8 +17,9 @@ defmodule TextBasedFPSWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+  def connect(%{"key" => player_key}, socket, _connect_info) do
+    player_key = TextBasedFPS.ServerAgent.add_player(player_key)
+    {:ok, assign(socket, :player_key, player_key)}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -31,5 +33,5 @@ defmodule TextBasedFPSWeb.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   @impl true
-  def id(_socket), do: nil
+  def id(socket), do: "user_socket:#{socket.assigns.player_key}"
 end

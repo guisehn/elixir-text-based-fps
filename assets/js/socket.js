@@ -52,12 +52,21 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 //     end
 //
 // Finally, connect to the socket:
-socket.connect()
+
+const key = 'test'
+
+socket.connect({ "key": key })
+
+
 
 // Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("topic:subtopic", {})
+let channel = socket.channel("game:" + key, { })
 channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
+  .receive("ok", resp => { console.log("Joined channel successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
+// channel.on("mymessage", (...args) => console.log('mymessage', args))
+// channel.onClose(() => console.log('connection closed!'))
+
+channel.push("set-name gui", {})
 
 export default socket

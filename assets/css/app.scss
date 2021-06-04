@@ -1,36 +1,129 @@
-/* This file is for your main application css. */
-@import "./phoenix.css";
+$line-color: rgba(255, 255, 255, .3);
+$monospace-font: 14px monospace;
 
-/* Alerts and form errors */
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
+$yellow: #fd6;
+$red: #f66;
+$green: #0f0;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-.alert-info {
-  color: #31708f;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
+
+body {
+  font-family: -apple-system, "Segoe UI", Roboto ,"Helvetica Neue", Arial, sans-serif;
+  overflow: hidden;
+  background: #12131a;
+  color: #fff;
 }
-.alert-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
+
+a {
+  color: #aaa;
+
+  &:hover {
+    color: #ddd;
+  }
 }
-.alert-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
+
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+
+  &__content {
+    display: flex;
+    flex-grow: 1;
+    padding: 20px;
+    padding-bottom: 0;
+  }
+
+  &__footer {
+    font-size: 14px;
+    display: block;
+    padding: 20px;
+  }
 }
-.alert p {
-  margin-bottom: 0;
+
+.terminal {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid $line-color;
+  border-radius: 6px;
+  padding: 10px;
+
+  &__title-bar {
+    position: relative;
+    margin-bottom: 7px;
+
+    h1 {
+      text-align: center;
+      font-size: 13px;
+      font-weight: normal;
+    }
+
+    &__decoration {
+      position: absolute;
+
+      &__circle {
+        display: inline-block;
+        margin-right: 3px;
+        width: 14px;
+        height: 14px;
+        border: 1px solid $line-color;
+        border-radius: 100%;
+      }
+    }
+  }
+
+  &__cli {
+    flex-grow: 1;
+    font: $monospace-font;
+    overflow: auto;
+
+    form {
+      display: flex;
+
+      input {
+        width: 100%;
+        flex-grow: 1;
+        background: transparent;
+        color: #fff;
+        font: $monospace-font;
+        outline: 0;
+        border: 0;
+      }
+    }
+  }
 }
-.alert:empty {
-  display: none;
+
+.cheat-sheet {
+  width: 350px;
+  padding: 10px 20px;
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  ul {
+    font-family: monospace;
+  }
+
+  li {
+    list-style: none;
+    margin-bottom: 8px;
+
+    span {
+      color: $yellow;
+    }
+  }
 }
-.invalid-feedback {
-  color: #a94442;
-  display: block;
-  margin: -1rem 0 2rem;
+
+.ansi {
+  &-red-fg { color: $red; }
+  &-yellow-fg { color: $yellow; }
+  &-green-fg { color: $green; }
 }
