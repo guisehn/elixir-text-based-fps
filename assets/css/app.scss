@@ -1,6 +1,6 @@
+$footer_height: 50px;
 $line-color: rgba(255, 255, 255, .3);
 $monospace-font: 14px monospace;
-
 $yellow: #fd6;
 $red: #f66;
 $green: #0f0;
@@ -34,12 +34,13 @@ a {
 
   &__content {
     display: flex;
-    flex-grow: 1;
+    height: calc(100vh - $footer_height);
     padding: 20px;
     padding-bottom: 0;
   }
 
   &__footer {
+    height: $footer_height;
     font-size: 14px;
     display: block;
     padding: 20px;
