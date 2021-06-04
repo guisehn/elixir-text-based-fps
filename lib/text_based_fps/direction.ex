@@ -6,9 +6,6 @@ defmodule TextBasedFPS.Direction do
   @spec all :: [t()]
   def all, do: [:north, :south, :west, :east]
 
-  @spec exists?(t()) :: boolean
-  def exists?(direction), do: Enum.member?(all(), direction)
-
   @spec from_string(binary()) :: t() | nil
   def from_string("north"), do: :north
   def from_string("south"), do: :south
