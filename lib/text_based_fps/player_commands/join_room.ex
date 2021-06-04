@@ -26,7 +26,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
       Map.put(player, :room, room_name)
     end)
 
-    {:ok, updated_state, nil}
+    {:ok, updated_state, success_message(room_name)}
   end
 
   defp remove_user_from_current_room(state, player) do
@@ -45,5 +45,9 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
 
   defp name_required_message do
     "You need to have a name before joining a room. Type #{highlight("set-name <name>")} to set your name."
+  end
+
+  defp success_message(room_name) do
+    "You're now on #{room_name}! Type #{highlight("look")} to see where you are in the map."
   end
 end
