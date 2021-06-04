@@ -1,4 +1,4 @@
-defmodule TextBasedFPS.Room do
+defmodule  TextBasedFPS.Room do
   alias TextBasedFPS.Room
   alias TextBasedFPS.RoomPlayer
   alias TextBasedFPS.GameMap
@@ -14,8 +14,7 @@ defmodule TextBasedFPS.Room do
   end
 
   def add_player(room, player_key) do
-    room
-    |> Map.put(:players, Map.put(room.players, player_key, RoomPlayer.build(player_key)))
+    put_in(room.players[player_key], RoomPlayer.build(player_key))
     |> respawn_player(player_key)
   end
 
@@ -24,11 +23,9 @@ defmodule TextBasedFPS.Room do
     |> Map.put(:players, Map.delete(room.players, player_key))
   end
 
-  def add_random_object(room, coordinates) do
+  def add_random_object(room, {x, y}) do
     object = Enum.random(GameMap.Objects.all())
-    update_game_map_matrix(room, fn matrix ->
-      GameMap.Matrix.set(matrix, coordinates, object.new())
-    end)
+    update_game_map_matrix(room, {x, y}, object.new())
   end
 
   def respawn_player(room, player_key) do
@@ -97,14 +94,11 @@ defmodule TextBasedFPS.Room do
   def get_player(room, player_key), do: room.players[player_key]
 
   def update_player(room, player_key, fun) when is_function(fun) do
-    player = get_player(room, player_key)
-    updated_player = fun.(player)
-    updated_players = Map.put(room.players, player_key, updated_player)
-    Map.put(room, :players, updated_players)
+    updated_player = get_player(room, player_key) |> fun.()
+    put_in(room.players[player_key], updated_player)
   end
   def update_player(room, player_key, room_player) when is_map(room_player) do
-    updated_players = Map.put(room.players, player_key, room_player)
-    Map.put(room, :players, updated_players)
+    put_in(room.players[player_key], room_player)
   end
 
   defp update_game_map(room, fun) do
@@ -113,5 +107,8 @@ defmodule TextBasedFPS.Room do
 
   defp update_game_map_matrix(room, fun) do
     update_game_map(room, fn game_map -> GameMap.update_matrix(game_map, fun) end)
+  end
+  defp update_game_map_matrix(room, {x, y}, value) do
+    update_game_map_matrix(room, fn matrix -> GameMap.Matrix.set(matrix, {x, y}, value) end)
   end
 end

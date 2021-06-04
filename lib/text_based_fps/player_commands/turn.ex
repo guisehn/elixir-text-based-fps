@@ -2,7 +2,6 @@ defmodule TextBasedFPS.PlayerCommand.Turn do
   alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.Direction
   alias TextBasedFPS.Room
-  alias TextBasedFPS.ServerState
   import TextBasedFPS.PlayerCommand.Util
 
   @behaviour PlayerCommand
@@ -24,12 +23,7 @@ defmodule TextBasedFPS.PlayerCommand.Turn do
   end
 
   defp turn(state, room_name, player, direction) do
-    updated_state = ServerState.update_room(state, room_name, fn room ->
-      Room.update_player(room, player.key, fn room_player ->
-        Map.put(room_player, :direction, direction)
-      end)
-    end)
-
+    updated_state = put_in(state.rooms[room_name].players[player.key].direction, direction)
     {:ok, updated_state, nil}
   end
 

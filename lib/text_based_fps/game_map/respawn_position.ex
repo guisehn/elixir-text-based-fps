@@ -6,8 +6,7 @@ defmodule TextBasedFPS.GameMap.RespawnPosition do
 
   def find_respawn_position(room) do
     candidates = Enum.shuffle(empty_respawn_positions(room))
-    safe_respawn_position = Enum.find(candidates, fn candidate ->
-      %{coordinates: coordinates} = candidate
+    safe_respawn_position = Enum.find(candidates, fn %{coordinates: coordinates} ->
       safe_coordinates?(room, coordinates)
     end)
     safe_respawn_position || List.first(candidates)

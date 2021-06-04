@@ -1,6 +1,5 @@
 defmodule TextBasedFPS.PlayerCommand.Reload do
   alias TextBasedFPS.PlayerCommand
-  alias TextBasedFPS.ServerState
   alias TextBasedFPS.Room
 
   import TextBasedFPS.RoomPlayer, only: [display_ammo: 1, reload_gun: 1]
@@ -15,8 +14,7 @@ defmodule TextBasedFPS.PlayerCommand.Reload do
 
       case reload_gun(room_player) do
         {:reloaded, updated_player} ->
-          updated_room = Room.update_player(room, player.key, updated_player)
-          updated_state = ServerState.update_room(state, updated_room)
+          updated_state = put_in(state.rooms[room.name].players[player.key], updated_player)
           {:ok, updated_state, "You've reloaded. Ammo: #{display_ammo(updated_player)}"}
 
         {:no_ammo, _} -> {:error, state, "You're out of ammo"}

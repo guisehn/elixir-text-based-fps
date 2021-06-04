@@ -86,7 +86,7 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
   defp apply_update(room, shooter, shot_player) do
     coordinates = shot_player.coordinates
 
-    Room.update_player(room, shot_player.player_key, shot_player)
+    put_in(room.players[shot_player.player_key], shot_player)
     |> maybe_remove_player_from_map(shot_player)
     |> maybe_add_item(shot_player, coordinates)
     |> maybe_update_score(shooter, shot_player)
