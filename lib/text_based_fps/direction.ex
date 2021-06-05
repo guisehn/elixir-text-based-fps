@@ -29,18 +29,15 @@ defmodule TextBasedFPS.Direction do
   def symbol_of(:west), do: "◄"
   def symbol_of(:east), do: "►"
 
-  @spec from_initial(binary) :: t
-  def from_initial(str), do: from_char(str |> String.at(0) |> String.upcase)
-
   @spec calculate_movement(t, {integer, integer}) :: {integer, integer}
   def calculate_movement(:north, {x, y}), do: {x, y - 1}
   def calculate_movement(:south, {x, y}), do: {x, y + 1}
   def calculate_movement(:west, {x, y}), do: {x - 1, y}
   def calculate_movement(:east, {x, y}), do: {x + 1, y}
 
-  @spec from_char(String.t) :: t
-  def from_char("N"), do: :north
-  def from_char("S"), do: :south
-  def from_char("W"), do: :west
-  def from_char("E"), do: :east
+  @spec from_respawn_position_char(atom) :: t
+  def from_respawn_position_char(:N), do: :north
+  def from_respawn_position_char(:S), do: :south
+  def from_respawn_position_char(:W), do: :west
+  def from_respawn_position_char(:E), do: :east
 end

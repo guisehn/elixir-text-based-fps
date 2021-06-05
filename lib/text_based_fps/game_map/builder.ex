@@ -25,11 +25,11 @@ defmodule TextBasedFPS.GameMap.Builder do
       |> Stream.with_index
       |> Stream.filter(fn {position, _x} -> respawn_position?(position) end)
       |> Enum.map(fn {direction, x} ->
-        %RespawnPosition{coordinates: {x, y}, direction: Direction.from_char(direction)}
+        %RespawnPosition{coordinates: {x, y}, direction: Direction.from_respawn_position_char(direction)}
       end)
     end)
     |> List.flatten
   end
 
-  defp respawn_position?(position), do: Enum.member?(~w(N S W E), position)
+  defp respawn_position?(position), do: Enum.member?(~w(N S W E)a, position)
 end

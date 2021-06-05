@@ -7,6 +7,7 @@ defmodule TextBasedFPS.GameMap.TextParser do
     |> trim_leading_empty_lines
     |> Stream.map(&String.trim_trailing/1)
     |> Stream.map(&String.graphemes/1)
+    |> Stream.map(fn line -> Enum.map(line, &String.to_atom/1) end)
     |> equalize_line_sizes
   end
 
@@ -24,7 +25,7 @@ defmodule TextBasedFPS.GameMap.TextParser do
   end
 
   defp complete_line(line, size) do
-    line ++ replicate(" ", size - length(line))
+    line ++ replicate(:" ", size - length(line))
   end
 
   defp replicate(element, n), do: for i <- 0..n, i > 0, do: element

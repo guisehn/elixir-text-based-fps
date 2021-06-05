@@ -5,7 +5,7 @@ defmodule TextBasedFPS.GameMap.Matrix do
   alias TextBasedFPS.Direction
 
   @type t :: list(list())
-  @type item_t :: String.t | GameMap.Object.t
+  @type item_t :: :" " | :"#" | GameMap.Object.t
 
   @spec set(t, Coordinates.t, item_t) :: t
   def set(matrix, {x, y}, value) do
@@ -15,7 +15,7 @@ defmodule TextBasedFPS.GameMap.Matrix do
 
   @spec clear(t, Coordinates.t) :: t
   def clear(matrix, {x, y}) do
-    set(matrix, {x, y}, " ")
+    set(matrix, {x, y}, :" ")
   end
 
   @spec has?(t, Coordinates.t) :: boolean
@@ -25,7 +25,7 @@ defmodule TextBasedFPS.GameMap.Matrix do
 
   @spec wall_at?(t, Coordinates.t) :: boolean
   def wall_at?(matrix, {x, y}) do
-    at(matrix, {x, y}) == "#"
+    at(matrix, {x, y}) == :"#"
   end
 
   @spec object_at(t, Coordinates.t) :: GameMap.Object.t | nil
@@ -73,8 +73,8 @@ defmodule TextBasedFPS.GameMap.Matrix do
   def clean(matrix) do
     Enum.map(matrix, fn line -> Enum.map(line, &clean_position/1) end)
   end
-  defp clean_position("#"), do: "#"
-  defp clean_position(_), do: " "
+  defp clean_position(:"#"), do: :"#"
+  defp clean_position(_), do: :" "
 
   @doc """
   Iterate on the map matrix from a coordinate towards a given direction until the end of the map.
