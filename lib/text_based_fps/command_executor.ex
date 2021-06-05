@@ -19,16 +19,19 @@ defmodule TextBasedFPS.CommandExecutor do
     "fire" => PlayerCommand.Fire
   }
 
-  def execute(state, player_key, command) do
+  def execute(state, player_key, command_text) do
+    state = ServerState.update_player(state, player_key, &Player.touch/1)
     player = ServerState.get_player(state, player_key)
 
-    [command_name | command_arg] = String.split(command, " ")
+    {command, command_arg} = parse_command(command_text)
+    execute(state, player, command, command_arg)
+  end
+
+  defp parse_command(command_text) do
+    [command_name | command_arg] = String.split(command_text, " ")
     command = @commands[command_name]
     command_arg = String.trim(Enum.join(command_arg, " "))
-
-    state
-    |> ServerState.update_player(player_key, &Player.touch/1)
-    |> execute(player, command, command_arg)
+    {command, command_arg}
   end
 
   defp execute(state, nil, _command, _command_arg), do: {:error, state, "Player not found"}

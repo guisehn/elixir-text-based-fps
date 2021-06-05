@@ -47,9 +47,12 @@ defmodule TextBasedFPS.ServerState do
 
   def update_player(state, player_key, fun) do
     player = get_player(state, player_key)
-    updated_player = fun.(player)
-    updated_players = Map.put(state.players, player_key, updated_player)
-    Map.put(state, :players, updated_players)
+    if player do
+      updated_player = fun.(player)
+      put_in(state.players[player_key], updated_player)
+    else
+      state
+    end
   end
 
   def remove_player(state, player_key) do
@@ -59,7 +62,11 @@ defmodule TextBasedFPS.ServerState do
 
   def remove_player_from_current_room(state, player_key) do
     player = get_player(state, player_key)
-    remove_player_from_room(state, player_key, player.room)
+    if player do
+      remove_player_from_room(state, player_key, player.room)
+    else
+      {:player_not_found, state}
+    end
   end
   defp remove_player_from_room(state, _player_key, nil), do: {:not_in_room, state}
   defp remove_player_from_room(state, player_key, room_name) do
