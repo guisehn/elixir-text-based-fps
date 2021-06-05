@@ -1,6 +1,7 @@
 defmodule TextBasedFPS.PlayerCommand.RoomList do
   alias TextBasedFPS.PlayerCommand
-  import TextBasedFPS.PlayerCommand.Util
+
+  import TextBasedFPS.Text
 
   @behaviour PlayerCommand
 

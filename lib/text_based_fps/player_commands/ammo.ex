@@ -1,6 +1,7 @@
 defmodule TextBasedFPS.PlayerCommand.Ammo do
   alias TextBasedFPS.Room
   alias TextBasedFPS.PlayerCommand
+
   import TextBasedFPS.RoomPlayer, only: [display_ammo: 1]
   import TextBasedFPS.PlayerCommand.Util
 

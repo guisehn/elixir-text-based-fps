@@ -2,7 +2,9 @@ defmodule TextBasedFPS.PlayerCommand.Turn do
   alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.Direction
   alias TextBasedFPS.Room
+
   import TextBasedFPS.PlayerCommand.Util
+  import TextBasedFPS.Text
 
   @behaviour PlayerCommand
 

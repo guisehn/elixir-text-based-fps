@@ -2,6 +2,7 @@ defmodule TextBasedFPS.PlayerCommand.Look do
   alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.GameMap
   alias TextBasedFPS.Room
+
   import TextBasedFPS.PlayerCommand.Util
 
   @behaviour PlayerCommand

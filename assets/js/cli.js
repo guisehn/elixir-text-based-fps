@@ -85,6 +85,8 @@ class CLI {
     switch (event) {
       case "phx_reply":
         return this.replyReceived(payload)
+      case "welcome":
+        return this.appendToTerminal(payload.message)
     }
   }
 

@@ -2,7 +2,9 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.Room
   alias TextBasedFPS.ServerState
+
   import TextBasedFPS.PlayerCommand.Util
+  import TextBasedFPS.Text
 
   @behaviour PlayerCommand
 

@@ -4,7 +4,9 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
   alias TextBasedFPS.GameMap
   alias TextBasedFPS.Room
   alias TextBasedFPS.RoomPlayer
+
   import TextBasedFPS.PlayerCommand.Util
+  import TextBasedFPS.Text
 
   @behaviour PlayerCommand
 

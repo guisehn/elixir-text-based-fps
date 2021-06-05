@@ -2,6 +2,8 @@ defmodule TextBasedFPS.PlayerCommand.Util do
   alias TextBasedFPS.ServerState
   alias TextBasedFPS.Room
 
+  import TextBasedFPS.Text
+
   def require_alive_player(state, player, fun) do
     require_room(state, player, fn room ->
       case Room.get_player(room, player.key) do
@@ -11,10 +13,6 @@ defmodule TextBasedFPS.PlayerCommand.Util do
         _ -> fun.(room)
       end
     end)
-  end
-
-  def highlight(text) do
-    IO.ANSI.yellow() <> text <> IO.ANSI.reset()
   end
 
   def require_room(state, player, fun) do

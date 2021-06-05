@@ -2,7 +2,8 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
   alias TextBasedFPS.Player
   alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.ServerState
-  import TextBasedFPS.PlayerCommand.Util
+
+  import TextBasedFPS.Text
 
   @behaviour PlayerCommand
 

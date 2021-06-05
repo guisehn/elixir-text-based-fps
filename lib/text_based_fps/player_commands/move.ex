@@ -3,7 +3,9 @@ defmodule TextBasedFPS.PlayerCommand.Move do
   alias TextBasedFPS.Direction
   alias TextBasedFPS.Room
   alias TextBasedFPS.ServerState
+
   import TextBasedFPS.PlayerCommand.Util
+  import TextBasedFPS.Text
 
   @behaviour PlayerCommand
 
