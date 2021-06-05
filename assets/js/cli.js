@@ -86,6 +86,7 @@ class CLI {
       case "phx_reply":
         return this.replyReceived(payload)
       case "welcome":
+      case "notification":
         return this.appendToTerminal(payload.message)
     }
   }

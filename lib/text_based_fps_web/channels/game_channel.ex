@@ -15,6 +15,7 @@ defmodule TextBasedFPSWeb.GameChannel do
   def handle_in(command, _payload, socket) do
     %{player_key: player_key} = socket.assigns
     {status, result} = TextBasedFPS.ServerAgent.run_command(player_key, command)
+    dispatch_notifications()
     {:reply, {status, result}, socket}
   end
 
@@ -33,6 +34,13 @@ defmodule TextBasedFPSWeb.GameChannel do
   end
   defp welcome_message(_) do
     "You're currently in the game. Type #{highlight("look")} to see where you are in the map."
+  end
+
+  defp dispatch_notifications do
+    Enum.each(TextBasedFPS.ServerAgent.get_and_clear_notifications(), &dispatch_notification/1)
+  end
+  defp dispatch_notification(%{body: body, player_key: player_key}) do
+    TextBasedFPSWeb.Endpoint.broadcast("game:#{player_key}", "notification", %{message: body})
   end
 
   # It is also common to receive messages from the client and
