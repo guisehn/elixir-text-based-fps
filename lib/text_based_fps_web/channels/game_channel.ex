@@ -11,13 +11,16 @@ defmodule TextBasedFPSWeb.GameChannel do
     {:ok, socket}
   end
 
-  # Channels can be used in a request/response fashion
-  # by sending replies to requests from the client
   @impl true
   def handle_in(command, _payload, socket) do
     %{player_key: player_key} = socket.assigns
     {status, result} = ServerAgent.run_command(player_key, command)
+
+    # The action just performed might have generated notifications for other players.
+    # We call dispatch_notifications/0 to deliver the newly created notifications
+    # to those players.
     dispatch_notifications()
+
     {:reply, {status, %{message: result}}, socket}
   end
 

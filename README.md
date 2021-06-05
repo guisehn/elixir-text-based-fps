@@ -70,19 +70,21 @@ The `%TextBasedFPS.ServerState` struct has two members: `players` and `rooms`:
 
     * `game_map`: contains a matrix with the current state of the map (including players and objects such as ammo and health packs), and a list of respawn positions
 
+  * `notifications` is a list of notifications that are pending to be delivered to someone. When a player joins a room, leaves a room, or changes their name, notification structs are generated for each user on that room.
+
 ```elixir
 %TextBasedFPS.ServerState{
   players: %{
-    "2eda2c30-645f-494e-b934-20ed88165a32" => %TextBasedFPS.Player{
-      key: "2eda2c30-645f-494e-b934-20ed88165a32",
-      last_command_at: ~U[2021-06-04 02:06:15.641489Z],
-      name: "John",
+    "d5556609-0b58-47cd-ae08-7db873fa5ac5" => %TextBasedFPS.Player{
+      key: "d5556609-0b58-47cd-ae08-7db873fa5ac5",
+      last_command_at: ~U[2021-06-05 23:09:37.075344Z],
+      name: "Jane",
       room: "spaceship"
     },
-    "7f25325c-3c83-4790-838c-15d5d0e928bf" => %TextBasedFPS.Player{
-      key: "7f25325c-3c83-4790-838c-15d5d0e928bf",
-      last_command_at: ~U[2021-06-04 02:06:15.645960Z],
-      name: "Jane",
+    "e01f611e-4a61-4127-ba7b-4ba85ee73e3e" => %TextBasedFPS.Player{
+      key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e",
+      last_command_at: ~U[2021-06-05 23:09:37.072602Z],
+      name: "John",
       room: "spaceship"
     }
   },
@@ -90,63 +92,63 @@ The `%TextBasedFPS.ServerState` struct has two members: `players` and `rooms`:
     "spaceship" => %TextBasedFPS.Room{
       name: "spaceship",
       players: %{
-        "2eda2c30-645f-494e-b934-20ed88165a32" => %TextBasedFPS.RoomPlayer{
+        "d5556609-0b58-47cd-ae08-7db873fa5ac5" => %TextBasedFPS.RoomPlayer{
           ammo: {8, 24},
           coordinates: {8, 5},
           direction: :south,
           health: 100,
           killed: 0,
           kills: 0,
-          player_key: "2eda2c30-645f-494e-b934-20ed88165a32"
+          player_key: "d5556609-0b58-47cd-ae08-7db873fa5ac5"
         },
-        "7f25325c-3c83-4790-838c-15d5d0e928bf" => %TextBasedFPS.RoomPlayer{
+        "e01f611e-4a61-4127-ba7b-4ba85ee73e3e" => %TextBasedFPS.RoomPlayer{
           ammo: {8, 24},
-          coordinates: {1, 8},
-          direction: :north,
+          coordinates: {5, 1},
+          direction: :south,
           health: 100,
           killed: 0,
           kills: 0,
-          player_key: "7f25325c-3c83-4790-838c-15d5d0e928bf"
+          player_key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e"
         }
       },
       game_map: %TextBasedFPS.GameMap{
         matrix: [
-          ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],
-          ["#", " ", " ", " ", "#", " ", " ", " ", " ", "#"],
-          ["#", " ", "#", " ", " ", " ", "#", "#", " ", "#"],
-          ["#", " ", "#", " ", "#", " ", " ", " ", " ", "#"],
-          ["#", " ", " ", " ", "#", "#", " ", "#", "#", "#"],
+          [:"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#"],
           [
-            "#",
-            "#",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
-            " ",
+            :"#",
+            :" ",
+            :" ",
+            :" ",
+            :"#",
             %TextBasedFPS.GameMap.Objects.Player{
-              player_key: "2eda2c30-645f-494e-b934-20ed88165a32"
+              player_key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e"
             },
-            "#"
+            :" ",
+            :" ",
+            :" ",
+            :"#"
           ],
-          ["#", " ", " ", "#", " ", "#", "#", "#", " ", "#"],
-          ["#", " ", "#", "#", " ", " ", " ", "#", " ", "#"],
+          [:"#", :" ", :"#", :" ", :" ", :" ", :"#", :"#", :" ", :"#"],
+          [:"#", :" ", :"#", :" ", :"#", :" ", :" ", :" ", :" ", :"#"],
+          [:"#", :" ", :" ", :" ", :"#", :"#", :" ", :"#", :"#", :"#"],
           [
-            "#",
+            :"#",
+            :"#",
+            :" ",
+            :" ",
+            :" ",
+            :" ",
+            :" ",
+            :" ",
             %TextBasedFPS.GameMap.Objects.Player{
-              player_key: "7f25325c-3c83-4790-838c-15d5d0e928bf"
+              player_key: "d5556609-0b58-47cd-ae08-7db873fa5ac5"
             },
-            " ",
-            " ",
-            " ",
-            "#",
-            " ",
-            " ",
-            " ",
-            "#"
+            :"#"
           ],
-          ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#"]
+          [:"#", :" ", :" ", :"#", :" ", :"#", :"#", :"#", :" ", :"#"],
+          [:"#", :" ", :"#", :"#", :" ", :" ", :" ", :"#", :" ", :"#"],
+          [:"#", :" ", :" ", :" ", :" ", :"#", :" ", :" ", :" ", :"#"],
+          [:"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#"]
         ],
         respawn_positions: [
           %TextBasedFPS.GameMap.RespawnPosition{
@@ -180,6 +182,13 @@ The `%TextBasedFPS.ServerState` struct has two members: `players` and `rooms`:
         ]
       }
     }
-  }
+  },
+  notifications: [
+    %TextBasedFPS.Notification{
+      body: "Jane joined the room!",
+      created_at: ~U[2021-06-05 23:09:37.075358Z],
+      player_key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e"
+    }
+  ]
 }
 ```
