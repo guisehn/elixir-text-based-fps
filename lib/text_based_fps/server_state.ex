@@ -90,8 +90,18 @@ defmodule TextBasedFPS.ServerState do
     updated_room = state |> get_room(room_name) |> Room.remove_player(player_key)
     updated_state = state
     |> update_room(updated_room)
+    |> remove_room_if_empty(updated_room)
     |> update_player(player_key, fn player -> Map.put(player, :room, nil) end)
     {:ok, updated_state}
+  end
+  defp remove_room_if_empty(state, room) do
+    case Enum.count(room.players) do
+      0 ->
+        updated_rooms = Map.delete(state.rooms, room.name)
+        Map.put(state, :rooms, updated_rooms)
+
+      _ -> state
+    end
   end
 
   @spec get_player(ServerState.t, Player.key_t) :: Player.t | nil
