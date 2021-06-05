@@ -4,7 +4,7 @@ defmodule TextBasedFPS.GameMap.Builder do
   alias TextBasedFPS.GameMap.TextParser
   alias TextBasedFPS.Direction
 
-  @spec build(binary) :: %TextBasedFPS.GameMap{matrix: list, respawn_positions: list}
+  @spec build(String.t) :: GameMap.t
   def build(text_representation) do
     raw_matrix = TextParser.parse(text_representation)
     respawn_positions = get_respawn_positions(raw_matrix)
@@ -16,6 +16,7 @@ defmodule TextBasedFPS.GameMap.Builder do
     }
   end
 
+  @spec get_respawn_positions(GameMap.Matrix.t) :: list(RespawnPosition.t)
   def get_respawn_positions(matrix) do
     matrix
     |> Stream.with_index

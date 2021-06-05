@@ -6,40 +6,45 @@ defmodule  TextBasedFPS.Room do
   @type t :: %TextBasedFPS.Room{
     name: String.t,
     game_map: TextBasedFPS.GameMap.t,
-    players: list(TextBasedFPS.RoomPlayer.t)
+    players: %{String.t => TextBasedFPS.RoomPlayer.t}
   }
 
   defstruct [:name, :game_map, :players]
 
+  @spec new(String.t) :: t
   def new(name) do
     %Room{
       name: name,
-      game_map: GameMap.build(),
+      game_map: GameMap.new(),
       players: %{}
     }
   end
 
+  @spec add_player(t, String.t) :: {:ok, t}
   def add_player(room, player_key) do
     put_in(room.players[player_key], RoomPlayer.new(player_key))
     |> respawn_player(player_key)
   end
 
+  @spec remove_player(t, String.t) :: t
   def remove_player(room, player_key) do
     remove_player_from_map(room, player_key)
     |> Map.put(:players, Map.delete(room.players, player_key))
   end
 
+  @spec add_random_object(t, GameMap.Coordinates.t) :: t
   def add_random_object(room, {x, y}) do
     object = Enum.random(GameMap.Objects.all())
     update_game_map_matrix(room, {x, y}, object.new())
   end
 
+  @spec respawn_player(t, String.t) :: {:ok, t} | {:error, t, :player_is_alive}
   def respawn_player(room, player_key) do
     room_player = get_player(room, player_key)
     respawn_player(room, room_player, RoomPlayer.dead?(room_player))
   end
-  def respawn_player(room, _room_player, false), do: {:error, room, :player_is_alive}
-  def respawn_player(room, room_player, true) do
+  defp respawn_player(room, _room_player, false), do: {:error, room, :player_is_alive}
+  defp respawn_player(room, room_player, true) do
     %{coordinates: coordinates, direction: direction} = GameMap.RespawnPosition.find_respawn_position(room)
     {:ok, room, _} = place_player_at(room, room_player.player_key, coordinates)
     room = update_player(room, room_player.player_key, fn player ->
@@ -51,6 +56,7 @@ defmodule  TextBasedFPS.Room do
     {:ok, room}
   end
 
+  @spec place_player_at(t, String.t, GameMap.Coordinates.t) :: {:ok, t, GameMap.Object.t} | {:error, t}
   def place_player_at(room, player_key, {x, y}) do
     matrix = room.game_map.matrix
 
@@ -86,6 +92,7 @@ defmodule  TextBasedFPS.Room do
     {:ok, room, object_grabbed}
   end
 
+  @spec remove_player_from_map(t, String.t) :: t
   def remove_player_from_map(room, player_key) do
     room_player = get_player(room, player_key)
     remove_player_from_map(room, player_key, room_player.coordinates)
@@ -97,14 +104,27 @@ defmodule  TextBasedFPS.Room do
     |> update_player(player_key, fn player -> Map.put(player, :coordinates, nil) end)
   end
 
+  @spec get_player(t, String.t) :: RoomPlayer.t | nil
   def get_player(room, player_key), do: room.players[player_key]
 
+  @spec update_player(t, String.t, function) :: t
   def update_player(room, player_key, fun) when is_function(fun) do
     updated_player = get_player(room, player_key) |> fun.()
     put_in(room.players[player_key], updated_player)
   end
+
+  @spec update_player(t, String.t, RoomPlayer.t) :: t
   def update_player(room, player_key, room_player) when is_map(room_player) do
     put_in(room.players[player_key], room_player)
+  end
+
+  @spec validate_name(String.t) :: :ok | {:error, String.t}
+  def validate_name(name) do
+    cond do
+      String.length(name) > 20 -> {:error, "Room name cannot exceed 20 characters"}
+      String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, "Room name can only contain letters, numbers and hyphens."}
+      true -> :ok
+    end
   end
 
   defp update_game_map(room, fun) do
@@ -116,13 +136,5 @@ defmodule  TextBasedFPS.Room do
   end
   defp update_game_map_matrix(room, {x, y}, value) do
     update_game_map_matrix(room, fn matrix -> GameMap.Matrix.set(matrix, {x, y}, value) end)
-  end
-
-  def validate_name(name) do
-    cond do
-      String.length(name) > 20 -> {:error, "Room name cannot exceed 20 characters"}
-      String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, "Room name can only contain letters, numbers and hyphens."}
-      true -> :ok
-    end
   end
 end

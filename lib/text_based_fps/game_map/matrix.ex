@@ -2,6 +2,7 @@ defmodule TextBasedFPS.GameMap.Matrix do
   alias TextBasedFPS.Direction
 
   @type t :: list(list())
+  @type item_t :: String.t | TextBasedFPS.GameMap.Object.t
 
   def set(matrix, {x, y}, value) do
     updated_row = Enum.at(matrix, y) |> List.replace_at(x, value)
