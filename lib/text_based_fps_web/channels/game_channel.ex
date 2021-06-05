@@ -18,7 +18,7 @@ defmodule TextBasedFPSWeb.GameChannel do
     %{player_key: player_key} = socket.assigns
     {status, result} = ServerAgent.run_command(player_key, command)
     dispatch_notifications()
-    {:reply, {status, result}, socket}
+    {:reply, {status, %{message: result}}, socket}
   end
 
   @impl true

@@ -93,8 +93,8 @@ class CLI {
 
   replyReceived(payload) {
     const { status, response } = payload
-    if (typeof response === "string") {
-      this.appendToTerminal(status === "error" ? this.red(response) : response)
+    if (response.message) {
+      this.appendToTerminal(status === "error" ? this.red(response.message) : response.message)
     }
   }
 
