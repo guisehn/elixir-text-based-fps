@@ -1,12 +1,12 @@
 # elixir-text-based-fps
 
-Text-based FPS game made by [Guilherme Sehn](http://www.guisehn.com/) using Elixir + Phoenix.
+Text-based FPS game made by [Guilherme Sehn](http://www.guisehn.com/) using Elixir + Phoenix. The game is live at [elixir-text-based-fps.herokuapp.com](https://elixir-text-based-fps.herokuapp.com/)
 
 [Original game](http://eigen.pri.ee/shooter/) and map made by [Eigen Lenk](http://eigen.pri.ee/).
 
 You can also see a node.js version of this game I made a few years ago at https://github.com/guisehn/text-based-fps
 
-## How to run
+## How to run locally
 
 ### Running the web server
 
@@ -34,6 +34,14 @@ This will start the game with two players: `John` and `Jane` and add both to a r
   * To add a new player, enter `add-player`. You can later switch back to it using `switch-player 2` (each new player increments the counter).
   * To remove the current player, enter `remove-player`, then switch to another player. If you try to run a game command with a removed player, it'll crash.
   * To view the server state, enter `view-state`.
+
+## How to deploy
+
+Click on the button below to deploy to Heroku:
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/guisehn/elixir-text-based-fps)
+
+Then, create an environment variable called `HOST` pointing to your app (e.g. `yourapp.herokuapp.com`). That is required for the websockets to work.
 
 ## Editing the map
 
