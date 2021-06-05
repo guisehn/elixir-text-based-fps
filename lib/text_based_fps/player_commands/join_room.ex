@@ -16,20 +16,25 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   end
 
   defp join_room(state, player, room_name) do
-    case find_or_create_room(state, room_name) do
-      {:ok, state} ->
-        state = state
-        |> remove_user_from_current_room(player)
-        |> ServerState.update_room(room_name, fn room ->
-          {:ok, room} = Room.add_player(room, player.key)
-          room
-        end)
-        |> ServerState.update_player(player.key, fn player -> Map.put(player, :room, room_name) end)
-        {:ok, state, success_message(room_name)}
-
+    with :ok <- check_already_in_room(player, room_name),
+        {:ok, state} <- find_or_create_room(state, room_name) do
+      state = state
+      |> remove_user_from_current_room(player)
+      |> ServerState.update_room(room_name, fn room ->
+        {:ok, room} = Room.add_player(room, player.key)
+        room
+      end)
+      |> ServerState.update_player(player.key, fn player -> Map.put(player, :room, room_name) end)
+      {:ok, state, success_message(room_name)}
+    else
       {:error, reason} -> {:error, state, reason}
     end
   end
+
+  defp check_already_in_room(player, room_name) when player.room == room_name do
+    {:error, "You're already in this room"}
+  end
+  defp check_already_in_room(_player, _room_name), do: :ok
 
   defp remove_user_from_current_room(state, player) do
     {_, updated_state} = ServerState.remove_player_from_current_room(state, player.key)
