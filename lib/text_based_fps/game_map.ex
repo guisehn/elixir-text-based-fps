@@ -1,4 +1,9 @@
 defmodule TextBasedFPS.GameMap do
+  @type t :: %TextBasedFPS.GameMap{
+    matrix: TextBasedFPS.GameMap.Matrix.t,
+    respawn_positions: TextBasedFPS.GameMap.RespawnPosition.t
+  }
+
   defstruct [:matrix, :respawn_positions]
 
   def build do

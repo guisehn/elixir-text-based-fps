@@ -3,6 +3,12 @@ defmodule  TextBasedFPS.Room do
   alias TextBasedFPS.RoomPlayer
   alias TextBasedFPS.GameMap
 
+  @type t :: %TextBasedFPS.Room{
+    name: String.t,
+    game_map: TextBasedFPS.GameMap.t,
+    players: list(TextBasedFPS.RoomPlayer.t)
+  }
+
   defstruct [:name, :game_map, :players]
 
   def new(name) do

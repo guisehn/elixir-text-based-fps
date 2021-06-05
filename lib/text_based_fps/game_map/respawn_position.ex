@@ -1,6 +1,12 @@
 defmodule TextBasedFPS.GameMap.RespawnPosition do
   alias TextBasedFPS.Direction
   alias TextBasedFPS.GameMap.Matrix
+  alias TextBasedFPS.GameMap.Coordinates
+
+  @type t :: %TextBasedFPS.GameMap.RespawnPosition {
+    coordinates: Coordinates.t,
+    direction: Direction.t
+  }
 
   defstruct [:coordinates, :direction]
 

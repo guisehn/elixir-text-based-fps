@@ -1,4 +1,10 @@
 defmodule TextBasedFPS.Notification do
+  @type t :: %TextBasedFPS.Notification{
+    player_key: String.t,
+    body: String.t,
+    created_at: DateTime.t
+  }
+
   defstruct [:player_key, :body, :created_at]
 
   def new(player_key, body) do

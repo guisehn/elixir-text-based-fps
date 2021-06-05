@@ -1,7 +1,14 @@
 defmodule TextBasedFPS.ServerState do
-  alias TextBasedFPS.ServerState
+  alias TextBasedFPS.Notification
   alias TextBasedFPS.Player
   alias TextBasedFPS.Room
+  alias TextBasedFPS.ServerState
+
+  @type t :: %TextBasedFPS.ServerState{
+    rooms: %{String.t => Room.t},
+    players: %{String.t => Player.t},
+    notifications: list(Notification.t)
+  }
 
   defstruct [:rooms, :players, :notifications]
 

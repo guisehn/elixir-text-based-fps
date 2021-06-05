@@ -1,4 +1,11 @@
 defmodule TextBasedFPS.Player do
+  @type t :: %TextBasedFPS.Player{
+    key: String.t,
+    name: String.t | nil,
+    room: String.t | nil,
+    last_command_at: DateTime.t
+  }
+
   defstruct [:key, name: nil, room: nil, last_command_at: nil]
 
   def new(key \\ nil) do
