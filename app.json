@@ -4,8 +4,8 @@
   "repository": "https://github.com/guisehn/elixir-text-based-fps",
   "keywords": ["elixir", "phoenix", "fps", "game"],
   "buildpacks": [
-    "https://github.com/HashNuke/heroku-buildpack-elixir",
-    "https://github.com/gjaldon/heroku-buildpack-phoenix-static"
+    { "url": "https://github.com/HashNuke/heroku-buildpack-elixir" },
+    { "url": "https://github.com/gjaldon/heroku-buildpack-phoenix-static" }
   ],
   "env": {
     "SECRET_KEY_BASE": {
