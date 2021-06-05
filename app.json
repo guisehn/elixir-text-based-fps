@@ -1,0 +1,16 @@
+{
+  "name": "Elixir Text-based FPS",
+  "description": "move east, turn north, fire!!1",
+  "repository": "https://github.com/guisehn/elixir-text-based-fps",
+  "keywords": ["elixir", "phoenix", "fps", "game"],
+  "buildpacks": [
+    "https://github.com/HashNuke/heroku-buildpack-elixir",
+    "https://github.com/gjaldon/heroku-buildpack-phoenix-static"
+  ],
+  "env": {
+    "SECRET_KEY_BASE": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    }
+  }
+}

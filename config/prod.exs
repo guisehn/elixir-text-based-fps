@@ -10,7 +10,9 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :text_based_fps, TextBasedFPSWeb.Endpoint,
-  url: [host: "example.com", port: 80],
+  url: [scheme: "https", host: {:system, "HOST"}, port: 443],
+  http: [port: {:system, "PORT"}],
+  force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
