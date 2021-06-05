@@ -7,7 +7,7 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
 
   @behaviour PlayerCommand
 
-  @impl PlayerCommand
+  @impl true
   def execute(state, player, name) do
     name = String.trim(name)
 

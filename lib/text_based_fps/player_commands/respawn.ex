@@ -7,7 +7,7 @@ defmodule TextBasedFPS.PlayerCommand.Respawn do
 
   @behaviour PlayerCommand
 
-  @impl PlayerCommand
+  @impl true
   def execute(state, player, _) do
     require_room(state, player, fn room ->
       case Room.respawn_player(room, player.key) do

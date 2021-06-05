@@ -6,7 +6,7 @@ defmodule TextBasedFPS.PlayerCommand.LeaveRoom do
 
   @behaviour PlayerCommand
 
-  @impl PlayerCommand
+  @impl true
   def execute(state, player, _) do
     require_room(state, player, fn _ ->
       {:ok, updated_state} = ServerState.remove_player_from_current_room(state, player.key)

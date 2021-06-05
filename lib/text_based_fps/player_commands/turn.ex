@@ -8,7 +8,7 @@ defmodule TextBasedFPS.PlayerCommand.Turn do
 
   @behaviour PlayerCommand
 
-  @impl PlayerCommand
+  @impl true
   def execute(state, player, direction) do
     require_alive_player(state, player, fn room ->
       room_player = Room.get_player(room, player.key)

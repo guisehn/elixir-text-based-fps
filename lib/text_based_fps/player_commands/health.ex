@@ -6,7 +6,7 @@ defmodule TextBasedFPS.PlayerCommand.Health do
 
   @behaviour PlayerCommand
 
-  @impl PlayerCommand
+  @impl true
   def execute(state, player, _) do
     require_room(state, player, fn room ->
       room_player = Room.get_player(room, player.key)

@@ -8,7 +8,7 @@ defmodule TextBasedFPS.PlayerCommand.Score do
 
   @behaviour PlayerCommand
 
-  @impl PlayerCommand
+  @impl true
   def execute(state, player, _) do
     require_room(state, player, fn room ->
       {:ok, state, generate_table(state, room.players)}

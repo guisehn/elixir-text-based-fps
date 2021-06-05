@@ -8,7 +8,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
 
   @behaviour PlayerCommand
 
-  @impl PlayerCommand
+  @impl true
   def execute(state, player, room_name) do
     case player.name do
       nil -> {:error, state, name_required_message()}

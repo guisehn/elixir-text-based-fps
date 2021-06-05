@@ -11,7 +11,7 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
 
   @behaviour PlayerCommand
 
-  @impl PlayerCommand
+  @impl true
   def execute(state, player, _) do
     require_alive_player(state, player, fn room ->
       room_player = Room.get_player(room, player.key)
