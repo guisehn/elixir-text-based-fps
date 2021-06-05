@@ -35,7 +35,7 @@ defmodule TextBasedFPS.CommandExecutor do
     {command, command_arg}
   end
 
-  defp execute(state, nil, _command, _command_arg), do: {:error, state, "Player not found"}
+  defp execute(state, nil, _command, _command_arg), do: {:error, state, "Your session has expired. Reload the page to play."}
   defp execute(state, _player, nil, _command_arg), do: {:error, state, "Command not found"}
   defp execute(state, player, command, command_arg), do: command.execute(state, player, command_arg)
 end
