@@ -1,5 +1,6 @@
 defmodule TextBasedFPS.CLI do
   alias TextBasedFPS.ServerAgent
+  alias TextBasedFPS.Text
 
   def start do
     ServerAgent.start_link([])
@@ -55,7 +56,7 @@ defmodule TextBasedFPS.CLI do
   defp print_result(result) do
     case result do
       {:ok, msg} -> IO.puts(msg)
-      {:error, msg} -> IO.puts(IO.ANSI.red() <> String.replace(msg, IO.ANSI.reset(), IO.ANSI.red()) <> IO.ANSI.reset())
+      {:error, msg} -> IO.puts(Text.red(msg))
     end
   end
 end
