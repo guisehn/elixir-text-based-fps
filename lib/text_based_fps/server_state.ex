@@ -3,10 +3,10 @@ defmodule TextBasedFPS.ServerState do
   alias TextBasedFPS.Player
   alias TextBasedFPS.Room
 
-  defstruct [:rooms, :players]
+  defstruct [:rooms, :players, :notifications]
 
   def new do
-    %ServerState{players: %{}, rooms: %{}}
+    %ServerState{players: %{}, rooms: %{}, notifications: []}
   end
 
   def add_player(state, key \\ nil) do
@@ -17,6 +17,23 @@ defmodule TextBasedFPS.ServerState do
       updated_state = put_in(state.players[player.key], player)
       {player.key, updated_state}
     end
+  end
+
+  def add_notification(state, notification) do
+    Map.put(state, :notifications, state.notifications ++ [notification])
+  end
+  def add_notifications(state, notification) do
+    Map.put(state, :notifications, state.notifications ++ notification)
+  end
+
+  def get_and_clear_notifications(state) do
+    updated_state = Map.put(state, :notifications, [])
+    {state.notifications, updated_state}
+  end
+  def get_and_clear_notifications(state, player_key) do
+    player_notifications = Enum.filter(state.notifications, &(&1.player_key == player_key))
+    updated_state = Map.put(state, :notifications, state.notifications -- player_notifications)
+    {player_notifications, updated_state}
   end
 
   def update_room(state, room_name, fun) when is_function(fun) do

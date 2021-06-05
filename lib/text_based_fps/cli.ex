@@ -17,12 +17,14 @@ defmodule TextBasedFPS.CLI do
   end
 
   defp receive_command(current_player_idx, players) do
+    current_player = Enum.at(players, current_player_idx)
+    player_notifications = ServerAgent.get_and_clear_notifications(current_player)
+    Enum.each(player_notifications, &(IO.puts(&1.body)))
+
     command = IO.gets(IO.ANSI.reset() <> "> ") |> String.trim()
 
     [command_name | command_arg] = String.split(command, " ")
     command_arg = String.trim(Enum.join(command_arg, " "))
-
-    current_player = Enum.at(players, current_player_idx)
 
     case command_name do
       "add-player" ->
@@ -53,7 +55,7 @@ defmodule TextBasedFPS.CLI do
   defp print_result(result) do
     case result do
       {:ok, msg} -> IO.puts(msg)
-      {:error, msg} -> IO.puts(IO.ANSI.red() <> msg)
+      {:error, msg} -> IO.puts(IO.ANSI.red() <> String.replace(msg, IO.ANSI.reset(), IO.ANSI.red()) <> IO.ANSI.reset())
     end
   end
 end

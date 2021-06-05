@@ -24,6 +24,14 @@ defmodule TextBasedFPS.ServerAgent do
     Agent.update(__MODULE__, &(ServerState.remove_player(&1, player_key)))
   end
 
+  def get_and_clear_notifications do
+    Agent.get_and_update(__MODULE__, &ServerState.get_and_clear_notifications/1)
+  end
+
+  def get_and_clear_notifications(player_key) do
+    Agent.get_and_update(__MODULE__, &(ServerState.get_and_clear_notifications(&1, player_key)))
+  end
+
   def run_command(player_key, command) do
     Agent.get_and_update(
       __MODULE__,

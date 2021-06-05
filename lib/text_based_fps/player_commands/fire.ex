@@ -4,6 +4,7 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
   alias TextBasedFPS.GameMap
   alias TextBasedFPS.Room
   alias TextBasedFPS.RoomPlayer
+  alias TextBasedFPS.Notification
 
   import TextBasedFPS.PlayerCommand.Util
   import TextBasedFPS.Text
@@ -14,19 +15,19 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
   def execute(state, player, _) do
     require_alive_player(state, player, fn room ->
       room_player = Room.get_player(room, player.key)
-      fire(state, room_player, room)
+      fire(state, player, room_player, room)
     end)
   end
 
-  defp fire(state, %{ammo: {0, 0}}, _) do
+  defp fire(state, _, %{ammo: {0, 0}}, _) do
     {:error, state, "You're out of ammo"}
   end
 
-  defp fire(state, %{ammo: {0, _}}, _) do
+  defp fire(state, _, %{ammo: {0, _}}, _) do
     {:error, state, "Reload your gun by typing #{highlight("reload")}"}
   end
 
-  defp fire(state, room_player, room) do
+  defp fire(state, player, room_player, room) do
     shot_players = players_on_path(room.game_map.matrix, room_player.coordinates, room_player.direction)
     |> Enum.with_index
     |> Enum.map(fn {{shot_player_key, distance}, index} -> apply_damage(room, {shot_player_key, distance, index}) end)
@@ -36,6 +37,8 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
       |> Enum.reduce(room, fn shot_player, room -> apply_update(room, room_player, shot_player) end)
       |> Room.update_player(room_player.player_key, fn player -> RoomPlayer.decrease(player, :ammo) end)
     end)
+
+    updated_state = push_notifications(updated_state, player, shot_players)
 
     {:ok, updated_state, generate_message(state, shot_players)}
   end
@@ -134,5 +137,22 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
       0 -> nil
       _ -> "#{verb} #{Enum.join(names, ", ")}"
     end
+  end
+
+  defp push_notifications(state, shooter_player, shot_players) do
+    notifications = Enum.map(shot_players, &(build_shot_notification(shooter_player, &1)))
+    ServerState.add_notifications(state, notifications)
+  end
+  defp build_shot_notification(shooter_player, shot_player = %{health: 0}) do
+    Notification.new(
+      shot_player.player_key,
+      "#{shooter_player.name} killed you! Type #{highlight("respawn")} to return to the game"
+    )
+  end
+  defp build_shot_notification(shooter_player, shot_player) do
+    Notification.new(
+      shot_player.player_key,
+      "uh oh! #{shooter_player.name} shot you!"
+    )
   end
 end
