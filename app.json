@@ -11,6 +11,9 @@
     "SECRET_KEY_BASE": {
       "description": "A secret key for verifying the integrity of signed cookies.",
       "generator": "secret"
+    },
+    "HOST": {
+      "description": "Fill it like: your-app-name.herokuapp.com. This is required for the websocket to work."
     }
   }
 }
