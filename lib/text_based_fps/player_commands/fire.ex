@@ -146,13 +146,13 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
   defp build_shot_notification(shooter_player, shot_player = %{health: 0}) do
     Notification.new(
       shot_player.player_key,
-      "#{shooter_player.name} killed you! Type #{highlight("respawn")} to return to the game"
+      red("#{shooter_player.name} killed you! Type #{highlight("respawn")} to return to the game")
     )
   end
   defp build_shot_notification(shooter_player, shot_player) do
     Notification.new(
       shot_player.player_key,
-      "uh oh! #{shooter_player.name} shot you!"
+      red("uh oh! #{shooter_player.name} shot you!")
     )
   end
 end
