@@ -2,6 +2,8 @@
 
 Text-based FPS game made by [Guilherme Sehn](http://www.guisehn.com/) using Elixir + Phoenix. The game is live at [elixir-text-based-fps.herokuapp.com](https://elixir-text-based-fps.herokuapp.com/)
 
+![Screenshot of the game](misc/screenshot.png)
+
 [Original game](http://eigen.pri.ee/shooter/) and map made by [Eigen Lenk](http://eigen.pri.ee/).
 
 You can also see a node.js version of this game I made a few years ago at https://github.com/guisehn/text-based-fps
