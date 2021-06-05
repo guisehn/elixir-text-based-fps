@@ -18,6 +18,7 @@ defmodule TextBasedFPS.RoomPlayer do
 
   defstruct [:player_key, :coordinates, :direction, :health, :ammo, :kills, :killed]
 
+  @spec new(String.t) :: t
   def new(player_key) do
     %RoomPlayer{
       player_key: player_key,
@@ -30,31 +31,37 @@ defmodule TextBasedFPS.RoomPlayer do
     }
   end
 
+  @spec dead?(t) :: boolean
   def dead?(room_player), do: room_player.health == 0
 
-  def increase(room_player, key) do
+  @spec increment(t, atom) :: t
+  def increment(room_player, key) do
     Map.put(room_player, key, Map.get(room_player, key) + 1)
   end
 
-  def decrease(room_player, :ammo) do
+  @spec decrement(t, atom) :: t
+  def decrement(room_player, :ammo) do
     {loaded, unloaded} = room_player.ammo
     Map.put(room_player, :ammo, {max(loaded - 1, 0), unloaded})
   end
-  def decrease(room_player, key) do
+  def decrement(room_player, key) do
     Map.put(room_player, key, Map.get(room_player, key) - 1)
   end
 
+  @spec add_ammo(t, non_neg_integer) :: t
   def add_ammo(room_player, amount) do
     {loaded, unloaded} = room_player.ammo
     new_unloaded = min(unloaded + amount, @max_unloaded_ammo)
     Map.put(room_player, :ammo, {loaded, new_unloaded})
   end
 
+  @spec heal(t, non_neg_integer) :: t
   def heal(room_player, amount) do
     new_health = max(room_player.health + amount, @max_health)
     Map.put(room_player, :health, new_health)
   end
 
+  @spec reload_gun(t) :: {:reloaded, t} | {:full, t} | {:no_ammo, t}
   def reload_gun(room_player = %{ammo: {_, 0}}), do: {:no_ammo, room_player}
   def reload_gun(room_player) do
     {loaded, unloaded} = room_player.ammo
@@ -65,11 +72,17 @@ defmodule TextBasedFPS.RoomPlayer do
     end
   end
 
+  @spec display_ammo(t) :: String.t
   def display_ammo(%{ammo: {loaded, unloaded}}) do
     "#{loaded}/#{unloaded}"
   end
 
+  @spec max_health() :: non_neg_integer
   def max_health, do: @max_health
+
+  @spec max_loaded_ammo() :: non_neg_integer
   def max_loaded_ammo, do: @max_loaded_ammo
+
+  @spec max_unloaded_ammo() :: non_neg_integer
   def max_unloaded_ammo, do: @max_unloaded_ammo
 end

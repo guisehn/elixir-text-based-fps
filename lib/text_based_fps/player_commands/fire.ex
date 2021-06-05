@@ -35,7 +35,7 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
     updated_state = ServerState.update_room(state, room.name, fn room ->
       shot_players
       |> Enum.reduce(room, fn shot_player, room -> apply_update(room, room_player, shot_player) end)
-      |> Room.update_player(room_player.player_key, fn player -> RoomPlayer.decrease(player, :ammo) end)
+      |> Room.update_player(room_player.player_key, fn player -> RoomPlayer.decrement(player, :ammo) end)
     end)
 
     updated_state = push_notifications(updated_state, player, shot_players)
@@ -109,8 +109,8 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
 
   defp maybe_update_score(room, shooter, shot_player = %{health: 0}) do
     room
-    |> Room.update_player(shooter.player_key, &(RoomPlayer.increase(&1, :kills)))
-    |> Room.update_player(shot_player.player_key, &(RoomPlayer.increase(&1, :killed)))
+    |> Room.update_player(shooter.player_key, &(RoomPlayer.increment(&1, :kills)))
+    |> Room.update_player(shot_player.player_key, &(RoomPlayer.increment(&1, :killed)))
   end
   defp maybe_update_score(room, _shooter, _shot_player), do: room
   defp generate_message(_state, []) do
