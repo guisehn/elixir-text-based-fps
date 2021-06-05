@@ -2,7 +2,6 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.Room
   alias TextBasedFPS.ServerState
-  alias TextBasedFPS.Notification
 
   import TextBasedFPS.Text
 
@@ -21,7 +20,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
         {:ok, state} <- find_or_create_room(state, room_name) do
       state = state
       |> remove_user_from_current_room(player)
-      |> broadcast_new_player_notification(room_name, player.name)
+      |> notify_room(room_name, player.name)
       |> ServerState.update_room(room_name, fn room ->
         {:ok, room} = Room.add_player(room, player.key)
         room
@@ -57,11 +56,8 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
     end
   end
 
-  defp broadcast_new_player_notification(state, room_name, player_name) do
-    notifications = Enum.map(state.rooms[room_name].players, fn {player_key, _} ->
-      Notification.new(player_key, highlight("#{player_name} joined the room!"))
-    end)
-    ServerState.add_notifications(state, notifications)
+  defp notify_room(state, room_name, player_name) do
+    ServerState.notify_room(state, room_name, highlight("#{player_name} joined the room!"))
   end
 
   defp name_required_message do

@@ -13,7 +13,7 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
 
     case Player.validate_name(state, name) do
       :ok ->
-        state = update_name(state, player, name)
+        state = state |> notify_room(player, name) |> update_name(player, name)
         {:ok, state, success_message(state.players[player.key])}
       {:error, reason} -> {:error, state, reason}
     end
@@ -25,6 +25,13 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
       player.key,
       fn player -> Map.put(player, :name, name) end
     )
+  end
+
+  defp notify_room(state, player, new_name), do: notify_room(state, player, new_name, player.room)
+  defp notify_room(state, _player, _new_name, nil), do: state
+  defp notify_room(state, player, new_name, room_name) do
+    body = highlight("#{player.name} changed their name to #{new_name}")
+    ServerState.notify_room_except_player(state, room_name, player.key, body)
   end
 
   defp success_message(%{name: name, room: nil}) do

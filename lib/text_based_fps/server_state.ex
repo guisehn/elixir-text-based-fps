@@ -34,6 +34,19 @@ defmodule TextBasedFPS.ServerState do
     Map.put(state, :notifications, state.notifications ++ notifications)
   end
 
+  @spec notify_room(ServerState.t, String.t, String.t) :: ServerState.t
+  def notify_room(state, room_name, notification_body) do
+    notify_room_except_player(state, room_name, nil, notification_body)
+  end
+
+  @spec notify_room_except_player(ServerState.t, String.t, Player.key_t | nil, String.t) :: ServerState.t
+  def notify_room_except_player(state, room_name, except_player_key, notification_body) do
+    notifications = state.rooms[room_name].players
+    |> Enum.filter(fn {player_key, _} -> player_key != except_player_key end)
+    |> Enum.map(fn {player_key, _} -> Notification.new(player_key, notification_body) end)
+    add_notifications(state, notifications)
+  end
+
   @spec get_and_clear_notifications(ServerState.t) :: {list(Notification.t), ServerState.t}
   def get_and_clear_notifications(state) do
     updated_state = Map.put(state, :notifications, [])
@@ -106,11 +119,7 @@ defmodule TextBasedFPS.ServerState do
   end
   defp notify_user_leaving_room(state, room, leaving_player_key) do
     leaving_player = get_player(state, leaving_player_key)
-    notifications = Enum.map(room.players, fn {notified_player_key, _} ->
-      Notification.new(notified_player_key, Text.highlight("#{leaving_player.name} left the room"))
-    end)
-    IO.inspect notifications
-    add_notifications(state, notifications)
+    notify_room(state, room.name, Text.highlight("#{leaving_player.name} left the room"))
   end
 
   @spec get_player(ServerState.t, Player.key_t) :: Player.t | nil
