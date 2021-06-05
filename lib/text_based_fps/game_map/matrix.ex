@@ -1,53 +1,67 @@
 defmodule TextBasedFPS.GameMap.Matrix do
+  alias TextBasedFPS.GameMap
+  alias TextBasedFPS.GameMap.Coordinates
+  alias TextBasedFPS.GameMap.Objects
   alias TextBasedFPS.Direction
 
   @type t :: list(list())
-  @type item_t :: String.t | TextBasedFPS.GameMap.Object.t
+  @type item_t :: String.t | GameMap.Object.t
 
+  @spec set(t, Coordinates.t, item_t) :: t
   def set(matrix, {x, y}, value) do
     updated_row = Enum.at(matrix, y) |> List.replace_at(x, value)
     List.replace_at(matrix, y, updated_row)
   end
 
+  @spec clear(t, Coordinates.t) :: t
   def clear(matrix, {x, y}) do
     set(matrix, {x, y}, " ")
   end
 
+  @spec has?(t, Coordinates.t) :: boolean
   def has?(matrix, {x, y}) do
     at(matrix, {x, y}) != nil
   end
 
+  @spec wall_at?(t, Coordinates.t) :: boolean
   def wall_at?(matrix, {x, y}) do
     at(matrix, {x, y}) == "#"
   end
 
+  @spec object_at(t, Coordinates.t) :: GameMap.Object.t | nil
   def object_at(matrix, {x, y}) do
     object = at(matrix, {x, y})
     if object?(object), do: object, else: nil
   end
 
+  @spec object_at?(t, Coordinates.t) :: boolean
   def object_at?(matrix, {x, y}) do
     object_at(matrix, {x, y}) != nil
   end
 
+  @spec player_at(t, Coordinates.t) :: Objects.Player.t | nil
   def player_at(matrix, {x, y}) do
     player = at(matrix, {x, y})
     if player?(player), do: player, else: nil
   end
 
+  @spec player_at(t, Coordinates.t, Player.key_t) :: Objects.Player.t | nil
   def player_at(matrix, {x, y}, player_key) do
     player = player_at(matrix, {x, y})
     if player && player.player_key == player_key, do: player, else: nil
   end
 
+  @spec player_at?(t, Coordinates.t) :: boolean
   def player_at?(matrix, {x, y}) do
     player_at(matrix, {x, y}) != nil
   end
 
+  @spec player_at?(t, Coordinates.t, Player.key_t) :: boolean
   def player_at?(matrix, {x, y}, player_key) do
     player_at(matrix, {x, y}, player_key) != nil
   end
 
+  @spec at(t, Coordinates.t) :: item_t | nil
   def at(matrix, {x, y}) do
     row = Enum.at(matrix, y)
     get_col(row, x)
@@ -55,6 +69,7 @@ defmodule TextBasedFPS.GameMap.Matrix do
   defp get_col(nil, _x), do: nil
   defp get_col(row, x), do: Enum.at(row, x)
 
+  @spec clean(t) :: t
   def clean(matrix) do
     Enum.map(matrix, fn line -> Enum.map(line, &clean_position/1) end)
   end
@@ -67,6 +82,7 @@ defmodule TextBasedFPS.GameMap.Matrix do
   or {:stop, acc}
   The final accumulated value will be returned.
   """
+  @spec iterate_towards(t, Coordinates.t, Direction.t, any, function) :: any
   def iterate_towards(matrix, {x, y}, direction, acc, fun) do
     result = handle_iteration_fun_call(matrix, {x, y}, direction, acc, fun)
     case result do

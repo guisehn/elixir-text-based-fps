@@ -3,6 +3,10 @@ defmodule TextBasedFPS.GameMap.Objects.HealthPack do
 
   @default_amount 8
 
+  @type t :: %TextBasedFPS.GameMap.Objects.HealthPack{
+    amount: non_neg_integer
+  }
+
   defstruct [:amount]
 
   def new, do: %HealthPack{amount: @default_amount}

@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.GameMap.TextParser do
-  @spec parse(binary) :: TextBasedFPS.GameMap.Matrix.t
+  @spec parse(String.t) :: TextBasedFPS.GameMap.Matrix.t
   def parse(str) do
     str
     |> String.trim_trailing

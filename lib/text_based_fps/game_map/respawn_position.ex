@@ -1,7 +1,8 @@
 defmodule TextBasedFPS.GameMap.RespawnPosition do
   alias TextBasedFPS.Direction
-  alias TextBasedFPS.GameMap.Matrix
   alias TextBasedFPS.GameMap.Coordinates
+  alias TextBasedFPS.GameMap.Matrix
+  alias TextBasedFPS.Room
 
   @type t :: %TextBasedFPS.GameMap.RespawnPosition {
     coordinates: Coordinates.t,
@@ -10,6 +11,7 @@ defmodule TextBasedFPS.GameMap.RespawnPosition do
 
   defstruct [:coordinates, :direction]
 
+  @spec find_respawn_position(Room.t) :: t
   def find_respawn_position(room) do
     candidates = Enum.shuffle(empty_respawn_positions(room))
     safe_respawn_position = Enum.find(candidates, fn %{coordinates: coordinates} ->
@@ -27,6 +29,7 @@ defmodule TextBasedFPS.GameMap.RespawnPosition do
     )
   end
 
+  @spec safe_coordinates?(Room.t, Coordinates.t) :: boolean
   def safe_coordinates?(room, coordinates) do
     Enum.all?(
       Direction.all(),

@@ -3,6 +3,10 @@ defmodule TextBasedFPS.GameMap.Objects.AmmoPack do
 
   @default_amount 8
 
+  @type t :: %TextBasedFPS.GameMap.Objects.AmmoPack{
+    amount: non_neg_integer
+  }
+
   defstruct [:amount]
 
   def new, do: %AmmoPack{amount: @default_amount}

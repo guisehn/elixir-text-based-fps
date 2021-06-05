@@ -1,5 +1,10 @@
 defmodule TextBasedFPS.GameMap.Objects.Player do
   alias TextBasedFPS.GameMap.Objects
+  alias TextBasedFPS.Player
+
+  @type t :: %TextBasedFPS.GameMap.Objects.Player{
+    player_key: Player.key_t
+  }
 
   defstruct [:player_key]
 
