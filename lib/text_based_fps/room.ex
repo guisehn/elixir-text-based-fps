@@ -20,7 +20,7 @@ defmodule  TextBasedFPS.Room do
   end
 
   def add_player(room, player_key) do
-    put_in(room.players[player_key], RoomPlayer.build(player_key))
+    put_in(room.players[player_key], RoomPlayer.new(player_key))
     |> respawn_player(player_key)
   end
 

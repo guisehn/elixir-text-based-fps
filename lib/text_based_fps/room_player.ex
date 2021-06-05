@@ -18,7 +18,7 @@ defmodule TextBasedFPS.RoomPlayer do
 
   defstruct [:player_key, :coordinates, :direction, :health, :ammo, :kills, :killed]
 
-  def build(player_key) do
+  def new(player_key) do
     %RoomPlayer{
       player_key: player_key,
       coordinates: nil,
