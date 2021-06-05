@@ -41,8 +41,6 @@ Click on the button below to deploy to Heroku:
 
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/guisehn/elixir-text-based-fps)
 
-Then, create an environment variable called `HOST` pointing to your app (e.g. `yourapp.herokuapp.com`). That is required for the websockets to work.
-
 ## Editing the map
 
 The game map is interpreted from the plain text file `priv/map.txt` where:
