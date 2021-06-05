@@ -12,10 +12,12 @@ defmodule TextBasedFPS.ServerState do
 
   defstruct [:rooms, :players, :notifications]
 
+  @spec new() :: ServerState.t
   def new do
     %ServerState{players: %{}, rooms: %{}, notifications: []}
   end
 
+  @spec add_player(ServerState.t, Player.key_t | nil) :: {Player.key_t, ServerState.t}
   def add_player(state, key \\ nil) do
     if Map.has_key?(state.players, key) do
       {key, state}
@@ -26,32 +28,37 @@ defmodule TextBasedFPS.ServerState do
     end
   end
 
-  def add_notification(state, notification) do
-    Map.put(state, :notifications, state.notifications ++ [notification])
-  end
+  @spec add_notifications(ServerState.t, list(Notification.t)) :: ServerState.t
   def add_notifications(state, notification) do
     Map.put(state, :notifications, state.notifications ++ notification)
   end
 
+  @spec get_and_clear_notifications(ServerState.t) :: {list(Notification.t), ServerState.t}
   def get_and_clear_notifications(state) do
     updated_state = Map.put(state, :notifications, [])
     {state.notifications, updated_state}
   end
+
+  @spec get_and_clear_notifications(ServerState.t, Player.key_t) :: {list(Notification.t), ServerState.t}
   def get_and_clear_notifications(state, player_key) do
     player_notifications = Enum.filter(state.notifications, &(&1.player_key == player_key))
     updated_state = Map.put(state, :notifications, state.notifications -- player_notifications)
     {player_notifications, updated_state}
   end
 
+  @spec update_room(ServerState.t, String.t, function) :: ServerState.t
   def update_room(state, room_name, fun) when is_function(fun) do
     room = state.rooms[room_name]
     updated_room = fun.(room)
     put_in(state.rooms[room_name], updated_room)
   end
+
+  @spec update_room(ServerState.t, Room.t) :: ServerState.t
   def update_room(state, room) when is_map(room) do
     put_in(state.rooms[room.name], room)
   end
 
+  @spec update_player(ServerState.t, Player.key_t, function) :: ServerState.t
   def update_player(state, player_key, fun) do
     player = get_player(state, player_key)
     if player do
@@ -62,11 +69,14 @@ defmodule TextBasedFPS.ServerState do
     end
   end
 
+  @spec remove_player(ServerState.t, Player.key_t) :: ServerState.t
   def remove_player(state, player_key) do
     {_, state} = remove_player_from_current_room(state, player_key)
     Map.put(state, :players, Map.delete(state.players, player_key))
   end
 
+  @spec remove_player_from_current_room(ServerState.t, Player.key_t) ::
+    {:ok, ServerState.t} | {:player_not_found, ServerState.t} | {:not_in_room, ServerState.t}
   def remove_player_from_current_room(state, player_key) do
     player = get_player(state, player_key)
     if player do
@@ -84,7 +94,9 @@ defmodule TextBasedFPS.ServerState do
     {:ok, updated_state}
   end
 
+  @spec get_player(ServerState.t, Player.key_t) :: Player.t | nil
   def get_player(state, player_key), do: state.players[player_key]
 
+  @spec get_room(ServerState.t, String.t) :: Room.t | nil
   def get_room(state, room_name), do: state.rooms[room_name]
 end

@@ -19,6 +19,7 @@ defmodule TextBasedFPS.CommandExecutor do
     "fire" => PlayerCommand.Fire
   }
 
+  @spec execute(ServerState.t, Player.key_t, String.t) :: {:ok, ServerState.t, String.t | nil} | {:error, ServerState.t, String.t}
   def execute(state, player_key, command_text) do
     state = ServerState.update_player(state, player_key, &Player.touch/1)
     player = ServerState.get_player(state, player_key)

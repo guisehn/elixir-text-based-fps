@@ -1,13 +1,14 @@
 defmodule TextBasedFPS.RoomPlayer do
   alias TextBasedFPS.Direction
   alias TextBasedFPS.RoomPlayer
+  alias TextBasedFPS.Player
 
   @max_health 100
   @max_loaded_ammo 8
   @max_unloaded_ammo 24
 
   @type t :: %TextBasedFPS.RoomPlayer{
-    player_key: String.t,
+    player_key: Player.key_t,
     coordinates: TextBasedFPS.GameMap.Coordinates.t | nil,
     direction: Direction.t | nil,
     health: non_neg_integer,
@@ -18,7 +19,7 @@ defmodule TextBasedFPS.RoomPlayer do
 
   defstruct [:player_key, :coordinates, :direction, :health, :ammo, :kills, :killed]
 
-  @spec new(String.t) :: t
+  @spec new(Player.key_t) :: t
   def new(player_key) do
     %RoomPlayer{
       player_key: player_key,

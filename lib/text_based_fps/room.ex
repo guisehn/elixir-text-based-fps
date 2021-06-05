@@ -1,4 +1,5 @@
 defmodule  TextBasedFPS.Room do
+  alias TextBasedFPS.Player
   alias TextBasedFPS.Room
   alias TextBasedFPS.RoomPlayer
   alias TextBasedFPS.GameMap
@@ -20,13 +21,13 @@ defmodule  TextBasedFPS.Room do
     }
   end
 
-  @spec add_player(t, String.t) :: {:ok, t}
+  @spec add_player(t, Player.key_t) :: {:ok, t}
   def add_player(room, player_key) do
     put_in(room.players[player_key], RoomPlayer.new(player_key))
     |> respawn_player(player_key)
   end
 
-  @spec remove_player(t, String.t) :: t
+  @spec remove_player(t, Player.key_t) :: t
   def remove_player(room, player_key) do
     remove_player_from_map(room, player_key)
     |> Map.put(:players, Map.delete(room.players, player_key))
@@ -38,7 +39,7 @@ defmodule  TextBasedFPS.Room do
     update_game_map_matrix(room, {x, y}, object.new())
   end
 
-  @spec respawn_player(t, String.t) :: {:ok, t} | {:error, t, :player_is_alive}
+  @spec respawn_player(t, Player.key_t) :: {:ok, t} | {:error, t, :player_is_alive}
   def respawn_player(room, player_key) do
     room_player = get_player(room, player_key)
     respawn_player(room, room_player, RoomPlayer.dead?(room_player))
@@ -56,7 +57,7 @@ defmodule  TextBasedFPS.Room do
     {:ok, room}
   end
 
-  @spec place_player_at(t, String.t, GameMap.Coordinates.t) :: {:ok, t, GameMap.Object.t} | {:error, t}
+  @spec place_player_at(t, Player.key_t, GameMap.Coordinates.t) :: {:ok, t, GameMap.Object.t} | {:error, t}
   def place_player_at(room, player_key, {x, y}) do
     matrix = room.game_map.matrix
 
@@ -92,7 +93,7 @@ defmodule  TextBasedFPS.Room do
     {:ok, room, object_grabbed}
   end
 
-  @spec remove_player_from_map(t, String.t) :: t
+  @spec remove_player_from_map(t, Player.key_t) :: t
   def remove_player_from_map(room, player_key) do
     room_player = get_player(room, player_key)
     remove_player_from_map(room, player_key, room_player.coordinates)
@@ -104,16 +105,16 @@ defmodule  TextBasedFPS.Room do
     |> update_player(player_key, fn player -> Map.put(player, :coordinates, nil) end)
   end
 
-  @spec get_player(t, String.t) :: RoomPlayer.t | nil
+  @spec get_player(t, Player.key_t) :: RoomPlayer.t | nil
   def get_player(room, player_key), do: room.players[player_key]
 
-  @spec update_player(t, String.t, function) :: t
+  @spec update_player(t, Player.key_t, function) :: t
   def update_player(room, player_key, fun) when is_function(fun) do
     updated_player = get_player(room, player_key) |> fun.()
     put_in(room.players[player_key], updated_player)
   end
 
-  @spec update_player(t, String.t, RoomPlayer.t) :: t
+  @spec update_player(t, Player.key_t, RoomPlayer.t) :: t
   def update_player(room, player_key, room_player) when is_map(room_player) do
     put_in(room.players[player_key], room_player)
   end

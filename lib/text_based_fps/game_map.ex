@@ -12,6 +12,7 @@ defmodule TextBasedFPS.GameMap do
     TextBasedFPS.GameMap.Builder.build(text_representation)
   end
 
+  @spec update_matrix(t, function) :: t
   def update_matrix(game_map, fun) do
     matrix = game_map.matrix
     Map.put(game_map, :matrix, fun.(matrix))
