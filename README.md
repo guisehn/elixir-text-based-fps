@@ -1,6 +1,6 @@
 # elixir-text-based-fps
 
-Text-based FPS game made by [Guilherme Sehn](http://www.guisehn.com/) using Elixir + Phoenix. The game is live at [elixir-text-based-fps.herokuapp.com](https://elixir-text-based-fps.herokuapp.com/)
+Online multiplayer text-based FPS game made by [Guilherme Sehn](http://www.guisehn.com/) using Elixir + Phoenix. The game is live at [elixir-text-based-fps.herokuapp.com](https://elixir-text-based-fps.herokuapp.com/)
 
 ![Screenshot of the game](misc/screenshot.png)
 
