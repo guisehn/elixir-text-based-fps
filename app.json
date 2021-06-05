@@ -15,5 +15,6 @@
     "HOST": {
       "description": "Fill it like: your-app-name.herokuapp.com. This is required for the websocket to work."
     }
-  }
+  },
+  "success_url": "/"
 }
