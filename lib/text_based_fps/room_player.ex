@@ -8,8 +8,8 @@ defmodule TextBasedFPS.RoomPlayer do
 
   @type t :: %TextBasedFPS.RoomPlayer{
     player_key: String.t,
-    coordinates: TextBasedFPS.GameMap.Coordinates.t,
-    direction: Direction.t,
+    coordinates: TextBasedFPS.GameMap.Coordinates.t | nil,
+    direction: Direction.t | nil,
     health: non_neg_integer,
     ammo: {non_neg_integer, non_neg_integer},
     kills: non_neg_integer,
