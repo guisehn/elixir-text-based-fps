@@ -95,12 +95,11 @@ defmodule TextBasedFPS.ServerState do
     {:ok, updated_state}
   end
   defp remove_room_if_empty(state, room) do
-    case Enum.count(room.players) do
-      0 ->
-        updated_rooms = Map.delete(state.rooms, room.name)
-        Map.put(state, :rooms, updated_rooms)
-
-      _ -> state
+    if Enum.count(room.players) == 0 do
+      updated_rooms = Map.delete(state.rooms, room.name)
+      Map.put(state, :rooms, updated_rooms)
+    else
+      state
     end
   end
 
