@@ -43,4 +43,13 @@
     Based on a <a href="http://eigen.pri.ee/shooter/" target="_blank">similar game</a> by
     <a href="http://eigen.pri.ee/" target="_blank">Eigen Lenk</a>
   </footer>
+
+  <%= if missing_host_env_var?() do %>
+    <script>
+      alert(
+        "Your server is missing the HOST env var which is required for the Phoenix sockets to work. " +
+        "If you're hosted on heroku, run:\n\nheroku config:set HOST=yourapp.herokuapp.com"
+      )
+    </script>
+  <% end %>
 </main>
