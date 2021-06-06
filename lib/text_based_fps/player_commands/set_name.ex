@@ -15,7 +15,9 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
       :ok ->
         state = state |> notify_room(player, name) |> update_name(player, name)
         {:ok, state, success_message(state.players[player.key])}
-      {:error, reason} -> {:error, state, reason}
+
+      {:error, reason} ->
+        {:error, state, error_message(reason)}
     end
   end
 
@@ -39,5 +41,18 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
   end
   defp success_message(%{name: name}) do
     "Your name is now #{name}."
+  end
+
+  defp error_message(:empty) do
+    "Name cannot be empty"
+  end
+  defp error_message(:too_large) do
+    "Name cannot exceed 20 characters"
+  end
+  defp error_message(:invalid_chars) do
+    "Name can only contain letters, numbers and hyphens."
+  end
+  defp error_message(:already_in_use) do
+    "Name is already in use"
   end
 end

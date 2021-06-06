@@ -26,13 +26,14 @@ defmodule TextBasedFPS.Player do
     Map.put(player, :last_command_at, DateTime.utc_now())
   end
 
-  @spec validate_name(ServerState.t, String.t) :: :ok | {:error, String.t}
+  @spec validate_name(ServerState.t, String.t) ::
+    :ok | {:error, :empty} | {:error, :too_large} | {:error, :invalid_chars} | {:error, :already_in_use}
   def validate_name(state, name) do
     cond do
-      name == "" -> {:error, "Name cannot be empty"}
-      String.length(name) > 20 -> {:error, "Name cannot exceed 20 characters"}
-      String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, "Name can only contain letters, numbers and hyphens."}
-      name_exists?(state, name) -> {:error, "Name is already in use"}
+      name == "" -> {:error, :empty}
+      String.length(name) > 20 -> {:error, :too_large}
+      String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, :invalid_chars}
+      name_exists?(state, name) -> {:error, :already_in_use}
       true -> :ok
     end
   end
