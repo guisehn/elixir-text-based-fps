@@ -19,7 +19,9 @@ defmodule TextBasedFPS.PlayerTest do
     end
 
     test "does not allow name with more than 20 chars" do
-      big_name = "123456789012345678901"
+      short_name = "12345678901234567890"
+      big_name   = "123456789012345678901"
+      assert Player.validate_name(ServerState.new(), short_name) == :ok
       assert Player.validate_name(ServerState.new(), big_name) == {:error, :too_large}
     end
 
