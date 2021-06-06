@@ -15,7 +15,7 @@ defmodule TextBasedFPS.GameMap.RespawnPosition do
   def find_respawn_position(room) do
     candidates = Enum.shuffle(empty_respawn_positions(room))
     safe_respawn_position = Enum.find(candidates, fn %{coordinates: coordinates} ->
-      safe_coordinates?(room, coordinates)
+      safe_coordinates?(room.game_map.matrix, coordinates)
     end)
     safe_respawn_position || List.first(candidates)
   end
@@ -29,23 +29,34 @@ defmodule TextBasedFPS.GameMap.RespawnPosition do
     )
   end
 
-  @spec safe_coordinates?(Room.t, Coordinates.t) :: boolean
-  def safe_coordinates?(room, coordinates) do
+  @spec safe_coordinates?(Matrix.t, Coordinates.t) :: boolean
+  def safe_coordinates?(matrix, coordinates) do
     Enum.all?(
       Direction.all(),
-      fn direction -> safe_coordinates?(room, coordinates, direction) end
+      fn direction -> safe_coordinates?(matrix, coordinates, direction) end
     )
   end
-  def safe_coordinates?(room, coordinates, direction) do
+  defp safe_coordinates?(matrix, coordinates, direction) do
     Matrix.iterate_towards(
-      room.game_map.matrix,
+      matrix,
       coordinates,
       direction,
-      true,
+      true, # start considering it safe
       fn coordinates, _ ->
-        case Matrix.player_at?(room.game_map.matrix, coordinates) do
-          true -> {:stop, false} # another player found? then it's not safe
-          false -> {:continue, true}
+        cond do
+          # found a wall? stop it and consider it safe
+          # if there's an enemy in this direction, they're behind a wall so they can't see you
+          Matrix.wall_at?(matrix, coordinates) ->
+            {:stop, true}
+
+          # found an enemy? stop it and consider it unsafe
+          Matrix.player_at?(matrix, coordinates) ->
+            {:stop, false}
+
+          # nothing found at this coordinates? then it's safe so far...
+          # continue checking the next coordinates
+          true ->
+            {:continue, true}
         end
       end
     )
