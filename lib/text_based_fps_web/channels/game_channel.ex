@@ -38,14 +38,17 @@ defmodule TextBasedFPSWeb.GameChannel do
     ServerAgent.remove_player(player_key)
   end
 
-  defp welcome_message(%{name: nil}) do
+  defp welcome_message(%TextBasedFPS.Player{name: nil}) do
     "Welcome to the text-based FPS! Type #{Text.highlight("set-name <your name>")} to join the game."
   end
-  defp welcome_message(%{room: nil}) do
+  defp welcome_message(%TextBasedFPS.Player{room: nil}) do
     "Welcome to the text-based FPS! Type #{Text.highlight("join-room <room name>")} to join the game."
   end
-  defp welcome_message(_) do
+  defp welcome_message(%TextBasedFPS.Player{}) do
     "You're currently in the game. Type #{Text.highlight("look")} to see where you are in the map."
+  end
+  defp welcome_message(_) do
+    Text.red("It looks like the server may have crashed. 👀 Reload the page to keep playing.")
   end
 
   defp dispatch_notifications do
