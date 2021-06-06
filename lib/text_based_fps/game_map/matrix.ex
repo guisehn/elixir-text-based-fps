@@ -4,7 +4,7 @@ defmodule TextBasedFPS.GameMap.Matrix do
   alias TextBasedFPS.GameMap.Objects
   alias TextBasedFPS.Direction
 
-  @type t :: list(list())
+  @type t :: list(list(item_t))
   @type item_t :: :" " | :"#" | GameMap.Object.t
 
   @spec set(t, Coordinates.t, item_t) :: t
@@ -62,10 +62,11 @@ defmodule TextBasedFPS.GameMap.Matrix do
   end
 
   @spec at(t, Coordinates.t) :: item_t | nil
-  def at(matrix, {x, y}) do
+  def at(matrix, {x, y}) when x >= 0 and y >= 0 do
     row = Enum.at(matrix, y)
     get_col(row, x)
   end
+  def at(_matrix, {_, _}), do: nil
   defp get_col(nil, _x), do: nil
   defp get_col(row, x), do: Enum.at(row, x)
 
