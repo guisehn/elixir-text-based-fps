@@ -78,8 +78,10 @@ defmodule  TextBasedFPS.Room do
         |> update_player(player_key, fn player -> GameMap.Object.grab(object, player) end)
         |> move_player(player_key, {x, y}, object)
 
-      true ->
+      GameMap.Matrix.has?(matrix, {x, y}) ->
         move_player(room, player_key, {x, y}, nil)
+
+      true -> {:error, room}
     end
   end
   defp move_player(room, player_key, coordinates, object_grabbed) do
