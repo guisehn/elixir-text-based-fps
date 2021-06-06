@@ -29,6 +29,7 @@ defmodule TextBasedFPS.Player do
   @spec validate_name(ServerState.t, String.t) :: :ok | {:error, String.t}
   def validate_name(state, name) do
     cond do
+      name == "" -> {:error, "Name cannot be empty"}
       String.length(name) > 20 -> {:error, "Name cannot exceed 20 characters"}
       String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, "Name can only contain letters, numbers and hyphens."}
       name_exists?(state, name) -> {:error, "Name is already in use"}

@@ -122,6 +122,7 @@ defmodule  TextBasedFPS.Room do
   @spec validate_name(String.t) :: :ok | {:error, String.t}
   def validate_name(name) do
     cond do
+      name == "" -> {:error, "Room name cannot be empty"}
       String.length(name) > 20 -> {:error, "Room name cannot exceed 20 characters"}
       String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, "Room name can only contain letters, numbers and hyphens."}
       true -> :ok
