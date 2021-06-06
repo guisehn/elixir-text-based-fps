@@ -58,7 +58,7 @@ defmodule TextBasedFPS.RoomPlayer do
 
   @spec heal(t, non_neg_integer) :: t
   def heal(room_player, amount) do
-    new_health = max(room_player.health + amount, @max_health)
+    new_health = min(room_player.health + amount, @max_health)
     Map.put(room_player, :health, new_health)
   end
 
