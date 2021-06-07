@@ -139,7 +139,7 @@ defmodule TextBasedFPS.RoomTest do
       end)
     end
 
-    test "does nothing is player is already out of the map" do
+    test "does nothing if player is already out of the map" do
       room = Room.new("room")
       |> Room.add_player("foo")
       |> Room.remove_player_from_map("foo")
