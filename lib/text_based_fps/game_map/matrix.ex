@@ -31,7 +31,7 @@ defmodule TextBasedFPS.GameMap.Matrix do
   @spec object_at(t, Coordinates.t) :: GameMap.Object.t | nil
   def object_at(matrix, {x, y}) do
     object = at(matrix, {x, y})
-    if object?(object), do: object, else: nil
+    if Objects.object?(object), do: object, else: nil
   end
 
   @spec object_at?(t, Coordinates.t) :: boolean
@@ -42,7 +42,10 @@ defmodule TextBasedFPS.GameMap.Matrix do
   @spec player_at(t, Coordinates.t) :: Objects.Player.t | nil
   def player_at(matrix, {x, y}) do
     player = at(matrix, {x, y})
-    if player?(player), do: player, else: nil
+    case player do
+      %TextBasedFPS.GameMap.Objects.Player{} -> player
+      _ -> nil
+    end
   end
 
   @spec player_at(t, Coordinates.t, Player.key_t) :: Objects.Player.t | nil
@@ -100,18 +103,5 @@ defmodule TextBasedFPS.GameMap.Matrix do
     else
       {:stop, acc, next_coordinate}
     end
-  end
-
-  defp object?(object) do
-    is_map(object) && object.__struct__
-    |> Module.split()
-    |> List.pop_at(-1)
-    |> elem(1)
-    |> Module.concat
-    |> Kernel.==(TextBasedFPS.GameMap.Objects)
-  end
-
-  defp player?(object) do
-    is_map(object) && object.__struct__ == TextBasedFPS.GameMap.Objects.Player
   end
 end

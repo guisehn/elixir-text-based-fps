@@ -10,7 +10,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   @impl true
   def execute(state, player, room_name) do
     case player.name do
-      nil -> {:error, state, name_required_message()}
+      nil -> {:error, state, player_name_required_message()}
       _ -> join_room(state, player, room_name)
     end
   end
@@ -21,10 +21,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
       state = state
       |> remove_user_from_current_room(player)
       |> notify_room(room_name, player.name)
-      |> ServerState.update_room(room_name, fn room ->
-        {:ok, room} = Room.add_player(room, player.key)
-        room
-      end)
+      |> ServerState.update_room(room_name, fn room -> Room.add_player(room, player.key) end)
       |> ServerState.update_player(player.key, fn player -> Map.put(player, :room, room_name) end)
       {:ok, state, success_message(room_name)}
     else
@@ -52,7 +49,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   defp create_room(state, room_name) do
     case Room.validate_name(room_name) do
       :ok -> {:ok, put_in(state.rooms[room_name], Room.new(room_name))}
-      {:error, reason} -> {:error, reason}
+      {:error, reason} -> {:error, name_validation_error_message(reason)}
     end
   end
 
@@ -60,11 +57,21 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
     ServerState.notify_room(state, room_name, highlight("#{player_name} joined the room!"))
   end
 
-  defp name_required_message do
+  defp player_name_required_message do
     "You need to have a name before joining a room. Type #{highlight("set-name <name>")} to set your name."
   end
 
   defp success_message(room_name) do
     "You're now on #{room_name}! Type #{highlight("look")} to see where you are in the map."
+  end
+
+  defp name_validation_error_message(:empty) do
+    "Room name cannot be empty"
+  end
+  defp name_validation_error_message(:too_large) do
+    "Room name cannot exceed 20 characters"
+  end
+  defp name_validation_error_message(:invalid_chars) do
+    "Room name can only contain letters, numbers and hyphens"
   end
 end

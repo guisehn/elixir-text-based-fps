@@ -21,10 +21,11 @@ defmodule  TextBasedFPS.Room do
     }
   end
 
-  @spec add_player(t, Player.key_t) :: {:ok, t}
+  @spec add_player(t, Player.key_t) :: t
   def add_player(room, player_key) do
-    put_in(room.players[player_key], RoomPlayer.new(player_key))
+    {:ok, room} = put_in(room.players[player_key], RoomPlayer.new(player_key))
     |> respawn_player(player_key)
+    room
   end
 
   @spec remove_player(t, Player.key_t) :: t
@@ -63,7 +64,7 @@ defmodule  TextBasedFPS.Room do
 
     cond do
       # do nothing if player is already there
-      GameMap.Matrix.player_at?(matrix, {x, y}, player_key) -> {:ok, room}
+      GameMap.Matrix.player_at?(matrix, {x, y}, player_key) -> {:ok, room, nil}
 
       # can't walk over a wall
       GameMap.Matrix.wall_at?(matrix, {x, y}) -> {:error, room}
@@ -121,12 +122,12 @@ defmodule  TextBasedFPS.Room do
     put_in(room.players[player_key], room_player)
   end
 
-  @spec validate_name(String.t) :: :ok | {:error, String.t}
+  @spec validate_name(String.t) :: :ok | {:error, :empty} | {:error, :too_large} | {:error, :invalid_chars}
   def validate_name(name) do
     cond do
-      name == "" -> {:error, "Room name cannot be empty"}
-      String.length(name) > 20 -> {:error, "Room name cannot exceed 20 characters"}
-      String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, "Room name can only contain letters, numbers and hyphens."}
+      name == "" -> {:error, :empty}
+      String.length(name) > 20 -> {:error, :too_large}
+      String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, :invalid_chars}
       true -> :ok
     end
   end
