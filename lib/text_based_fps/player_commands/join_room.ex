@@ -17,12 +17,8 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
 
   defp join_room(state, player, room_name) do
     with :ok <- check_already_in_room(player, room_name),
-        {:ok, state} <- find_or_create_room(state, room_name) do
-      state = state
-      |> remove_user_from_current_room(player)
-      |> notify_room(room_name, player.name)
-      |> ServerState.update_room(room_name, fn room -> Room.add_player(room, player.key) end)
-      |> ServerState.update_player(player.key, fn player -> Map.put(player, :room, room_name) end)
+        {:ok, state} <- join_existing_or_create_room(state, room_name, player.key),
+        state <- notify_room(state, room_name, player) do
       {:ok, state, success_message(room_name)}
     else
       {:error, reason} -> {:error, state, reason}
@@ -34,27 +30,27 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   end
   defp check_already_in_room(_player, _room_name), do: :ok
 
-  defp remove_user_from_current_room(state, player) do
-    {_, updated_state} = ServerState.remove_player_from_current_room(state, player.key)
-    updated_state
+  defp join_existing_or_create_room(state, room_name, player_key) do
+    case state.rooms[room_name] do
+      nil -> create_room(state, room_name, player_key)
+      _ -> {:ok, ServerState.join_room(state, room_name, player_key)}
+    end
   end
 
-  defp find_or_create_room(state, room_name) do
-    room = state.rooms[room_name]
-    find_or_create_room(state, room_name, room)
-  end
-  defp find_or_create_room(state, room_name, nil), do: create_room(state, room_name)
-  defp find_or_create_room(state, _room_name, _room), do: {:ok, state}
-
-  defp create_room(state, room_name) do
+  defp create_room(state, room_name, player_key) do
     case Room.validate_name(room_name) do
-      :ok -> {:ok, put_in(state.rooms[room_name], Room.new(room_name))}
+      :ok -> {:ok, ServerState.add_room(state, room_name, player_key)}
       {:error, reason} -> {:error, name_validation_error_message(reason)}
     end
   end
 
-  defp notify_room(state, room_name, player_name) do
-    ServerState.notify_room(state, room_name, highlight("#{player_name} joined the room!"))
+  defp notify_room(state, room_name, player) do
+    ServerState.notify_room_except_player(
+      state,
+      room_name,
+      player.key,
+      highlight("#{player.name} joined the room!")
+    )
   end
 
   defp player_name_required_message do

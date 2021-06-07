@@ -67,6 +67,27 @@ defmodule TextBasedFPS.ServerState do
     put_in(state.rooms[room_name], updated_room)
   end
 
+  @spec add_room(ServerState.t, String.t) :: ServerState.t
+  def add_room(state, room_name) do
+    put_in(state.rooms[room_name], Room.new(room_name))
+  end
+
+  @spec add_room(ServerState.t, String.t, Player.key_t) :: ServerState.t
+  def add_room(state, room_name, player_key) do
+    state
+    |> remove_player_from_current_room(player_key)
+    |> add_room(room_name)
+    |> join_room(room_name, player_key)
+  end
+
+  @spec join_room(ServerState.t, String.t, Player.key_t) :: ServerState.t
+  def join_room(state, room_name, player_key) do
+    state
+    |> remove_player_from_current_room(player_key)
+    |> update_room(room_name, fn room -> Room.add_player(room, player_key) end)
+    |> update_player(player_key, fn player -> Map.put(player, :room, room_name) end)
+  end
+
   @spec update_room(ServerState.t, Room.t) :: ServerState.t
   def update_room(state, room) when is_map(room) do
     put_in(state.rooms[room.name], room)
@@ -85,29 +106,28 @@ defmodule TextBasedFPS.ServerState do
 
   @spec remove_player(ServerState.t, Player.key_t) :: ServerState.t
   def remove_player(state, player_key) do
-    {_, state} = remove_player_from_current_room(state, player_key)
-    Map.put(state, :players, Map.delete(state.players, player_key))
+    state
+    |> remove_player_from_current_room(player_key)
+    |> Map.put(:players, Map.delete(state.players, player_key))
   end
 
-  @spec remove_player_from_current_room(ServerState.t, Player.key_t) ::
-    {:ok, ServerState.t} | {:player_not_found, ServerState.t} | {:not_in_room, ServerState.t}
+  @spec remove_player_from_current_room(ServerState.t, Player.key_t) :: ServerState.t
   def remove_player_from_current_room(state, player_key) do
     player = get_player(state, player_key)
     if player do
       remove_player_from_room(state, player_key, player.room)
     else
-      {:player_not_found, state}
+      state
     end
   end
-  defp remove_player_from_room(state, _player_key, nil), do: {:not_in_room, state}
+  defp remove_player_from_room(state, _player_key, nil), do: state
   defp remove_player_from_room(state, player_key, room_name) do
     updated_room = state |> get_room(room_name) |> Room.remove_player(player_key)
-    updated_state = state
+    state
     |> update_room(updated_room)
     |> notify_user_leaving_room(updated_room, player_key)
     |> remove_room_if_empty(updated_room)
     |> update_player(player_key, fn player -> Map.put(player, :room, nil) end)
-    {:ok, updated_state}
   end
   defp remove_room_if_empty(state, room) do
     if Enum.count(room.players) == 0 do
