@@ -10,7 +10,7 @@ defmodule TextBasedFPS.PlayerCommands.TurnTest do
     %{state: server_state}
   end
 
-  test "requires user to be in a room", %{state: state} do
+  test "requires player to be in a room", %{state: state} do
     assert {:error, _state, error_message} = CommandExecutor.execute(state, "foo", "turn east")
     assert error_message =~ "You need to be in a room"
   end

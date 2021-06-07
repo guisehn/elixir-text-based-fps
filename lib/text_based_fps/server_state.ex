@@ -125,7 +125,7 @@ defmodule TextBasedFPS.ServerState do
     updated_room = state |> get_room(room_name) |> Room.remove_player(player_key)
     state
     |> update_room(updated_room)
-    |> notify_user_leaving_room(updated_room, player_key)
+    |> notify_player_leaving_room(updated_room, player_key)
     |> remove_room_if_empty(updated_room)
     |> update_player(player_key, fn player -> Map.put(player, :room, nil) end)
   end
@@ -137,7 +137,7 @@ defmodule TextBasedFPS.ServerState do
       state
     end
   end
-  defp notify_user_leaving_room(state, room, leaving_player_key) do
+  defp notify_player_leaving_room(state, room, leaving_player_key) do
     leaving_player = get_player(state, leaving_player_key)
     notify_room(state, room.name, Text.highlight("#{leaving_player.name} left the room"))
   end
