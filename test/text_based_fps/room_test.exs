@@ -131,6 +131,7 @@ defmodule TextBasedFPS.RoomTest do
       |> Room.remove_player_from_map("foo")
 
       assert room.players["foo"].coordinates == nil
+      assert room.players["foo"].health == 100
 
       Enum.with_index(room.game_map.matrix) |> Enum.each(fn {row, y} ->
         Enum.with_index(row) |> Enum.each(fn {_, x} ->
@@ -146,6 +147,24 @@ defmodule TextBasedFPS.RoomTest do
       |> Room.remove_player_from_map("foo") # do it twice
 
       assert room.players["foo"].coordinates == nil
+      assert room.players["foo"].health == 100
+
+      Enum.with_index(room.game_map.matrix) |> Enum.each(fn {row, y} ->
+        Enum.with_index(row) |> Enum.each(fn {_, x} ->
+          assert Matrix.player_at?(room.game_map.matrix, {x, y}, "foo") == false
+        end)
+      end)
+    end
+  end
+
+  describe "kill_player/2" do
+    test "removes the player from the map and changes their health to 0" do
+      room = Room.new("room")
+      |> Room.add_player("foo")
+      |> Room.kill_player("foo")
+
+      assert room.players["foo"].coordinates == nil
+      assert room.players["foo"].health == 0
 
       Enum.with_index(room.game_map.matrix) |> Enum.each(fn {row, y} ->
         Enum.with_index(row) |> Enum.each(fn {_, x} ->

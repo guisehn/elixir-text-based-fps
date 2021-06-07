@@ -108,6 +108,13 @@ defmodule  TextBasedFPS.Room do
     |> update_player(player_key, fn player -> Map.put(player, :coordinates, nil) end)
   end
 
+  @spec kill_player(t, Player.key_t) :: t
+  def kill_player(room, player_key) do
+    room
+    |> remove_player_from_map(player_key)
+    |> update_player(player_key, fn player -> Map.put(player, :health, 0) end)
+  end
+
   @spec get_player(t, Player.key_t) :: RoomPlayer.t | nil
   def get_player(room, player_key), do: room.players[player_key]
 
