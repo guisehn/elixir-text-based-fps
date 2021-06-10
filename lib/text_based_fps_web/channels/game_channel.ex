@@ -48,7 +48,7 @@ defmodule TextBasedFPSWeb.GameChannel do
     "You're currently in the game. Type #{Text.highlight("look")} to see where you are in the map."
   end
   defp welcome_message(_) do
-    Text.red("It looks like the server may have crashed. 👀 Reload the page to keep playing.")
+    Text.danger("It looks like the server may have crashed. 👀 Reload the page to keep playing.")
   end
 
   defp dispatch_notifications do

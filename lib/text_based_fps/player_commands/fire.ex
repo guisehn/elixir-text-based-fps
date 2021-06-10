@@ -7,7 +7,7 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
   alias TextBasedFPS.Notification
 
   import TextBasedFPS.PlayerCommand.Util
-  import TextBasedFPS.Text
+  import TextBasedFPS.Text, only: [danger: 1, highlight: 1]
 
   @behaviour PlayerCommand
 
@@ -146,13 +146,13 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
   defp build_shot_notification(shooter_player, shot_player = %{health: 0}) do
     Notification.new(
       shot_player.player_key,
-      red("#{shooter_player.name} killed you! Type #{highlight("respawn")} to return to the game")
+      danger("#{shooter_player.name} killed you! Type #{highlight("respawn")} to return to the game")
     )
   end
   defp build_shot_notification(shooter_player, shot_player) do
     Notification.new(
       shot_player.player_key,
-      red("uh oh! #{shooter_player.name} shot you!")
+      danger("uh oh! #{shooter_player.name} shot you!")
     )
   end
 end

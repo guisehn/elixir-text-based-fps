@@ -14,6 +14,8 @@ defmodule TextBasedFPS.GameMap.Objects.AmmoPack do
   defimpl TextBasedFPS.GameMap.Object do
     def symbol(_, _), do: "¶"
 
+    def color(_), do: :info
+
     def grab(ammo_pack, room_player) do
       TextBasedFPS.RoomPlayer.add_ammo(room_player, ammo_pack.amount)
     end

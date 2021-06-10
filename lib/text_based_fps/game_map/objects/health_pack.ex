@@ -14,6 +14,8 @@ defmodule TextBasedFPS.GameMap.Objects.HealthPack do
   defimpl TextBasedFPS.GameMap.Object do
     def symbol(_, _), do: "+"
 
+    def color(_), do: :info
+
     def grab(health_pack, room_player) do
       TextBasedFPS.RoomPlayer.heal(room_player, health_pack.amount)
     end

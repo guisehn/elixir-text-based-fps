@@ -3,7 +3,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   alias TextBasedFPS.Room
   alias TextBasedFPS.ServerState
 
-  import TextBasedFPS.Text
+  import TextBasedFPS.Text, only: [highlight: 1]
 
   @behaviour PlayerCommand
 

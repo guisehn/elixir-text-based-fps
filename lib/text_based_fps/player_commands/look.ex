@@ -1,7 +1,8 @@
 defmodule TextBasedFPS.PlayerCommand.Look do
-  alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.GameMap
+  alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.Room
+  alias TextBasedFPS.Text
 
   import TextBasedFPS.PlayerCommand.Util
 
@@ -30,6 +31,7 @@ defmodule TextBasedFPS.PlayerCommand.Look do
           GameMap.Matrix.wall_at?(game_matrix, coordinates) ->
             {:stop, vision_matrix}
 
+          # Object or enemy
           GameMap.Matrix.object_at?(game_matrix, coordinates) ->
             object = GameMap.Matrix.at(game_matrix, coordinates)
             {:continue, GameMap.Matrix.set(vision_matrix, coordinates, display_object(object, room))}
@@ -46,11 +48,13 @@ defmodule TextBasedFPS.PlayerCommand.Look do
   end
 
   defp display_object(object, room) do
-    IO.ANSI.red() <> GameMap.Object.symbol(object, room) <> IO.ANSI.reset()
+    color = GameMap.Object.color(object)
+    symbol = GameMap.Object.symbol(object, room)
+    Text.paint(symbol, color)
   end
 
   defp display_me(me, room) do
     player_object = GameMap.Objects.Player.new(me.player_key)
-    IO.ANSI.green() <> GameMap.Object.symbol(player_object, room) <> IO.ANSI.reset()
+    Text.success(GameMap.Object.symbol(player_object, room))
   end
 end

@@ -5,7 +5,7 @@ defmodule TextBasedFPS.PlayerCommand.Move do
   alias TextBasedFPS.ServerState
 
   import TextBasedFPS.PlayerCommand.Util
-  import TextBasedFPS.Text
+  import TextBasedFPS.Text, only: [highlight: 1]
 
   @behaviour PlayerCommand
 

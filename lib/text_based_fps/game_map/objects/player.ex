@@ -14,6 +14,8 @@ defmodule TextBasedFPS.GameMap.Objects.Player do
     alias TextBasedFPS.Room
     alias TextBasedFPS.Direction
 
+    def color(_), do: :danger
+
     def symbol(player_object, room) do
       room_player = Room.get_player(room, player_object.player_key)
       Direction.symbol_of(room_player.direction)

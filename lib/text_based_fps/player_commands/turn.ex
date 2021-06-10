@@ -4,7 +4,7 @@ defmodule TextBasedFPS.PlayerCommand.Turn do
   alias TextBasedFPS.Room
 
   import TextBasedFPS.PlayerCommand.Util
-  import TextBasedFPS.Text
+  import TextBasedFPS.Text, only: [highlight: 1]
 
   @behaviour PlayerCommand
 

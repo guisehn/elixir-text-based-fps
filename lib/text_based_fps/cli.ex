@@ -56,7 +56,7 @@ defmodule TextBasedFPS.CLI do
   defp print_result(result) do
     case result do
       {:ok, msg} -> IO.puts(msg)
-      {:error, msg} -> IO.puts(Text.red(msg))
+      {:error, msg} -> IO.puts(Text.danger(msg))
     end
   end
 end

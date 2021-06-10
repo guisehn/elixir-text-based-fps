@@ -2,7 +2,7 @@ defmodule TextBasedFPS.PlayerCommand.Util do
   alias TextBasedFPS.ServerState
   alias TextBasedFPS.Room
 
-  import TextBasedFPS.Text
+  import TextBasedFPS.Text, only: [highlight: 1]
 
   def require_alive_player(state, player, fun) do
     require_room(state, player, fn room ->
