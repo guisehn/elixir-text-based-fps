@@ -1,11 +1,7 @@
 defmodule TextBasedFPS.Direction do
   @type t :: :north | :south | :west | :east
 
-  defguard is_direction(direction)
-           when direction == :north or
-                  direction == :south or
-                  direction == :west or
-                  direction == :east
+  defguard is_direction(direction) when direction in [:north, :south, :west, :east]
 
   @spec all :: [t]
   def all, do: [:north, :south, :west, :east]
