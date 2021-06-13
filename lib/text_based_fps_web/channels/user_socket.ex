@@ -18,7 +18,7 @@ defmodule TextBasedFPSWeb.UserSocket do
   # performing token verification on connect.
   @impl true
   def connect(%{"key" => player_key}, socket, _connect_info) do
-    player_key = TextBasedFPS.ServerAgent.add_player(player_key)
+    TextBasedFPS.ServerAgent.add_player(player_key)
     {:ok, assign(socket, :player_key, player_key)}
   end
 

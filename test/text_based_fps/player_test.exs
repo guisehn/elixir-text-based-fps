@@ -37,10 +37,13 @@ defmodule TextBasedFPS.PlayerTest do
     end
 
     test "does not allow using name that is already in use on the server" do
-      {player_key, server_state} = ServerState.new() |> ServerState.add_player()
-      server_state = ServerState.update_player(server_state, player_key, &(Map.put(&1, :name, "foo")))
-      assert Player.validate_name(server_state, "foo") == {:error, :already_in_use}
-      assert Player.validate_name(server_state, "bar") == :ok
+      state =
+        ServerState.new()
+        |> ServerState.add_player("foo")
+        |> ServerState.update_player("foo", &(Map.put(&1, :name, "foo")))
+
+      assert Player.validate_name(state, "foo") == {:error, :already_in_use}
+      assert Player.validate_name(state, "bar") == :ok
     end
   end
 end

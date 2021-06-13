@@ -5,8 +5,8 @@ defmodule TextBasedFPS.PlayerCommands.SetNameTest do
   use ExUnit.Case, async: true
 
   setup do
-    {_, server_state} = ServerState.new() |> ServerState.add_player("foo")
-    %{state: server_state}
+    state = ServerState.new() |> ServerState.add_player("foo")
+    %{state: state}
   end
 
   test "changes the player name", %{state: state} do
@@ -29,17 +29,17 @@ defmodule TextBasedFPS.PlayerCommands.SetNameTest do
   end
 
   test "notifies players on the same room", %{state: state} do
-    {_, state} = ServerState.add_player(state, "qux")
-    {_, state} = ServerState.add_player(state, "bar")
-    {_, state} = ServerState.add_player(state, "player-in-another-room")
-
-    {:ok, state, message} = state
-    |> ServerState.update_player("foo", &(Map.put(&1, :name, "gui")))
-    |> ServerState.add_room("spaceship", "foo")
-    |> ServerState.join_room("spaceship", "bar")
-    |> ServerState.join_room("spaceship", "qux")
-    |> ServerState.add_room("another-room", "player-in-another-room")
-    |> CommandExecutor.execute("foo", "set-name new-name")
+    {:ok, state, message} =
+      state
+      |> ServerState.add_player("qux")
+      |> ServerState.add_player("bar")
+      |> ServerState.add_player("player-in-another-room")
+      |> ServerState.update_player("foo", &(Map.put(&1, :name, "gui")))
+      |> ServerState.add_room("spaceship", "foo")
+      |> ServerState.join_room("spaceship", "bar")
+      |> ServerState.join_room("spaceship", "qux")
+      |> ServerState.add_room("another-room", "player-in-another-room")
+      |> CommandExecutor.execute("foo", "set-name new-name")
 
     assert message =~ "Your name is now new-name."
 

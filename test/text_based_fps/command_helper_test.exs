@@ -6,8 +6,8 @@ defmodule TextBasedFPS.CommandHelperTest do
   use ExUnit.Case, async: true
 
   setup do
-    {_, server_state} = ServerState.new() |> ServerState.add_player("foo")
-    %{state: server_state}
+    state = ServerState.new() |> ServerState.add_player("foo")
+    %{state: state}
   end
 
   describe "require_room/2" do

@@ -19,20 +19,20 @@ defmodule TextBasedFPS.CommandExecutorTest do
         "my-command" => TextBasedFPS.CommandExecutorTest.MyTestCommand
       }
 
-      {_, server_state} = ServerState.new() |> ServerState.add_player("foo")
+      assert {:ok, updated_state, "returned message"} =
+        ServerState.new()
+        |> ServerState.add_player("foo")
+        |> CommandExecutor.execute("foo", "my-command hello world", commands)
 
-      assert {:ok, updated_server_state, "returned message"} =
-        CommandExecutor.execute(server_state, "foo", "my-command hello world", commands)
-
-      assert updated_server_state.players["foo"].last_command_at != nil
+      assert updated_state.players["foo"].last_command_at != nil
     end
 
     test "returns error if player does not exist" do
       commands = %{"my-command" => TextBasedFPS.CommandExecutorTest.DummyCommand}
-      server_state = ServerState.new()
+      state = ServerState.new()
 
-      assert {:error, _server_state, error_message} =
-        CommandExecutor.execute(server_state, "foo", "my-command hello world", commands)
+      assert {:error, ^state, error_message} =
+        CommandExecutor.execute(state, "foo", "my-command hello world", commands)
 
       assert error_message =~ "session has expired"
     end
@@ -40,10 +40,10 @@ defmodule TextBasedFPS.CommandExecutorTest do
     test "returns error if command does not exist" do
       commands = %{}
 
-      {_, server_state} = ServerState.new() |> ServerState.add_player("foo")
-
-      assert {:error, _server_state, "Command not found"} =
-        CommandExecutor.execute(server_state, "foo", "my-command hello world", commands)
+      assert {:error, _state, "Command not found"} =
+        ServerState.new()
+        |> ServerState.add_player("foo")
+        |> CommandExecutor.execute("foo", "my-command hello world", commands)
     end
   end
 

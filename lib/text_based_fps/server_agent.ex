@@ -15,9 +15,15 @@ defmodule TextBasedFPS.ServerAgent do
     Agent.get(__MODULE__, &Function.identity/1)
   end
 
-  @spec add_player(Player.key_t | nil) :: Player.key_t
-  def add_player(key \\ nil) do
-    Agent.get_and_update(__MODULE__, &(ServerState.add_player(&1, key)))
+  @spec add_player() :: Player.key_t
+  def add_player do
+    Agent.get_and_update(__MODULE__, &ServerState.add_player/1)
+  end
+
+  @spec add_player(Player.key_t) :: Player.key_t
+  def add_player(key) do
+    Agent.update(__MODULE__, &(ServerState.add_player(&1, key)))
+    key
   end
 
   @spec get_player(Player.key_t) :: Player.t | nil

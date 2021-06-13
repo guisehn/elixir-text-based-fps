@@ -6,8 +6,8 @@ defmodule TextBasedFPS.PlayerCommands.AmmoTest do
   use ExUnit.Case, async: true
 
   setup do
-    {_, server_state} = ServerState.new() |> ServerState.add_player("foo")
-    %{state: server_state}
+    state = ServerState.new() |> ServerState.add_player("foo")
+    %{state: state}
   end
 
   test "requires player to be in a room", %{state: state} do

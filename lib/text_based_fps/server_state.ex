@@ -18,14 +18,18 @@ defmodule TextBasedFPS.ServerState do
     %ServerState{players: %{}, rooms: %{}, notifications: []}
   end
 
-  @spec add_player(ServerState.t, Player.key_t | nil) :: {Player.key_t, ServerState.t}
-  def add_player(state, key \\ nil) do
+  @spec add_player(ServerState.t) :: {Player.key_t, ServerState.t}
+  def add_player(state) do
+    key = Player.generate_key()
+    {key, ServerState.add_player(state, key)}
+  end
+
+  @spec add_player(ServerState.t, Player.key_t) :: ServerState.t
+  def add_player(state, key) do
     if Map.has_key?(state.players, key) do
-      {key, state}
+      state
     else
-      player = Player.new(key)
-      updated_state = put_in(state.players[player.key], player)
-      {player.key, updated_state}
+      put_in(state.players[key], Player.new(key))
     end
   end
 

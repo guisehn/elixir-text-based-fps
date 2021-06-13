@@ -12,9 +12,8 @@ defmodule TextBasedFPS.Player do
 
   defstruct [:key, name: nil, room: nil, last_command_at: nil]
 
-  @spec new(key_t | nil) :: t
-  def new(key \\ nil) do
-    key = key || generate_key()
+  @spec new(key_t) :: t
+  def new(key) do
     %TextBasedFPS.Player{key: key}
   end
 
