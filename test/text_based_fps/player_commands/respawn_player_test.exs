@@ -13,7 +13,9 @@ defmodule TextBasedFPS.PlayerCommands.RespawnPlayerTest do
   end
 
   test "requires player to be in a room", %{state: state} do
-    assert {:error, _state, error_message} = CommandExecutor.execute(state, "foo", "health")
+    assert {:error, %ServerState{}, error_message} =
+             CommandExecutor.execute(state, "foo", "health")
+
     assert error_message =~ "You need to be in a room"
   end
 

@@ -11,12 +11,14 @@ defmodule TextBasedFPS.PlayerCommands.ScoreTest do
   end
 
   test "requires player to be in a room", %{state: state} do
-    assert {:error, _state, error_message} = CommandExecutor.execute(state, "foo", "score")
+    assert {:error, %ServerState{}, error_message} =
+             CommandExecutor.execute(state, "foo", "score")
+
     assert error_message =~ "You need to be in a room"
   end
 
   test "returns score", %{state: state} do
-    assert {:ok, _state, score} =
+    assert {:ok, %ServerState{}, score} =
              state
              |> ServerState.add_player("qux")
              |> ServerState.add_player("bar")

@@ -11,7 +11,7 @@ defmodule TextBasedFPS.PlayerCommands.AmmoTest do
   end
 
   test "requires player to be in a room", %{state: state} do
-    assert {:error, _state, error_message} = CommandExecutor.execute(state, "foo", "ammo")
+    assert {:error, %ServerState{}, error_message} = CommandExecutor.execute(state, "foo", "ammo")
     assert error_message =~ "You need to be in a room"
   end
 
@@ -23,6 +23,6 @@ defmodule TextBasedFPS.PlayerCommands.AmmoTest do
         Room.update_player(room, "foo", &Map.put(&1, :ammo, {2, 3}))
       end)
 
-    assert {:ok, _state, "Ammo: 2/3"} = CommandExecutor.execute(state, "foo", "ammo")
+    assert {:ok, %ServerState{}, "Ammo: 2/3"} = CommandExecutor.execute(state, "foo", "ammo")
   end
 end
