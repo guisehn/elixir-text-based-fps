@@ -5,9 +5,9 @@ defmodule TextBasedFPS.ServerState do
   alias TextBasedFPS.ServerState
   alias TextBasedFPS.Text
 
-  @type t :: %TextBasedFPS.ServerState{
+  @type t :: %ServerState{
     rooms: %{String.t => Room.t},
-    players: %{String.t => Player.t},
+    players: %{Player.key_t => Player.t},
     notifications: list(Notification.t)
   }
 
