@@ -31,7 +31,9 @@ defmodule TextBasedFPS.CommandHelperTest do
       assert {:ok, %Room{}} = CommandHelper.require_alive_player(state, player)
     end
 
-    test "returns {:error, state, error_message} if player is in a room but is dead", %{state: state} do
+    test "returns {:error, state, error_message} if player is in a room but is dead", %{
+      state: state
+    } do
       state =
         state
         |> ServerState.add_room("spaceship", "foo")
