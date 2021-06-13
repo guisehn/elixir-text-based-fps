@@ -58,7 +58,7 @@ The entire game is a giant `%TextBasedFPS.ServerState` struct. The `IO.inspect` 
 
 The server state is stored in an [Agent](https://hexdocs.pm/elixir/1.12/Agent.html) at [/lib/text_based_fps/server_agent.ex](/lib/text_based_fps/server_agent.ex).
 
-The `%TextBasedFPS.ServerState` struct has two members: `players` and `rooms`:
+The `%TextBasedFPS.ServerState` struct has the following members:
 
   * `players` is a map containing all players of the server of all rooms. The keys are UUIDs that uniquely identify those players in the server. Each player is a `%TextBasedFPS.Player` struct.
 
