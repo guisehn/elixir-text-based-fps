@@ -54,10 +54,10 @@ defmodule TextBasedFPS.Room do
     %{coordinates: coordinates, direction: direction} =
       GameMap.RespawnPosition.find_respawn_position(room)
 
-    {:ok, room, _} = place_player_at(room, room_player.player_key, coordinates)
-
     room =
-      update_player(room, room_player.player_key, fn player ->
+      room
+      |> place_player_at!(room_player.player_key, coordinates)
+      |> update_player(room_player.player_key, fn player ->
         player
         |> Map.put(:direction, direction)
         |> Map.put(:health, RoomPlayer.max_health())
@@ -98,6 +98,14 @@ defmodule TextBasedFPS.Room do
 
       true ->
         {:error, room}
+    end
+  end
+
+  @spec place_player_at!(t, Player.key_t(), GameMap.Coordinates.t()) :: TextBasedFPS.Room.t()
+  def place_player_at!(room, player_key, {x, y}) do
+    case place_player_at(room, player_key, {x, y}) do
+      {:ok, updated_room, _object_grabbed} -> updated_room
+      {:error, _room} -> raise("Cannot place player #{player_key} at (#{x}, #{y})")
     end
   end
 
