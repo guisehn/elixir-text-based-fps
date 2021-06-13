@@ -2,7 +2,7 @@ defmodule TextBasedFPS.PlayerCommand.Score do
   alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.ServerState
 
-  import TextBasedFPS.PlayerCommand.Util
+  import TextBasedFPS.CommandHelper
 
   @table_header ~w(Name Score Deaths)
 
@@ -10,9 +10,9 @@ defmodule TextBasedFPS.PlayerCommand.Score do
 
   @impl true
   def execute(state, player, _) do
-    require_room(state, player, fn room ->
+    with {:ok, room} <- require_room(state, player) do
       {:ok, state, generate_table(state, room.players)}
-    end)
+    end
   end
 
   defp generate_table(state, players) do

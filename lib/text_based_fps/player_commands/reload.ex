@@ -2,14 +2,14 @@ defmodule TextBasedFPS.PlayerCommand.Reload do
   alias TextBasedFPS.PlayerCommand
   alias TextBasedFPS.Room
 
+  import TextBasedFPS.CommandHelper
   import TextBasedFPS.RoomPlayer, only: [display_ammo: 1, reload_gun: 1]
-  import TextBasedFPS.PlayerCommand.Util
 
   @behaviour PlayerCommand
 
   @impl true
   def execute(state, player, _) do
-    require_alive_player(state, player, fn room ->
+    with {:ok, room} <- require_alive_player(state, player) do
       room_player = Room.get_player(room, player.key)
 
       case reload_gun(room_player) do
@@ -20,6 +20,6 @@ defmodule TextBasedFPS.PlayerCommand.Reload do
         {:no_ammo, _} -> {:error, state, "You're out of ammo"}
         {:full, _} -> {:error, state, "Your gun is full"}
       end
-    end)
+    end
   end
 end

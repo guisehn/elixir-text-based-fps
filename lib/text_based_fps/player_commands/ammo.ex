@@ -3,15 +3,15 @@ defmodule TextBasedFPS.PlayerCommand.Ammo do
   alias TextBasedFPS.PlayerCommand
 
   import TextBasedFPS.RoomPlayer, only: [display_ammo: 1]
-  import TextBasedFPS.PlayerCommand.Util
+  import TextBasedFPS.CommandHelper
 
   @behaviour PlayerCommand
 
   @impl true
   def execute(state, player, _) do
-    require_room(state, player, fn room ->
+    with {:ok, room} <- require_room(state, player) do
       room_player = Room.get_player(room, player.key)
       {:ok, state, "Ammo: #{display_ammo(room_player)}"}
-    end)
+    end
   end
 end

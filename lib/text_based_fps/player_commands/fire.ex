@@ -6,17 +6,17 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
   alias TextBasedFPS.RoomPlayer
   alias TextBasedFPS.Notification
 
-  import TextBasedFPS.PlayerCommand.Util
+  import TextBasedFPS.CommandHelper
   import TextBasedFPS.Text, only: [danger: 1, highlight: 1]
 
   @behaviour PlayerCommand
 
   @impl true
   def execute(state, player, _) do
-    require_alive_player(state, player, fn room ->
+    with {:ok, room} <- require_alive_player(state, player) do
       room_player = Room.get_player(room, player.key)
       fire(state, player, room_player, room)
-    end)
+    end
   end
 
   defp fire(state, _, %{ammo: {0, 0}}, _) do

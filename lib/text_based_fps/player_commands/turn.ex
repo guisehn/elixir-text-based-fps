@@ -3,18 +3,18 @@ defmodule TextBasedFPS.PlayerCommand.Turn do
   alias TextBasedFPS.Direction
   alias TextBasedFPS.Room
 
-  import TextBasedFPS.PlayerCommand.Util
+  import TextBasedFPS.CommandHelper
   import TextBasedFPS.Text, only: [highlight: 1]
 
   @behaviour PlayerCommand
 
   @impl true
   def execute(state, player, direction) do
-    require_alive_player(state, player, fn room ->
+    with {:ok, room} <- require_alive_player(state, player) do
       room_player = Room.get_player(room, player.key)
       parsed_direction = parse_direction(room_player, direction)
       turn(state, player.room, player, parsed_direction)
-    end)
+    end
   end
 
   defp parse_direction(room_player, "around"), do: Direction.inverse_of(room_player.direction)
