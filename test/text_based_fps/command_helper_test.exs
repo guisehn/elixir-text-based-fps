@@ -17,7 +17,7 @@ defmodule TextBasedFPS.CommandHelperTest do
       assert {:ok, %Room{}} = CommandHelper.require_room(state, player)
     end
 
-    test "returns {:ok, state, error_message} if player is not in a room", %{state: state} do
+    test "returns {:error, state, error_message} if player is not in a room", %{state: state} do
       player = ServerState.get_player(state, "foo")
       assert {:error, ^state, error_message} = CommandHelper.require_room(state, player)
       assert error_message =~ "You need to be in a room to use this command"
@@ -31,7 +31,7 @@ defmodule TextBasedFPS.CommandHelperTest do
       assert {:ok, %Room{}} = CommandHelper.require_alive_player(state, player)
     end
 
-    test "returns {:ok, state, error_message} if player is in a room but is dead", %{state: state} do
+    test "returns {:error, state, error_message} if player is in a room but is dead", %{state: state} do
       state =
         state
         |> ServerState.add_room("spaceship", "foo")
@@ -43,7 +43,7 @@ defmodule TextBasedFPS.CommandHelperTest do
       assert error_message =~ "You're dead"
     end
 
-    test "returns {:ok, state, error_message} if player is not in a room", %{state: state} do
+    test "returns {:error, state, error_message} if player is not in a room", %{state: state} do
       player = ServerState.get_player(state, "foo")
       assert {:error, ^state, error_message} = CommandHelper.require_alive_player(state, player)
       assert error_message =~ "You need to be in a room to use this command"
