@@ -18,7 +18,15 @@ defmodule TextBasedFPS.PlayerCommand.RoomList do
   end
 
   defp generate_table(state) do
-    rows = Enum.map(state.rooms, fn {room_name, room} -> [room_name, map_size(room.players)] end)
+    rows =
+      state.rooms
+      |> Map.to_list()
+      |> Stream.map(fn {_, room} -> room end)
+      |> Stream.map(fn room -> %{name: room.name, players: map_size(room.players)} end)
+      |> Enum.sort_by(& &1.players)
+      |> Stream.map(&[&1.name, &1.players])
+      |> Enum.reverse()
+
     TableRex.quick_render!(rows, ~w(Name Players))
   end
 end
