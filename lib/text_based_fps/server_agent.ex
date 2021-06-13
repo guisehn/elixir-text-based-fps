@@ -20,10 +20,9 @@ defmodule TextBasedFPS.ServerAgent do
     Agent.get_and_update(__MODULE__, &ServerState.add_player/1)
   end
 
-  @spec add_player(Player.key_t) :: Player.key_t
+  @spec add_player(Player.key_t) :: :ok
   def add_player(key) do
     Agent.update(__MODULE__, &(ServerState.add_player(&1, key)))
-    key
   end
 
   @spec get_player(Player.key_t) :: Player.t | nil
