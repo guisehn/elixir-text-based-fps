@@ -18,14 +18,15 @@ defmodule TextBasedFPS.PlayerCommands.RespawnPlayerTest do
   end
 
   test "respawns player when they're dead", %{state: state} do
-    state = state
-    |> ServerState.add_room("spaceship", "foo")
-    |> ServerState.update_room("spaceship", &(Room.kill_player(&1, "foo")))
+    state =
+      state
+      |> ServerState.add_room("spaceship", "foo")
+      |> ServerState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
     assert {:ok, state, "You're back!"} = CommandExecutor.execute(state, "foo", "respawn")
 
     room = ServerState.get_room(state, "spaceship")
-    assert room.players["foo"].health == RoomPlayer.max_health
+    assert room.players["foo"].health == RoomPlayer.max_health()
     assert room.players["foo"].coordinates != nil
     assert room.players["foo"].direction != nil
     assert room.players["foo"].ammo != {0, 0}
@@ -33,13 +34,15 @@ defmodule TextBasedFPS.PlayerCommands.RespawnPlayerTest do
   end
 
   test "doesn't respawn player if they're alive", %{state: state} do
-    state = state
-    |> ServerState.add_room("spaceship", "foo")
-    |> ServerState.update_room("spaceship", fn room ->
-      Room.update_player(room, "foo", &(Map.put(&1, :health, 90)))
-    end)
+    state =
+      state
+      |> ServerState.add_room("spaceship", "foo")
+      |> ServerState.update_room("spaceship", fn room ->
+        Room.update_player(room, "foo", &Map.put(&1, :health, 90))
+      end)
 
-    assert {:error, state, "You're already alive!"} = CommandExecutor.execute(state, "foo", "respawn")
+    assert {:error, state, "You're already alive!"} =
+             CommandExecutor.execute(state, "foo", "respawn")
 
     room = ServerState.get_room(state, "spaceship")
     assert room.players["foo"].health == 90

@@ -1,11 +1,11 @@
 defmodule TextBasedFPS.Direction do
   @type t :: :north | :south | :west | :east
 
-  defguard is_direction(direction) when
-    direction == :north or
-    direction == :south or
-    direction == :west or
-    direction == :east
+  defguard is_direction(direction)
+           when direction == :north or
+                  direction == :south or
+                  direction == :west or
+                  direction == :east
 
   @spec all :: [t]
   def all, do: [:north, :south, :west, :east]
@@ -23,7 +23,7 @@ defmodule TextBasedFPS.Direction do
   def inverse_of(:west), do: :east
   def inverse_of(:east), do: :west
 
-  @spec symbol_of(t) :: String.t
+  @spec symbol_of(t) :: String.t()
   def symbol_of(:north), do: "▲"
   def symbol_of(:south), do: "▼"
   def symbol_of(:west), do: "◄"

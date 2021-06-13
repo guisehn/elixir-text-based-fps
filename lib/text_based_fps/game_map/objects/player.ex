@@ -3,8 +3,8 @@ defmodule TextBasedFPS.GameMap.Objects.Player do
   alias TextBasedFPS.Player
 
   @type t :: %TextBasedFPS.GameMap.Objects.Player{
-    player_key: Player.key_t
-  }
+          player_key: Player.key_t()
+        }
 
   defstruct [:player_key]
 
@@ -21,6 +21,6 @@ defmodule TextBasedFPS.GameMap.Objects.Player do
       Direction.symbol_of(room_player.direction)
     end
 
-    def grab(_, _), do: raise "Player cannot be grabbed"
+    def grab(_, _), do: raise("Player cannot be grabbed")
   end
 end

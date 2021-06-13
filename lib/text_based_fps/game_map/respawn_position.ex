@@ -4,19 +4,22 @@ defmodule TextBasedFPS.GameMap.RespawnPosition do
   alias TextBasedFPS.GameMap.Matrix
   alias TextBasedFPS.Room
 
-  @type t :: %TextBasedFPS.GameMap.RespawnPosition {
-    coordinates: Coordinates.t,
-    direction: Direction.t
-  }
+  @type t :: %TextBasedFPS.GameMap.RespawnPosition{
+          coordinates: Coordinates.t(),
+          direction: Direction.t()
+        }
 
   defstruct [:coordinates, :direction]
 
-  @spec find_respawn_position(Room.t) :: t
+  @spec find_respawn_position(Room.t()) :: t
   def find_respawn_position(room) do
     candidates = Enum.shuffle(empty_respawn_positions(room))
-    safe_respawn_position = Enum.find(candidates, fn %{coordinates: coordinates} ->
-      safe_coordinates?(room.game_map.matrix, coordinates)
-    end)
+
+    safe_respawn_position =
+      Enum.find(candidates, fn %{coordinates: coordinates} ->
+        safe_coordinates?(room.game_map.matrix, coordinates)
+      end)
+
     safe_respawn_position || List.first(candidates)
   end
 
@@ -29,19 +32,21 @@ defmodule TextBasedFPS.GameMap.RespawnPosition do
     )
   end
 
-  @spec safe_coordinates?(Matrix.t, Coordinates.t) :: boolean
+  @spec safe_coordinates?(Matrix.t(), Coordinates.t()) :: boolean
   def safe_coordinates?(matrix, coordinates) do
     Enum.all?(
       Direction.all(),
       fn direction -> safe_coordinates?(matrix, coordinates, direction) end
     )
   end
+
   defp safe_coordinates?(matrix, coordinates, direction) do
     Matrix.iterate_towards(
       matrix,
       coordinates,
       direction,
-      true, # start considering it safe
+      # start considering it safe
+      true,
       fn coordinates, _ ->
         cond do
           # found a wall? stop it and consider it safe

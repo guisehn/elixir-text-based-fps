@@ -16,12 +16,13 @@ defmodule TextBasedFPS.PlayerCommand.Score do
   end
 
   defp generate_table(state, players) do
-    rows = players
-    |> Map.to_list
-    |> Stream.map(fn {_, player} -> player end)
-    |> Enum.sort_by(&(&1.kills))
-    |> Enum.reverse()
-    |> Enum.map(&(generate_table_row(state, &1)))
+    rows =
+      players
+      |> Map.to_list()
+      |> Stream.map(fn {_, player} -> player end)
+      |> Enum.sort_by(& &1.kills)
+      |> Enum.reverse()
+      |> Enum.map(&generate_table_row(state, &1))
 
     TableRex.quick_render!(rows, @table_header)
   end

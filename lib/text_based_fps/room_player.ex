@@ -8,18 +8,18 @@ defmodule TextBasedFPS.RoomPlayer do
   @max_unloaded_ammo 24
 
   @type t :: %TextBasedFPS.RoomPlayer{
-    player_key: Player.key_t,
-    coordinates: TextBasedFPS.GameMap.Coordinates.t | nil,
-    direction: Direction.t | nil,
-    health: non_neg_integer,
-    ammo: {non_neg_integer, non_neg_integer},
-    kills: non_neg_integer,
-    killed: non_neg_integer
-  }
+          player_key: Player.key_t(),
+          coordinates: TextBasedFPS.GameMap.Coordinates.t() | nil,
+          direction: Direction.t() | nil,
+          health: non_neg_integer,
+          ammo: {non_neg_integer, non_neg_integer},
+          kills: non_neg_integer,
+          killed: non_neg_integer
+        }
 
   defstruct [:player_key, :coordinates, :direction, :health, :ammo, :kills, :killed]
 
-  @spec new(Player.key_t) :: t
+  @spec new(Player.key_t()) :: t
   def new(player_key) do
     %RoomPlayer{
       player_key: player_key,
@@ -45,6 +45,7 @@ defmodule TextBasedFPS.RoomPlayer do
     {loaded, unloaded} = room_player.ammo
     Map.put(room_player, :ammo, {max(loaded - 1, 0), unloaded})
   end
+
   def decrement(room_player, key) do
     Map.put(room_player, key, Map.get(room_player, key) - 1)
   end
@@ -64,16 +65,22 @@ defmodule TextBasedFPS.RoomPlayer do
 
   @spec reload_gun(t) :: {:reloaded, t} | {:full, t} | {:no_ammo, t}
   def reload_gun(room_player = %{ammo: {_, 0}}), do: {:no_ammo, room_player}
+
   def reload_gun(room_player) do
     {loaded, unloaded} = room_player.ammo
     amount_to_load = min(@max_loaded_ammo - loaded, unloaded)
+
     case amount_to_load do
-      0 -> {:full, room_player}
-      _ -> {:reloaded, Map.put(room_player, :ammo, {loaded + amount_to_load, unloaded - amount_to_load})}
+      0 ->
+        {:full, room_player}
+
+      _ ->
+        {:reloaded,
+         Map.put(room_player, :ammo, {loaded + amount_to_load, unloaded - amount_to_load})}
     end
   end
 
-  @spec display_ammo(t) :: String.t
+  @spec display_ammo(t) :: String.t()
   def display_ammo(%{ammo: {loaded, unloaded}}) do
     "#{loaded}/#{unloaded}"
   end

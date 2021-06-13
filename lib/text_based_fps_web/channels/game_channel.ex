@@ -41,12 +41,15 @@ defmodule TextBasedFPSWeb.GameChannel do
   defp welcome_message(%TextBasedFPS.Player{name: nil}) do
     "Welcome to the text-based FPS! Type #{Text.highlight("set-name <your name>")} to join the game."
   end
+
   defp welcome_message(%TextBasedFPS.Player{room: nil}) do
     "Welcome to the text-based FPS! Type #{Text.highlight("join-room <room name>")} to join the game."
   end
+
   defp welcome_message(%TextBasedFPS.Player{}) do
     "You're currently in the game. Type #{Text.highlight("look")} to see where you are in the map."
   end
+
   defp welcome_message(_) do
     Text.danger("It looks like the server may have crashed. 👀 Reload the page to keep playing.")
   end
@@ -54,6 +57,7 @@ defmodule TextBasedFPSWeb.GameChannel do
   defp dispatch_notifications do
     Enum.each(ServerAgent.get_and_clear_notifications(), &dispatch_notification/1)
   end
+
   defp dispatch_notification(%{body: body, player_key: player_key}) do
     Endpoint.broadcast("game:#{player_key}", "notification", %{message: body})
   end

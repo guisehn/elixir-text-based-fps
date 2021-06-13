@@ -10,6 +10,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [:" ", :" "],
         [:" ", :" "]
       ]
+
       assert Matrix.set(matrix, {0, 0}, :E) == [[:E, :" "], [:" ", :" "]]
       assert Matrix.set(matrix, {0, 1}, :E) == [[:" ", :" "], [:E, :" "]]
       assert Matrix.set(matrix, {1, 0}, :E) == [[:" ", :E], [:" ", :" "]]
@@ -23,6 +24,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [:A, :B],
         [:C, :D]
       ]
+
       assert Matrix.clear(matrix, {0, 0}) == [[:" ", :B], [:C, :D]]
       assert Matrix.clear(matrix, {0, 1}) == [[:A, :B], [:" ", :D]]
       assert Matrix.clear(matrix, {1, 0}) == [[:A, :" "], [:C, :D]]
@@ -36,6 +38,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [:" ", :" "],
         [:" ", :" "]
       ]
+
       assert Matrix.has?(matrix, {0, 0}) == true
       assert Matrix.has?(matrix, {0, 1}) == true
       assert Matrix.has?(matrix, {1, 0}) == true
@@ -47,6 +50,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [:" ", :" "],
         [:" ", :" "]
       ]
+
       assert Matrix.has?(matrix, {0, 2}) == false
       assert Matrix.has?(matrix, {2, 0}) == false
     end
@@ -58,6 +62,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [:"#", :" "],
         [:" ", :"#"]
       ]
+
       assert Matrix.wall_at?(matrix, {0, 0}) == true
       assert Matrix.wall_at?(matrix, {0, 1}) == false
       assert Matrix.wall_at?(matrix, {1, 0}) == false
@@ -72,6 +77,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [Objects.HealthPack.new(), Objects.Player.new("foo")],
         [:" ", :" "]
       ]
+
       assert Matrix.object_at(matrix, {0, 0}) == nil
       assert Matrix.object_at(matrix, {0, 1}) == Objects.HealthPack.new()
       assert Matrix.object_at(matrix, {1, 0}) == Objects.AmmoPack.new()
@@ -87,6 +93,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [Objects.HealthPack.new(), Objects.Player.new("foo")],
         [:" ", :" "]
       ]
+
       assert Matrix.object_at?(matrix, {0, 0}) == false
       assert Matrix.object_at?(matrix, {0, 1}) == true
       assert Matrix.object_at?(matrix, {1, 0}) == true
@@ -102,6 +109,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [Objects.HealthPack.new(), Objects.Player.new("foo")],
         [:" ", :" "]
       ]
+
       assert Matrix.player_at(matrix, {0, 0}) == nil
       assert Matrix.player_at(matrix, {0, 1}) == nil
       assert Matrix.player_at(matrix, {1, 0}) == nil
@@ -117,6 +125,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [Objects.HealthPack.new(), Objects.Player.new("foo")],
         [:" ", :" "]
       ]
+
       assert Matrix.player_at?(matrix, {0, 0}) == false
       assert Matrix.player_at?(matrix, {0, 1}) == false
       assert Matrix.player_at?(matrix, {1, 0}) == false
@@ -132,6 +141,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [Objects.HealthPack.new(), Objects.Player.new("foo")],
         [:" ", :" "]
       ]
+
       assert Matrix.player_at(matrix, {0, 0}, "foo") == nil
       assert Matrix.player_at(matrix, {1, 1}, "foo") == Objects.Player.new("foo")
       assert Matrix.player_at(matrix, {1, 1}, "bar") == nil
@@ -145,6 +155,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [Objects.HealthPack.new(), Objects.Player.new("foo")],
         [:" ", :" "]
       ]
+
       assert Matrix.player_at?(matrix, {0, 0}, "foo") == false
       assert Matrix.player_at?(matrix, {1, 1}, "foo") == true
       assert Matrix.player_at?(matrix, {1, 1}, "bar") == false
@@ -158,6 +169,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [Objects.HealthPack.new(), Objects.Player.new("foo")],
         [:" ", :" "]
       ]
+
       assert Matrix.at(matrix, {0, 0}) == :"#"
       assert Matrix.at(matrix, {0, 1}) == Objects.HealthPack.new()
       assert Matrix.at(matrix, {1, 0}) == Objects.AmmoPack.new()
@@ -173,6 +185,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [Objects.HealthPack.new(), Objects.Player.new("foo")],
         [:"#", :"#"]
       ]
+
       assert Matrix.clean(matrix) == [[:"#", :" "], [:" ", :" "], [:"#", :"#"]]
     end
   end
@@ -188,28 +201,33 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
         [:" ", :" ", :" ", :" ", :" ", :" ", :" "],
         [:" ", :" ", :" ", :" ", :" ", :" ", :" "],
         [:" ", :" ", :" ", :" ", :" ", :" ", :" "],
-        [:" ", :" ", :" ", :" ", :" ", :" ", :" "],
+        [:" ", :" ", :" ", :" ", :" ", :" ", :" "]
       ]
+
       list_reducer = fn coordinates, acc -> {:continue, acc ++ [coordinates]} end
       %{matrix: matrix, list_reducer: list_reducer}
     end
 
-    test "iterates to the north until the end of the map if reducer function always returns {:continue, _}", context do
+    test "iterates to the north until the end of the map if reducer function always returns {:continue, _}",
+         context do
       result = Matrix.iterate_towards(context.matrix, {3, 3}, :north, [], context.list_reducer)
       assert result == [{3, 2}, {3, 1}, {3, 0}]
     end
 
-    test "iterates to the south until the end of the map if reducer function always returns {:continue, _}", context do
+    test "iterates to the south until the end of the map if reducer function always returns {:continue, _}",
+         context do
       result = Matrix.iterate_towards(context.matrix, {3, 3}, :south, [], context.list_reducer)
       assert result == [{3, 4}, {3, 5}, {3, 6}]
     end
 
-    test "iterates to the west until the end of the map if reducer function always returns {:continue, _}", context do
+    test "iterates to the west until the end of the map if reducer function always returns {:continue, _}",
+         context do
       result = Matrix.iterate_towards(context.matrix, {3, 3}, :west, [], context.list_reducer)
       assert result == [{2, 3}, {1, 3}, {0, 3}]
     end
 
-    test "iterates to the east until the end of the map if reducer function always returns {:continue, _}", context do
+    test "iterates to the east until the end of the map if reducer function always returns {:continue, _}",
+         context do
       result = Matrix.iterate_towards(context.matrix, {3, 3}, :east, [], context.list_reducer)
       assert result == [{4, 3}, {5, 3}, {6, 3}]
     end
@@ -221,6 +239,7 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
           _ -> {:continue, acc ++ [coordinates]}
         end
       end
+
       result = Matrix.iterate_towards(context.matrix, {3, 5}, :north, [], reducer)
       assert result == [{3, 4}, {3, 3}, {3, 2}]
     end

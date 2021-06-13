@@ -1,8 +1,8 @@
 defmodule TextBasedFPS.GameMap.TextParser do
-  @spec parse(String.t) :: TextBasedFPS.GameMap.Matrix.t
+  @spec parse(String.t()) :: TextBasedFPS.GameMap.Matrix.t()
   def parse(str) do
     str
-    |> String.trim_trailing
+    |> String.trim_trailing()
     |> String.split("\n")
     |> trim_leading_empty_lines
     |> Stream.map(&String.trim_trailing/1)
@@ -20,7 +20,7 @@ defmodule TextBasedFPS.GameMap.TextParser do
   end
 
   defp equalize_line_sizes(lines) do
-    larger_line_size = lines |> Enum.map(&length/1) |> Enum.max
+    larger_line_size = lines |> Enum.map(&length/1) |> Enum.max()
     Enum.map(lines, fn line -> complete_line(line, larger_line_size) end)
   end
 
@@ -28,5 +28,5 @@ defmodule TextBasedFPS.GameMap.TextParser do
     line ++ replicate(:" ", size - length(line))
   end
 
-  defp replicate(element, n), do: for i <- 0..n, i > 0, do: element
+  defp replicate(element, n), do: for(i <- 0..n, i > 0, do: element)
 end

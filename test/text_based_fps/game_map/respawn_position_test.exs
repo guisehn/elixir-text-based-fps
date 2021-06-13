@@ -6,21 +6,22 @@ defmodule TextBasedFPS.GameMap.RespawnPositionTest do
 
   setup do
     map_text_representation = """
-###########
-#         #
-#    #    #
-#         #
-#   # #   #
-# #  N  # #
-#   # #   #
-#         #
-#    #    #
-#         #
-###########
-"""
+    ###########
+    #         #
+    #    #    #
+    #         #
+    #   # #   #
+    # #  N  # #
+    #   # #   #
+    #         #
+    #    #    #
+    #         #
+    ###########
+    """
 
     %{matrix: matrix} = GameMap.Builder.build(map_text_representation)
-    coordinates_to_check = {5, 5} # coordinates indicated by the N on the map text representation
+    # coordinates indicated by the N on the map text representation
+    coordinates_to_check = {5, 5}
 
     %{
       matrix: matrix,
@@ -75,19 +76,24 @@ defmodule TextBasedFPS.GameMap.RespawnPositionTest do
 
     test "multi-direction", context do
       # all enemies behind walls: safe
-      matrix = context.matrix
-      |> place_enemy_at({5, 1})
-      |> place_enemy_at({5, 9})
-      |> place_enemy_at({1, 5})
-      |> place_enemy_at({5, 9})
+      matrix =
+        context.matrix
+        |> place_enemy_at({5, 1})
+        |> place_enemy_at({5, 9})
+        |> place_enemy_at({1, 5})
+        |> place_enemy_at({5, 9})
+
       assert RespawnPosition.safe_coordinates?(matrix, context.coordinates_to_check) == true
 
       # at least one enemy with no wall in between: not safe
-      matrix = context.matrix
-      |> place_enemy_at({5, 1})
-      |> place_enemy_at({5, 9})
-      |> place_enemy_at({3, 5}) # this one
-      |> place_enemy_at({9, 5})
+      matrix =
+        context.matrix
+        |> place_enemy_at({5, 1})
+        |> place_enemy_at({5, 9})
+        # this one
+        |> place_enemy_at({3, 5})
+        |> place_enemy_at({9, 5})
+
       assert RespawnPosition.safe_coordinates?(matrix, context.coordinates_to_check) == false
     end
   end

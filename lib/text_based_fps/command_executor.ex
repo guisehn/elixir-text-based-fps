@@ -19,7 +19,8 @@ defmodule TextBasedFPS.CommandExecutor do
     "fire" => PlayerCommand.Fire
   }
 
-  @spec execute(ServerState.t, Player.key_t, String.t, Map.t) :: {:ok, ServerState.t, String.t | nil} | {:error, ServerState.t, String.t}
+  @spec execute(ServerState.t(), Player.key_t(), String.t(), Map.t()) ::
+          {:ok, ServerState.t(), String.t() | nil} | {:error, ServerState.t(), String.t()}
   def execute(state, player_key, command_text, commands \\ @commands) do
     state = ServerState.update_player(state, player_key, &Player.touch/1)
     player = ServerState.get_player(state, player_key)
@@ -38,9 +39,11 @@ defmodule TextBasedFPS.CommandExecutor do
   defp execute_command_with_args(state, nil, _command, _command_arg) do
     {:error, state, "Your session has expired. Reload the page to play."}
   end
+
   defp execute_command_with_args(state, _player, nil, _command_arg) do
     {:error, state, "Command not found"}
   end
+
   defp execute_command_with_args(state, player, command, command_arg) do
     command.execute(state, player, command_arg)
   end

@@ -20,7 +20,7 @@ defmodule TextBasedFPS.PlayerTest do
 
     test "does not allow name with more than 20 chars" do
       allowed_name = "12345678901234567890"
-      large_name   = "123456789012345678901"
+      large_name = "123456789012345678901"
       assert Player.validate_name(ServerState.new(), allowed_name) == :ok
       assert Player.validate_name(ServerState.new(), large_name) == {:error, :too_large}
     end
@@ -40,7 +40,7 @@ defmodule TextBasedFPS.PlayerTest do
       state =
         ServerState.new()
         |> ServerState.add_player("foo")
-        |> ServerState.update_player("foo", &(Map.put(&1, :name, "foo")))
+        |> ServerState.update_player("foo", &Map.put(&1, :name, "foo"))
 
       assert Player.validate_name(state, "foo") == {:error, :already_in_use}
       assert Player.validate_name(state, "bar") == :ok

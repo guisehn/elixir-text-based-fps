@@ -32,9 +32,10 @@ defmodule TextBasedFPS.CommandHelperTest do
     end
 
     test "returns {:ok, state, error_message} if player is in a room but is dead", %{state: state} do
-      state = state
-      |> ServerState.add_room("spaceship", "foo")
-      |> ServerState.update_room("spaceship", &(Room.kill_player(&1, "foo")))
+      state =
+        state
+        |> ServerState.add_room("spaceship", "foo")
+        |> ServerState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
       player = ServerState.get_player(state, "foo")
 

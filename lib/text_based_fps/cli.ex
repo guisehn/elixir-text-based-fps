@@ -20,7 +20,7 @@ defmodule TextBasedFPS.CLI do
   defp receive_command(current_player_idx, players) do
     current_player = Enum.at(players, current_player_idx)
     player_notifications = ServerAgent.get_and_clear_notifications(current_player)
-    Enum.each(player_notifications, &(IO.puts(&1.body)))
+    Enum.each(player_notifications, &IO.puts(&1.body))
 
     command = IO.gets(IO.ANSI.reset() <> "> ") |> String.trim()
 
@@ -30,16 +30,16 @@ defmodule TextBasedFPS.CLI do
     case command_name do
       "add-player" ->
         new_player = ServerAgent.add_player()
-        IO.puts "Switching to new player #{new_player}..."
+        IO.puts("Switching to new player #{new_player}...")
         receive_command(length(players), players ++ [new_player])
 
       "switch-player" ->
         {player_idx, ""} = Integer.parse(command_arg)
-        IO.puts "Switching to player #{Enum.at(players, player_idx)}..."
+        IO.puts("Switching to player #{Enum.at(players, player_idx)}...")
         receive_command(player_idx, players)
 
       "view-state" ->
-        IO.inspect ServerAgent.get_state()
+        IO.inspect(ServerAgent.get_state())
         receive_command(current_player_idx, players)
 
       "remove-player" ->

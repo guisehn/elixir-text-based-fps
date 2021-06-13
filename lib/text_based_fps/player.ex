@@ -2,13 +2,13 @@ defmodule TextBasedFPS.Player do
   alias TextBasedFPS.ServerState
 
   @type t :: %TextBasedFPS.Player{
-    key: String.t,
-    name: String.t | nil,
-    room: String.t | nil,
-    last_command_at: DateTime.t | nil
-  }
+          key: String.t(),
+          name: String.t() | nil,
+          room: String.t() | nil,
+          last_command_at: DateTime.t() | nil
+        }
 
-  @type key_t :: String.t
+  @type key_t :: String.t()
 
   defstruct [:key, name: nil, room: nil, last_command_at: nil]
 
@@ -17,16 +17,20 @@ defmodule TextBasedFPS.Player do
     %TextBasedFPS.Player{key: key}
   end
 
-  @spec generate_key() :: String.t
-  def generate_key, do: SecureRandom.uuid
+  @spec generate_key() :: String.t()
+  def generate_key, do: SecureRandom.uuid()
 
   @spec touch(t) :: t
   def touch(player) do
     Map.put(player, :last_command_at, DateTime.utc_now())
   end
 
-  @spec validate_name(ServerState.t, String.t) ::
-    :ok | {:error, :empty} | {:error, :too_large} | {:error, :invalid_chars} | {:error, :already_in_use}
+  @spec validate_name(ServerState.t(), String.t()) ::
+          :ok
+          | {:error, :empty}
+          | {:error, :too_large}
+          | {:error, :invalid_chars}
+          | {:error, :already_in_use}
   def validate_name(state, name) do
     cond do
       name == "" -> {:error, :empty}

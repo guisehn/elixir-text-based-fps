@@ -18,20 +18,22 @@ defmodule TextBasedFPS.PlayerCommands.ReloadTest do
   end
 
   test "requires player to be alive", %{state: state} do
-    state = state
-    |> ServerState.add_room("spaceship", "foo")
-    |> ServerState.update_room("spaceship", &(Room.kill_player(&1, "foo")))
+    state =
+      state
+      |> ServerState.add_room("spaceship", "foo")
+      |> ServerState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
     assert {:error, _state, error_message} = CommandExecutor.execute(state, "foo", "reload")
     assert error_message =~ "You're dead"
   end
 
   test "reloads the gun", %{state: state} do
-    state = state
-    |> ServerState.add_room("spaceship", "foo")
-    |> ServerState.update_room("spaceship", fn room ->
-      Room.update_player(room, "foo", &(Map.put(&1, :ammo, {max_loaded_ammo() - 2, 6})))
-    end)
+    state =
+      state
+      |> ServerState.add_room("spaceship", "foo")
+      |> ServerState.update_room("spaceship", fn room ->
+        Room.update_player(room, "foo", &Map.put(&1, :ammo, {max_loaded_ammo() - 2, 6}))
+      end)
 
     assert {:ok, state, message} = CommandExecutor.execute(state, "foo", "reload")
     assert message == "You've reloaded. Ammo: #{max_loaded_ammo()}/#{6 - 2}"
@@ -41,11 +43,12 @@ defmodule TextBasedFPS.PlayerCommands.ReloadTest do
   test "shows 'no ammo' message if there's no ammo to reload", %{state: state} do
     ammo = {max_loaded_ammo() - 3, 0}
 
-    state = state
-    |> ServerState.add_room("spaceship", "foo")
-    |> ServerState.update_room("spaceship", fn room ->
-      Room.update_player(room, "foo", &(Map.put(&1, :ammo, ammo)))
-    end)
+    state =
+      state
+      |> ServerState.add_room("spaceship", "foo")
+      |> ServerState.update_room("spaceship", fn room ->
+        Room.update_player(room, "foo", &Map.put(&1, :ammo, ammo))
+      end)
 
     assert {:error, state, message} = CommandExecutor.execute(state, "foo", "reload")
     assert message == "You're out of ammo"
@@ -55,11 +58,12 @@ defmodule TextBasedFPS.PlayerCommands.ReloadTest do
   test "shows 'gun is full' message if gun is full", %{state: state} do
     ammo = {max_loaded_ammo(), 3}
 
-    state = state
-    |> ServerState.add_room("spaceship", "foo")
-    |> ServerState.update_room("spaceship", fn room ->
-      Room.update_player(room, "foo", &(Map.put(&1, :ammo, ammo)))
-    end)
+    state =
+      state
+      |> ServerState.add_room("spaceship", "foo")
+      |> ServerState.update_room("spaceship", fn room ->
+        Room.update_player(room, "foo", &Map.put(&1, :ammo, ammo))
+      end)
 
     assert {:error, state, message} = CommandExecutor.execute(state, "foo", "reload")
     assert message == "Your gun is full"

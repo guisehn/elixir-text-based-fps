@@ -47,9 +47,9 @@ defmodule TextBasedFPS.RoomPlayerTest do
     end
 
     test "already full" do
-      room_player = RoomPlayer.new("foo") |> Map.put(:ammo, {RoomPlayer.max_loaded_ammo, 10})
+      room_player = RoomPlayer.new("foo") |> Map.put(:ammo, {RoomPlayer.max_loaded_ammo(), 10})
       assert {:full, updated_room_player} = RoomPlayer.reload_gun(room_player)
-      assert updated_room_player.ammo == {RoomPlayer.max_loaded_ammo, 10}
+      assert updated_room_player.ammo == {RoomPlayer.max_loaded_ammo(), 10}
     end
 
     test "no ammo" do
@@ -65,15 +65,15 @@ defmodule TextBasedFPS.RoomPlayerTest do
   end
 
   test "max_health/0" do
-    assert is_integer(RoomPlayer.max_health)
-    assert RoomPlayer.max_health > 0
+    assert is_integer(RoomPlayer.max_health())
+    assert RoomPlayer.max_health() > 0
   end
 
   test "max_loaded_ammo/0" do
-    assert is_integer(RoomPlayer.max_loaded_ammo)
+    assert is_integer(RoomPlayer.max_loaded_ammo())
   end
 
   test "max_unloaded_ammo/0" do
-    assert is_integer(RoomPlayer.max_unloaded_ammo)
+    assert is_integer(RoomPlayer.max_unloaded_ammo())
   end
 end

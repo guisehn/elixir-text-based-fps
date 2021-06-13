@@ -20,9 +20,9 @@ defmodule TextBasedFPS.CommandExecutorTest do
       }
 
       assert {:ok, updated_state, "returned message"} =
-        ServerState.new()
-        |> ServerState.add_player("foo")
-        |> CommandExecutor.execute("foo", "my-command hello world", commands)
+               ServerState.new()
+               |> ServerState.add_player("foo")
+               |> CommandExecutor.execute("foo", "my-command hello world", commands)
 
       assert updated_state.players["foo"].last_command_at != nil
     end
@@ -32,7 +32,7 @@ defmodule TextBasedFPS.CommandExecutorTest do
       state = ServerState.new()
 
       assert {:error, ^state, error_message} =
-        CommandExecutor.execute(state, "foo", "my-command hello world", commands)
+               CommandExecutor.execute(state, "foo", "my-command hello world", commands)
 
       assert error_message =~ "session has expired"
     end
@@ -41,9 +41,9 @@ defmodule TextBasedFPS.CommandExecutorTest do
       commands = %{}
 
       assert {:error, _state, "Command not found"} =
-        ServerState.new()
-        |> ServerState.add_player("foo")
-        |> CommandExecutor.execute("foo", "my-command hello world", commands)
+               ServerState.new()
+               |> ServerState.add_player("foo")
+               |> CommandExecutor.execute("foo", "my-command hello world", commands)
     end
   end
 

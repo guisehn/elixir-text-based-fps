@@ -19,28 +19,31 @@ defmodule TextBasedFPS.PlayerCommand.Look do
     room_player = Room.get_player(room, player.key)
     game_matrix = room.game_map.matrix
 
-    vision_matrix = GameMap.Matrix.iterate_towards(
-      room.game_map.matrix,
-      room_player.coordinates,
-      room_player.direction,
-      # Generate the view based on a clean version of the map showing only walls and empty spaces
-      GameMap.Matrix.clean(game_matrix),
-      fn coordinates, vision_matrix ->
-        cond do
-          # Player can't see behind walls. If we find one, stop it.
-          GameMap.Matrix.wall_at?(game_matrix, coordinates) ->
-            {:stop, vision_matrix}
+    vision_matrix =
+      GameMap.Matrix.iterate_towards(
+        room.game_map.matrix,
+        room_player.coordinates,
+        room_player.direction,
+        # Generate the view based on a clean version of the map showing only walls and empty spaces
+        GameMap.Matrix.clean(game_matrix),
+        fn coordinates, vision_matrix ->
+          cond do
+            # Player can't see behind walls. If we find one, stop it.
+            GameMap.Matrix.wall_at?(game_matrix, coordinates) ->
+              {:stop, vision_matrix}
 
-          # Object or enemy
-          GameMap.Matrix.object_at?(game_matrix, coordinates) ->
-            object = GameMap.Matrix.at(game_matrix, coordinates)
-            {:continue, GameMap.Matrix.set(vision_matrix, coordinates, display_object(object, room))}
+            # Object or enemy
+            GameMap.Matrix.object_at?(game_matrix, coordinates) ->
+              object = GameMap.Matrix.at(game_matrix, coordinates)
 
-          true ->
-            {:continue, vision_matrix}
+              {:continue,
+               GameMap.Matrix.set(vision_matrix, coordinates, display_object(object, room))}
+
+            true ->
+              {:continue, vision_matrix}
+          end
         end
-      end
-    )
+      )
 
     GameMap.Matrix.set(vision_matrix, room_player.coordinates, display_me(room_player, room))
     |> Stream.map(fn line -> Enum.join(line, " ") end)

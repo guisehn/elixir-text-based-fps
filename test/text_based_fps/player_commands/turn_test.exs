@@ -16,9 +16,10 @@ defmodule TextBasedFPS.PlayerCommands.TurnTest do
   end
 
   test "requires player to be alive", %{state: state} do
-    state = state
-    |> ServerState.add_room("spaceship", "foo")
-    |> ServerState.update_room("spaceship", &(Room.kill_player(&1, "foo")))
+    state =
+      state
+      |> ServerState.add_room("spaceship", "foo")
+      |> ServerState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
     assert {:error, _state, error_message} = CommandExecutor.execute(state, "foo", "turn east")
     assert error_message =~ "You're dead"

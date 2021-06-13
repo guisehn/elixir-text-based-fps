@@ -17,8 +17,8 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
 
   defp join_room(state, player, room_name) do
     with :ok <- check_already_in_room(player, room_name),
-        {:ok, state} <- join_existing_or_create_room(state, room_name, player.key),
-        state <- notify_room(state, room_name, player) do
+         {:ok, state} <- join_existing_or_create_room(state, room_name, player.key),
+         state <- notify_room(state, room_name, player) do
       {:ok, state, success_message(room_name)}
     else
       {:error, reason} -> {:error, state, reason}
@@ -28,6 +28,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   defp check_already_in_room(player, room_name) when player.room == room_name do
     {:error, "You're already in this room"}
   end
+
   defp check_already_in_room(_player, _room_name), do: :ok
 
   defp join_existing_or_create_room(state, room_name, player_key) do
@@ -64,9 +65,11 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   defp name_validation_error_message(:empty) do
     "Room name cannot be empty"
   end
+
   defp name_validation_error_message(:too_large) do
     "Room name cannot exceed 20 characters"
   end
+
   defp name_validation_error_message(:invalid_chars) do
     "Room name can only contain letters, numbers and hyphens"
   end

@@ -16,19 +16,21 @@ defmodule TextBasedFPS.PlayerCommands.HealthTest do
   end
 
   test "returns health", %{state: state} do
-    state = state
-    |> ServerState.add_room("spaceship", "foo")
-    |> ServerState.update_room("spaceship", fn room ->
-      Room.update_player(room, "foo", &(Map.put(&1, :health, 50)))
-    end)
+    state =
+      state
+      |> ServerState.add_room("spaceship", "foo")
+      |> ServerState.update_room("spaceship", fn room ->
+        Room.update_player(room, "foo", &Map.put(&1, :health, 50))
+      end)
 
     assert {:ok, _state, "Health: 50%"} = CommandExecutor.execute(state, "foo", "health")
   end
 
   test "works when player is dead", %{state: state} do
-    state = state
-    |> ServerState.add_room("spaceship", "foo")
-    |> ServerState.update_room("spaceship", &(Room.kill_player(&1, "foo")))
+    state =
+      state
+      |> ServerState.add_room("spaceship", "foo")
+      |> ServerState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
     assert {:ok, _state, "Health: 0%"} = CommandExecutor.execute(state, "foo", "health")
   end
