@@ -41,7 +41,7 @@ defmodule TextBasedFPS.PlayerCommands.FireTest do
     assert updated_state.rooms["spaceship"].players["foo"].ammo == {0, 5}
   end
 
-  test "returns specific message if user is out of ammo", %{state: state} do
+  test "returns specific message if the player is out of ammo", %{state: state} do
     state =
       ServerState.update_room(state, "spaceship", fn room ->
         Room.update_player(room, "foo", &Map.put(&1, :ammo, {0, 0}))
@@ -58,7 +58,8 @@ defmodule TextBasedFPS.PlayerCommands.FireTest do
         Room.update_player(room, "foo", &Map.put(&1, :ammo, {5, 8}))
       end)
 
-    assert {:ok, %ServerState{}, _message} = CommandExecutor.execute(state, "foo", "fire")
+    assert {:ok, updated_state, _message} = CommandExecutor.execute(state, "foo", "fire")
+    assert updated_state.rooms["spaceship"].players["foo"].ammo == {4, 8}
   end
 
   describe "shot enemy" do
