@@ -65,17 +65,16 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
 
             GameMap.Matrix.player_at?(matrix, coordinate) ->
               player = GameMap.Matrix.at(matrix, coordinate)
-              distance = acc.distance + 1
 
               updated_acc =
                 acc
-                |> Map.put(:distance, distance)
-                |> Map.put(:players, acc.players ++ [{player.player_key, distance}])
+                |> Map.put(:players, acc.players ++ [{player.player_key, acc.distance}])
+                |> Map.put(:distance, acc.distance + 1)
 
               {:continue, updated_acc}
 
             true ->
-              {:continue, acc}
+              {:continue, Map.put(acc, :distance, acc.distance + 1)}
           end
         end
       )
