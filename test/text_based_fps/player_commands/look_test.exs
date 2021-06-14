@@ -12,8 +12,7 @@ defmodule TextBasedFPS.PlayerCommands.LookTest do
   end
 
   test "requires player to be in a room", %{state: state} do
-    assert {:error, %ServerState{}, error_message} =
-             CommandExecutor.execute(state, "foo", "turn east")
+    assert {:error, %ServerState{}, error_message} = CommandExecutor.execute(state, "foo", "look")
 
     assert error_message =~ "You need to be in a room"
   end
@@ -24,8 +23,7 @@ defmodule TextBasedFPS.PlayerCommands.LookTest do
       |> ServerState.add_room("spaceship", "foo")
       |> ServerState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
-    assert {:error, %ServerState{}, error_message} =
-             CommandExecutor.execute(state, "foo", "turn east")
+    assert {:error, %ServerState{}, error_message} = CommandExecutor.execute(state, "foo", "look")
 
     assert error_message =~ "You're dead"
   end
