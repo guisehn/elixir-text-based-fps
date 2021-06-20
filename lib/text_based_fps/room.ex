@@ -1,8 +1,5 @@
 defmodule TextBasedFPS.Room do
-  alias TextBasedFPS.Player
-  alias TextBasedFPS.Room
-  alias TextBasedFPS.RoomPlayer
-  alias TextBasedFPS.GameMap
+  alias TextBasedFPS.{GameMap, Player, Room, RoomPlayer}
 
   @type t :: %TextBasedFPS.Room{
           name: String.t(),

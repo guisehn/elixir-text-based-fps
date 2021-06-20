@@ -1,10 +1,7 @@
 defmodule TextBasedFPS.PlayerCommand.Look do
-  alias TextBasedFPS.GameMap
-  alias TextBasedFPS.PlayerCommand
-  alias TextBasedFPS.Room
-  alias TextBasedFPS.Text
-
   import TextBasedFPS.CommandHelper
+
+  alias TextBasedFPS.{GameMap, PlayerCommand, Room, Text}
 
   @behaviour PlayerCommand
 

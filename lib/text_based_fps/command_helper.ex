@@ -1,8 +1,7 @@
 defmodule TextBasedFPS.CommandHelper do
-  alias TextBasedFPS.ServerState
-  alias TextBasedFPS.Room
-
   import TextBasedFPS.Text, only: [highlight: 1]
+
+  alias TextBasedFPS.{Room, ServerState}
 
   @spec require_alive_player(ServerState.t(), Player.t()) ::
           {:ok, Room.t()} | {:error, ServerState.t(), String.t()}

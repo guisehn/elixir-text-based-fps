@@ -1,10 +1,8 @@
 defmodule TextBasedFPS.PlayerCommand.Turn do
-  alias TextBasedFPS.PlayerCommand
-  alias TextBasedFPS.Direction
-  alias TextBasedFPS.Room
-
   import TextBasedFPS.CommandHelper
   import TextBasedFPS.Text, only: [highlight: 1]
+
+  alias TextBasedFPS.{Direction, PlayerCommand, Room}
 
   @behaviour PlayerCommand
 

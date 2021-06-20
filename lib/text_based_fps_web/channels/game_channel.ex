@@ -1,9 +1,8 @@
 defmodule TextBasedFPSWeb.GameChannel do
-  alias TextBasedFPSWeb.Endpoint
-  alias TextBasedFPS.ServerAgent
-  alias TextBasedFPS.Text
-
   use TextBasedFPSWeb, :channel
+
+  alias TextBasedFPSWeb.Endpoint
+  alias TextBasedFPS.{ServerAgent, Text}
 
   @impl true
   def join(_topic, _payload, socket) do

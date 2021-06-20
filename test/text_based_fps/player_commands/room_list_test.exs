@@ -1,8 +1,7 @@
 defmodule TextBasedFPS.PlayerCommands.RoomListTest do
-  alias TextBasedFPS.CommandExecutor
-  alias TextBasedFPS.ServerState
-
   use ExUnit.Case, async: true
+
+  alias TextBasedFPS.{CommandExecutor, ServerState}
 
   test "returns list of rooms sorted by amount of players" do
     assert {:ok, %ServerState{}, room_list} =

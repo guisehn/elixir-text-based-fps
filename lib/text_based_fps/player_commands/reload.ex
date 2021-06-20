@@ -1,9 +1,8 @@
 defmodule TextBasedFPS.PlayerCommand.Reload do
-  alias TextBasedFPS.PlayerCommand
-  alias TextBasedFPS.Room
-
   import TextBasedFPS.CommandHelper
   import TextBasedFPS.RoomPlayer, only: [display_ammo: 1, reload_gun: 1]
+
+  alias TextBasedFPS.{PlayerCommand, Room}
 
   @behaviour PlayerCommand
 

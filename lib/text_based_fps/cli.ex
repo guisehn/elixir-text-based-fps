@@ -1,6 +1,5 @@
 defmodule TextBasedFPS.CLI do
-  alias TextBasedFPS.ServerAgent
-  alias TextBasedFPS.Text
+  alias TextBasedFPS.{ServerAgent, Text}
 
   def start do
     ServerAgent.start_link([])

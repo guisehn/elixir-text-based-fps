@@ -1,9 +1,7 @@
 defmodule TextBasedFPS.PlayerCommand.Respawn do
-  alias TextBasedFPS.PlayerCommand
-  alias TextBasedFPS.Room
-  alias TextBasedFPS.ServerState
-
   import TextBasedFPS.CommandHelper
+
+  alias TextBasedFPS.{PlayerCommand, Room, ServerState}
 
   @behaviour PlayerCommand
 

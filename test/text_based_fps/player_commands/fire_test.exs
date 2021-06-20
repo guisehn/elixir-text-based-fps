@@ -1,11 +1,7 @@
 defmodule TextBasedFPS.PlayerCommands.FireTest do
-  alias TextBasedFPS.CommandExecutor
-  alias TextBasedFPS.Room
-  alias TextBasedFPS.RoomPlayer
-  alias TextBasedFPS.ServerState
-  alias TextBasedFPS.Text
-
   use ExUnit.Case, async: true
+
+  alias TextBasedFPS.{CommandExecutor, Room, RoomPlayer, ServerState, Text}
 
   setup do
     state =

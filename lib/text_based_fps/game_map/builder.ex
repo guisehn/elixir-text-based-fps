@@ -1,12 +1,10 @@
 defmodule TextBasedFPS.GameMap.Builder do
-  alias TextBasedFPS.GameMap
+  alias TextBasedFPS.{Direction, GameMap}
   alias TextBasedFPS.GameMap.RespawnPosition
-  alias TextBasedFPS.GameMap.TextParser
-  alias TextBasedFPS.Direction
 
   @spec build(String.t()) :: GameMap.t()
   def build(text_representation) do
-    raw_matrix = TextParser.parse(text_representation)
+    raw_matrix = GameMap.TextParser.parse(text_representation)
     respawn_positions = get_respawn_positions(raw_matrix)
     matrix = GameMap.Matrix.clean(raw_matrix)
 

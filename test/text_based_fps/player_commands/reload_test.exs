@@ -1,11 +1,9 @@
 defmodule TextBasedFPS.PlayerCommands.ReloadTest do
-  alias TextBasedFPS.CommandExecutor
-  alias TextBasedFPS.Room
-  alias TextBasedFPS.ServerState
+  use ExUnit.Case, async: true
 
   import TextBasedFPS.RoomPlayer, only: [max_loaded_ammo: 0]
 
-  use ExUnit.Case, async: true
+  alias TextBasedFPS.{CommandExecutor, Room, ServerState}
 
   setup do
     state = ServerState.new() |> ServerState.add_player("foo")

@@ -1,10 +1,7 @@
 defmodule TextBasedFPS.ServerAgent do
   use Agent
 
-  alias TextBasedFPS.CommandExecutor
-  alias TextBasedFPS.Notification
-  alias TextBasedFPS.Player
-  alias TextBasedFPS.ServerState
+  alias TextBasedFPS.{CommandExecutor, Notification, Player, ServerState}
 
   def start_link(_) do
     Agent.start_link(&ServerState.new/0, name: __MODULE__)

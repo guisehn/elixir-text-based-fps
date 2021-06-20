@@ -1,7 +1,5 @@
 defmodule TextBasedFPS.PlayerCommands.AmmoTest do
-  alias TextBasedFPS.CommandExecutor
-  alias TextBasedFPS.ServerState
-  alias TextBasedFPS.Room
+  alias TextBasedFPS.{CommandExecutor, Room, ServerState}
 
   use ExUnit.Case, async: true
 

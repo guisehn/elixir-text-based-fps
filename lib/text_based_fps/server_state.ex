@@ -1,9 +1,5 @@
 defmodule TextBasedFPS.ServerState do
-  alias TextBasedFPS.Notification
-  alias TextBasedFPS.Player
-  alias TextBasedFPS.Room
-  alias TextBasedFPS.ServerState
-  alias TextBasedFPS.Text
+  alias TextBasedFPS.{Notification, Player, Room, ServerState, Text}
 
   @type t :: %ServerState{
           rooms: %{String.t() => Room.t()},

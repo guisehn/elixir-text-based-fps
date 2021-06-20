@@ -1,8 +1,7 @@
 defmodule TextBasedFPS.CommandExecutorTest do
-  alias TextBasedFPS.CommandExecutor
-  alias TextBasedFPS.ServerState
-
   use ExUnit.Case, async: true
+
+  alias TextBasedFPS.{CommandExecutor, ServerState}
 
   describe "execute/4" do
     test "executes command and updates 'last_command_at' of executor" do

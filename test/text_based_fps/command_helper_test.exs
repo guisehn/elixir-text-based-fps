@@ -1,9 +1,7 @@
 defmodule TextBasedFPS.CommandHelperTest do
-  alias TextBasedFPS.CommandHelper
-  alias TextBasedFPS.Room
-  alias TextBasedFPS.ServerState
-
   use ExUnit.Case, async: true
+
+  alias TextBasedFPS.{CommandHelper, Room, ServerState}
 
   setup do
     state = ServerState.new() |> ServerState.add_player("foo")

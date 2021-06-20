@@ -1,8 +1,7 @@
 defmodule TextBasedFPS.PlayerTest do
-  alias TextBasedFPS.Player
-  alias TextBasedFPS.ServerState
-
   use ExUnit.Case, async: true
+
+  alias TextBasedFPS.{Player, ServerState}
 
   describe "touch/1" do
     test "updates 'last_command_at' of player" do

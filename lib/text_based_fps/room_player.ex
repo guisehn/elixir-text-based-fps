@@ -1,7 +1,5 @@
 defmodule TextBasedFPS.RoomPlayer do
-  alias TextBasedFPS.Direction
-  alias TextBasedFPS.RoomPlayer
-  alias TextBasedFPS.Player
+  alias TextBasedFPS.{Direction, Player, RoomPlayer}
 
   @max_health 100
   @max_loaded_ammo 8

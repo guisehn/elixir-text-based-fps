@@ -1,8 +1,6 @@
 defmodule TextBasedFPS.RoomTest do
-  alias TextBasedFPS.Room
-  alias TextBasedFPS.RoomPlayer
-  alias TextBasedFPS.GameMap.Matrix
-  alias TextBasedFPS.GameMap.Objects
+  alias TextBasedFPS.{Room, RoomPlayer}
+  alias TextBasedFPS.GameMap.{Matrix, Objects}
 
   use ExUnit.Case, async: true
 

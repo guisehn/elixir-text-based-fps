@@ -1,7 +1,5 @@
 defmodule TextBasedFPS.CommandExecutor do
-  alias TextBasedFPS.Player
-  alias TextBasedFPS.PlayerCommand
-  alias TextBasedFPS.ServerState
+  alias TextBasedFPS.{Player, PlayerCommand, ServerState}
 
   @commands %{
     "room-list" => PlayerCommand.RoomList,

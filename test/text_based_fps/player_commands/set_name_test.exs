@@ -1,8 +1,7 @@
 defmodule TextBasedFPS.PlayerCommands.SetNameTest do
-  alias TextBasedFPS.CommandExecutor
-  alias TextBasedFPS.ServerState
-
   use ExUnit.Case, async: true
+
+  alias TextBasedFPS.{CommandExecutor, ServerState}
 
   setup do
     state = ServerState.new() |> ServerState.add_player("foo")

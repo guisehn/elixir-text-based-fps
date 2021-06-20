@@ -1,13 +1,15 @@
 defmodule TextBasedFPS.PlayerCommand.Fire do
-  alias TextBasedFPS.PlayerCommand
-  alias TextBasedFPS.ServerState
-  alias TextBasedFPS.GameMap
-  alias TextBasedFPS.Room
-  alias TextBasedFPS.RoomPlayer
-  alias TextBasedFPS.Notification
-
   import TextBasedFPS.CommandHelper
   import TextBasedFPS.Text, only: [danger: 1, highlight: 1]
+
+  alias TextBasedFPS.{
+    GameMap,
+    Notification,
+    PlayerCommand,
+    Room,
+    RoomPlayer,
+    ServerState
+  }
 
   @behaviour PlayerCommand
 

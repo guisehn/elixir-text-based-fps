@@ -1,10 +1,8 @@
 defmodule TextBasedFPS.GameMap.RespawnPosition do
-  alias TextBasedFPS.Direction
-  alias TextBasedFPS.GameMap.Coordinates
-  alias TextBasedFPS.GameMap.Matrix
-  alias TextBasedFPS.Room
+  alias TextBasedFPS.{Direction, Room}
+  alias TextBasedFPS.GameMap.{Coordinates, Matrix, RespawnPosition}
 
-  @type t :: %TextBasedFPS.GameMap.RespawnPosition{
+  @type t :: %RespawnPosition{
           coordinates: Coordinates.t(),
           direction: Direction.t()
         }

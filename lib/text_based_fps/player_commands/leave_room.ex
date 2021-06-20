@@ -1,8 +1,7 @@
 defmodule TextBasedFPS.PlayerCommand.LeaveRoom do
-  alias TextBasedFPS.PlayerCommand
-  alias TextBasedFPS.ServerState
-
   import TextBasedFPS.CommandHelper
+
+  alias TextBasedFPS.{PlayerCommand, ServerState}
 
   @behaviour PlayerCommand
 

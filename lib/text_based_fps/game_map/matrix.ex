@@ -1,8 +1,6 @@
 defmodule TextBasedFPS.GameMap.Matrix do
-  alias TextBasedFPS.GameMap
-  alias TextBasedFPS.GameMap.Coordinates
-  alias TextBasedFPS.GameMap.Objects
-  alias TextBasedFPS.Direction
+  alias TextBasedFPS.{Direction, GameMap}
+  alias TextBasedFPS.GameMap.{Coordinates, Objects}
 
   @type t :: list(list(item_t))
   @type item_t :: :" " | :"#" | GameMap.Object.t()

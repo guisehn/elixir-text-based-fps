@@ -1,8 +1,9 @@
 defmodule TextBasedFPS.DirectionTest do
-  require TextBasedFPS.Direction
+  use ExUnit.Case, async: true
+
   alias TextBasedFPS.Direction
 
-  use ExUnit.Case, async: true
+  require TextBasedFPS.Direction
 
   test "is_direction/1" do
     assert Direction.is_direction(:north) == true

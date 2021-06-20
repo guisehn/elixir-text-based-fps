@@ -1,11 +1,7 @@
 defmodule TextBasedFPS.PlayerCommands.RespawnPlayerTest do
-  alias TextBasedFPS.CommandExecutor
-  alias TextBasedFPS.GameMap.Matrix
-  alias TextBasedFPS.Room
-  alias TextBasedFPS.RoomPlayer
-  alias TextBasedFPS.ServerState
-
   use ExUnit.Case, async: true
+
+  alias TextBasedFPS.{CommandExecutor, GameMap, Room, RoomPlayer, ServerState}
 
   setup do
     state = ServerState.new() |> ServerState.add_player("foo")
@@ -32,7 +28,9 @@ defmodule TextBasedFPS.PlayerCommands.RespawnPlayerTest do
     assert room.players["foo"].coordinates != nil
     assert room.players["foo"].direction != nil
     assert room.players["foo"].ammo != {0, 0}
-    assert Matrix.player_at?(room.game_map.matrix, room.players["foo"].coordinates, "foo") == true
+
+    assert GameMap.Matrix.player_at?(room.game_map.matrix, room.players["foo"].coordinates, "foo") ==
+             true
   end
 
   test "doesn't respawn player if they're alive", %{state: state} do

@@ -1,8 +1,7 @@
 defmodule TextBasedFPS.PlayerCommand.Health do
-  alias TextBasedFPS.PlayerCommand
-  alias TextBasedFPS.Room
-
   import TextBasedFPS.CommandHelper
+
+  alias TextBasedFPS.{PlayerCommand, Room}
 
   @behaviour PlayerCommand
 

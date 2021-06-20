@@ -1,8 +1,7 @@
 defmodule TextBasedFPS.PlayerCommand.Score do
-  alias TextBasedFPS.PlayerCommand
-  alias TextBasedFPS.ServerState
-
   import TextBasedFPS.CommandHelper
+
+  alias TextBasedFPS.{PlayerCommand, ServerState}
 
   @table_header ~w(Name Score Deaths)
 
