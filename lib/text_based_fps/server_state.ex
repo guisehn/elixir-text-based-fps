@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.ServerState do
-  alias TextBasedFPS.{Notification, Player, Room, ServerState, Text}
+  alias TextBasedFPS.{Player, ServerState}
 
   @type t :: %ServerState{
           rooms: %{String.t() => Room.t()},
@@ -32,5 +32,7 @@ defmodule TextBasedFPS.ServerState do
   defdelegate update_room(state, room), to: ServerState.Rooms
   defdelegate remove_player_from_current_room(state, player_key), to: ServerState.Rooms
   defdelegate notify_room(state, room_name, notification_body), to: ServerState.Rooms
-  defdelegate notify_room_except_player(state, room_name, except_player_key, notification_body), to: ServerState.Rooms
+
+  defdelegate notify_room_except_player(state, room_name, except_player_key, notification_body),
+    to: ServerState.Rooms
 end

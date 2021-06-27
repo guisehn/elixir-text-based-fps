@@ -29,7 +29,9 @@ defmodule TextBasedFPS.ServerState.Rooms do
     state
     |> remove_player_from_current_room(player_key)
     |> update_room(room_name, fn room -> Room.add_player(room, player_key) end)
-    |> ServerState.Players.update_player(player_key, fn player -> Map.put(player, :room, room_name) end)
+    |> ServerState.Players.update_player(player_key, fn player ->
+      Map.put(player, :room, room_name)
+    end)
   end
 
   @spec update_room(ServerState.t(), Room.t()) :: ServerState.t()
