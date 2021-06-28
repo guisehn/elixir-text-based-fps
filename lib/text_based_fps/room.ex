@@ -4,7 +4,7 @@ defmodule TextBasedFPS.Room do
   @type t :: %TextBasedFPS.Room{
           name: String.t(),
           game_map: TextBasedFPS.GameMap.t(),
-          players: %{String.t() => TextBasedFPS.RoomPlayer.t()}
+          players: %{Player.key_t() => TextBasedFPS.RoomPlayer.t()}
         }
 
   defstruct [:name, :game_map, :players]

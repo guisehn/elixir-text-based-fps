@@ -8,7 +8,7 @@ defmodule TextBasedFPS.Player do
           last_command_at: DateTime.t() | nil
         }
 
-  @type key_t :: String.t()
+  @type key_t :: String.t() | pid()
 
   defstruct [:key, name: nil, room: nil, last_command_at: nil]
 

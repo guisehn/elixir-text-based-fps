@@ -22,20 +22,11 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 ### Running in your terminal
 
-It can also be played in the terminal, controlling one player at a time.
-
-I started the code running it this way to help testing, before I added Phoenix to the project.
+It can also be played in the terminal.
 
   * Install dependencies with `mix deps.get`
-  * Run the task `mix cli`
-
-This will start the game with two players: `John` and `Jane` and add both to a room called `spaceship`.
-
-  * You'll start playing as `John`. Enter the game commands such as `look`, `move`, `turn`, etc to play.
-  * To switch between players, enter `switch-player 0` and `switch-player 1`.
-  * To add a new player, enter `add-player`. You can later switch back to it using `switch-player 2` (each new player increments the counter).
-  * To remove the current player, enter `remove-player`, then switch to another player. If you try to run a game command with a removed player, it'll crash.
-  * To view the server state, enter `view-state`.
+  * Run `mix cli.server` to start the server
+  * Run `mix cli.client` in another Terminal session to join the server. You can open multiple sessions for multiple players.
 
 ## How to deploy
 
