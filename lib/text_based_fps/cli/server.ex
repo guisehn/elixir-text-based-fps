@@ -1,22 +1,27 @@
 defmodule TextBasedFPS.CLI.Server do
   use Agent
 
+  alias Mix.Tasks.Cli.Client, as: MixClient
   alias TextBasedFPS.{CLI, ServerAgent, Text}
 
-  @node_name :"text-based-fps-server@0.0.0.0"
+  @node_name :"text-based-fps-server"
   @welcome "Welcome to the text-based FPS! Type #{Text.highlight("set-name <your name>")} to join the game."
 
-  def start do
+  def start(options) do
     Node.start(@node_name)
+    CLI.Utils.maybe_set_cookie(options)
 
-    IO.puts("Server started: #{@node_name}")
+    IO.puts("Server node started: #{Node.self()}")
     IO.puts("Cookie: #{Node.get_cookie()}")
-    IO.puts("You can now connect new clients by running 'mix cli.client'")
-    IO.puts("You can also run commands below to manage the server:")
+    IO.puts("Connect a new player locally by running '#{MixClient.example()}' in another terminal session.")
+    IO.puts("If you wanna join from another computer on the same network, '#{external_connection_example()}'")
+    IO.puts("You can also run commands to manage the server:")
     IO.puts("")
 
     CLI.Server.Console.start()
   end
+
+  def node_name, do: @node_name
 
   def join_client(player_pid) do
     ServerAgent.add_player(player_pid)
@@ -43,5 +48,7 @@ defmodule TextBasedFPS.CLI.Server do
     send(player_pid, {:notification, body})
   end
 
-  def node_name, do: @node_name
+  defp external_connection_example do
+    MixClient.example(Node.self(), Node.get_cookie())
+  end
 end
