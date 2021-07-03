@@ -13,8 +13,17 @@ defmodule TextBasedFPS.CLI.Server do
 
     IO.puts("Server node started: #{Node.self()}")
     IO.puts("Cookie: #{Node.get_cookie()}")
-    IO.puts("Connect a new player locally by running '#{MixClient.example()}' in another terminal session.")
-    IO.puts("If you wanna join from another computer on the same network, '#{external_connection_example()}'")
+
+    IO.puts(
+      "Connect a new player locally by running '#{MixClient.example()}' in another terminal session."
+    )
+
+    IO.puts(
+      "If you wanna join from another computer on the same network, '#{
+        external_connection_example()
+      }'"
+    )
+
     IO.puts("You can also run commands to manage the server:")
     IO.puts("")
 
