@@ -28,8 +28,8 @@ defmodule TextBasedFPS.ServerState do
   defdelegate add_room(state, room_name, player_key), to: ServerState.Rooms
   defdelegate get_room(state, room_name), to: ServerState.Rooms
   defdelegate update_room(state, room_name, fun), to: ServerState.Rooms
-  defdelegate join_room(state, room_name, player_key), to: ServerState.Rooms
   defdelegate update_room(state, room), to: ServerState.Rooms
+  defdelegate join_room(state, room_name, player_key), to: ServerState.Rooms
   defdelegate remove_player_from_current_room(state, player_key), to: ServerState.Rooms
   defdelegate notify_room(state, room_name, notification_body), to: ServerState.Rooms
 

@@ -24,6 +24,11 @@ defmodule TextBasedFPS.ServerState.Rooms do
     put_in(state.rooms[room_name], updated_room)
   end
 
+  @spec update_room(ServerState.t(), Room.t()) :: ServerState.t()
+  def update_room(state, room) when is_map(room) do
+    put_in(state.rooms[room.name], room)
+  end
+
   @spec join_room(ServerState.t(), String.t(), Player.key_t()) :: ServerState.t()
   def join_room(state, room_name, player_key) do
     state
@@ -32,11 +37,6 @@ defmodule TextBasedFPS.ServerState.Rooms do
     |> ServerState.Players.update_player(player_key, fn player ->
       Map.put(player, :room, room_name)
     end)
-  end
-
-  @spec update_room(ServerState.t(), Room.t()) :: ServerState.t()
-  def update_room(state, room) when is_map(room) do
-    put_in(state.rooms[room.name], room)
   end
 
   @spec remove_player_from_current_room(ServerState.t(), Player.key_t()) :: ServerState.t()
