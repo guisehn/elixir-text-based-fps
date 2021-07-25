@@ -88,7 +88,45 @@ defmodule TextBasedFPS.PlayerCommands.JoinRoomTest do
     end
   end
 
-  describe "room is full" do
+  describe "full room" do
+    setup %{state: state} do
+      %{state: add_full_room(state)}
+    end
+
+    test "returns error", %{state: state} do
+      assert {:error, _state, message} = CommandExecutor.execute(state, "foo", "join-room full-room")
+      assert message =~ "This room is full"
+    end
+
+    test "does not change anything on the target room", %{state: state} do
+      assert {:error, updated_state, _message} = CommandExecutor.execute(state, "foo", "join-room full-room")
+      assert updated_state.rooms["full-room"] == state.rooms["full-room"]
+    end
+
+    test "keeps player out of room", %{state: state} do
+      assert {:error, state, _message} = CommandExecutor.execute(state, "foo", "join-room full-room")
+      assert state.players["foo"].room == nil
+    end
+
+    test "doesn't remove player from current room, if player is already in a room", %{state: state} do
+      assert {:ok, state, _message} = CommandExecutor.execute(state, "foo", "join-room spaceship")
+      assert {:error, updated_state, _message} = CommandExecutor.execute(state, "foo", "join-room full-room")
+      assert state.players["foo"].room == "spaceship"
+      assert updated_state.rooms["spaceship"] == state.rooms["spaceship"]
+    end
+
+    defp add_full_room(state) do
+      state = ServerState.add_room(state, "full-room")
+      respawn_positions = state.rooms["full-room"].game_map.respawn_positions |> length()
+
+      state =
+        1..respawn_positions
+        |> Enum.reduce(state, fn n, state ->
+          state
+          |> ServerState.add_player("player-#{n}")
+          |> ServerState.join_room!("full-room", "player-#{n}")
+        end)
+    end
   end
 
   describe "player already in room" do
