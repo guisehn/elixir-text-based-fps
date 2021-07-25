@@ -4,18 +4,8 @@ defmodule TextBasedFPS.RoomTest do
 
   use ExUnit.Case, async: true
 
-  test "add_player/2" do
-    room = Room.new("room") |> Room.add_player("foo")
-    assert Map.has_key?(room.players, "foo") == true
-    assert room.players["foo"].health == RoomPlayer.max_health()
-    assert room.players["foo"].coordinates != nil
-    assert room.players["foo"].direction != nil
-    assert room.players["foo"].ammo != {0, 0}
-    assert Matrix.player_at?(room.game_map.matrix, room.players["foo"].coordinates, "foo") == true
-  end
-
   test "remove_player/2" do
-    room = Room.new("room") |> Room.add_player("foo") |> Room.add_player("bar")
+    room = Room.new("room") |> Room.add_player!("foo") |> Room.add_player!("bar")
     room = Room.remove_player(room, "foo")
     assert Map.has_key?(room.players, "foo") == false
 
@@ -40,7 +30,7 @@ defmodule TextBasedFPS.RoomTest do
     test "dead player is respawned" do
       {:ok, room} =
         Room.new("room")
-        |> Room.add_player("foo")
+        |> Room.add_player!("foo")
         |> Room.remove_player_from_map("foo")
         |> Room.update_player("foo", &Map.put(&1, :health, 0))
         |> Room.respawn_player("foo")
@@ -57,7 +47,7 @@ defmodule TextBasedFPS.RoomTest do
     test "alive player is not respawned" do
       room =
         Room.new("room")
-        |> Room.add_player("foo")
+        |> Room.add_player!("foo")
         |> Room.update_player("foo", &Map.put(&1, :health, 90))
 
       {:error, room, :player_is_alive} = Room.respawn_player(room, "foo")
@@ -69,7 +59,7 @@ defmodule TextBasedFPS.RoomTest do
     test "moves player to coordinates specified when place is empty" do
       assert {:ok, room, nil} =
                Room.new("room")
-               |> Room.add_player("foo")
+               |> Room.add_player!("foo")
                |> Room.place_player_at("foo", {1, 2})
 
       assert room.players["foo"].coordinates == {1, 2}
@@ -79,7 +69,7 @@ defmodule TextBasedFPS.RoomTest do
     test "does nothing and returns successfully if player is already there" do
       assert {:ok, room, nil} =
                Room.new("room")
-               |> Room.add_player("foo")
+               |> Room.add_player!("foo")
                |> Room.place_player_at("foo", {1, 2})
 
       assert {:ok, room, nil} = Room.place_player_at(room, "foo", {1, 2})
@@ -91,7 +81,7 @@ defmodule TextBasedFPS.RoomTest do
     test "moves player to coordinates and grabs object if coordinates specified has an object" do
       assert {:ok, room, object_grabbed} =
                Room.new("room")
-               |> Room.add_player("foo")
+               |> Room.add_player!("foo")
                |> Room.add_random_object({1, 2})
                |> Room.place_player_at("foo", {1, 2})
 
@@ -103,7 +93,7 @@ defmodule TextBasedFPS.RoomTest do
     test "returns error if coordinates specified have a wall" do
       assert {:error, room} =
                Room.new("room")
-               |> Room.add_player("foo")
+               |> Room.add_player!("foo")
                |> Room.place_player_at("foo", {0, 0})
 
       assert room.players["foo"].coordinates != {0, 0}
@@ -113,8 +103,8 @@ defmodule TextBasedFPS.RoomTest do
     test "returns error if coordinates specified have another player" do
       assert {:ok, room, nil} =
                Room.new("room")
-               |> Room.add_player("foo")
-               |> Room.add_player("bar")
+               |> Room.add_player!("foo")
+               |> Room.add_player!("bar")
                |> Room.place_player_at("bar", {1, 2})
 
       assert {:error, room} = Room.place_player_at(room, "foo", {1, 2})
@@ -127,7 +117,7 @@ defmodule TextBasedFPS.RoomTest do
     test "returns error if coordinates specified don't exist" do
       assert {:error, room} =
                Room.new("room")
-               |> Room.add_player("foo")
+               |> Room.add_player!("foo")
                |> Room.place_player_at("foo", {999, 999})
 
       assert room.players["foo"].coordinates != {999, 999}
@@ -139,7 +129,7 @@ defmodule TextBasedFPS.RoomTest do
     test "removes the player from the map" do
       room =
         Room.new("room")
-        |> Room.add_player("foo")
+        |> Room.add_player!("foo")
         |> Room.remove_player_from_map("foo")
 
       assert room.players["foo"].coordinates == nil
@@ -157,7 +147,7 @@ defmodule TextBasedFPS.RoomTest do
     test "does nothing if player is already out of the map" do
       room =
         Room.new("room")
-        |> Room.add_player("foo")
+        |> Room.add_player!("foo")
         |> Room.remove_player_from_map("foo")
         # do it twice
         |> Room.remove_player_from_map("foo")
@@ -179,7 +169,7 @@ defmodule TextBasedFPS.RoomTest do
     test "removes the player from the map and changes their health to 0" do
       room =
         Room.new("room")
-        |> Room.add_player("foo")
+        |> Room.add_player!("foo")
         |> Room.kill_player("foo")
 
       assert room.players["foo"].coordinates == nil
@@ -196,7 +186,7 @@ defmodule TextBasedFPS.RoomTest do
   end
 
   test "get_player/2" do
-    room = Room.new("room") |> Room.add_player("foo")
+    room = Room.new("room") |> Room.add_player!("foo")
     assert %RoomPlayer{player_key: "foo"} = Room.get_player(room, "foo")
     assert Room.get_player(room, "bar") == nil
   end
@@ -205,14 +195,14 @@ defmodule TextBasedFPS.RoomTest do
     test "with updater function" do
       room =
         Room.new("room")
-        |> Room.add_player("foo")
+        |> Room.add_player!("foo")
         |> Room.update_player("foo", fn player -> Map.put(player, :health, 50) end)
 
       assert room.players["foo"].health == 50
     end
 
     test "with updated player" do
-      room = Room.new("room") |> Room.add_player("foo")
+      room = Room.new("room") |> Room.add_player!("foo")
       updated_player = Map.put(room.players["foo"], :health, 50)
       updated_room = Room.update_player(room, "foo", updated_player)
 

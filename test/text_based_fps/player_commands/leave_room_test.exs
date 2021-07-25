@@ -11,7 +11,7 @@ defmodule TextBasedFPS.PlayerCommands.LeaveRoomTest do
       |> ServerState.add_player("bar")
       |> ServerState.update_player("bar", &Map.put(&1, :name, "bar"))
       |> ServerState.add_room("spaceship", "foo")
-      |> ServerState.join_room("spaceship", "bar")
+      |> ServerState.join_room!("spaceship", "bar")
 
     %{state: state}
   end

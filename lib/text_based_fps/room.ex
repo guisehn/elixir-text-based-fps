@@ -18,13 +18,22 @@ defmodule TextBasedFPS.Room do
     }
   end
 
-  @spec add_player(t, Player.key_t()) :: t
+  @spec add_player(t, Player.key_t()) :: {:ok, t} | {:error, t, :room_full}
   def add_player(room, player_key) do
-    {:ok, room} =
+    if Enum.count(room.players) == Enum.count(room.game_map.respawn_positions) do
+      {:error, room, :room_full}
+    else
       put_in(room.players[player_key], RoomPlayer.new(player_key))
       |> respawn_player(player_key)
+    end
+  end
 
-    room
+  @spec add_player!(t, Player.key_t()) :: t
+  def add_player!(room, player_key) do
+    case add_player(room, player_key) do
+      {:ok, updated_room} -> updated_room
+      {:error, _room, reason} -> raise("Cannot add player. Reason: #{reason}")
+    end
   end
 
   @spec remove_player(t, Player.key_t()) :: t

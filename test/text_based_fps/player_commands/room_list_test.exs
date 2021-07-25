@@ -11,7 +11,7 @@ defmodule TextBasedFPS.PlayerCommands.RoomListTest do
              |> ServerState.add_player("qux")
              |> ServerState.add_room("spaceship", "foo")
              |> ServerState.add_room("canyon", "baz")
-             |> ServerState.join_room("canyon", "qux")
+             |> ServerState.join_room!("canyon", "qux")
              |> ServerState.add_room("forest")
              |> CommandExecutor.execute("foo", "room-list")
 

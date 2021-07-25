@@ -47,9 +47,9 @@ defmodule TextBasedFPS.PlayerCommands.LookTest do
         |> ServerState.add_player("enemy1")
         |> ServerState.add_player("enemy2")
         |> ServerState.add_room("spaceship", "foo")
-        |> ServerState.join_room("spaceship", "enemy1")
-        |> ServerState.join_room("spaceship", "enemy2")
-        |> ServerState.join_room("spaceship", "enemy3")
+        |> ServerState.join_room!("spaceship", "enemy1")
+        |> ServerState.join_room!("spaceship", "enemy2")
+        |> ServerState.join_room!("spaceship", "enemy3")
         |> ServerState.update_room("spaceship", fn room ->
           room
           |> Room.remove_player_from_map("foo")

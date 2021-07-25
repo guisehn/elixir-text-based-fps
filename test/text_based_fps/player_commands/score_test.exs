@@ -24,8 +24,8 @@ defmodule TextBasedFPS.PlayerCommands.ScoreTest do
              |> ServerState.update_player("bar", &Map.put(&1, :name, "bar"))
              |> ServerState.update_player("qux", &Map.put(&1, :name, "qux"))
              |> ServerState.add_room("spaceship", "foo")
-             |> ServerState.join_room("spaceship", "bar")
-             |> ServerState.join_room("spaceship", "qux")
+             |> ServerState.join_room!("spaceship", "bar")
+             |> ServerState.join_room!("spaceship", "qux")
              |> ServerState.update_room("spaceship", fn room ->
                room
                |> Room.update_player("qux", &Map.put(&1, :kills, 10))

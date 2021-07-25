@@ -88,6 +88,9 @@ defmodule TextBasedFPS.PlayerCommands.JoinRoomTest do
     end
   end
 
+  describe "room is full" do
+  end
+
   describe "player already in room" do
     test "returns error if user is already on the same room", %{state: state} do
       assert {:ok, state, _} = CommandExecutor.execute(state, "foo", "join-room spaceship")

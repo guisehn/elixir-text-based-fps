@@ -66,7 +66,7 @@ defmodule TextBasedFPS.PlayerCommands.FireTest do
         state
         |> ServerState.add_player("enemy")
         |> ServerState.update_player("enemy", &Map.put(&1, :name, "enemy"))
-        |> ServerState.join_room("spaceship", "enemy")
+        |> ServerState.join_room!("spaceship", "enemy")
         |> ServerState.update_room("spaceship", fn room ->
           room
           |> Room.remove_player_from_map("foo")
@@ -201,7 +201,7 @@ defmodule TextBasedFPS.PlayerCommands.FireTest do
         state
         |> ServerState.add_player("enemy2")
         |> ServerState.update_player("enemy2", &Map.put(&1, :name, "enemy2"))
-        |> ServerState.join_room("spaceship", "enemy2")
+        |> ServerState.join_room!("spaceship", "enemy2")
         |> ServerState.update_room("spaceship", fn room ->
           room
           |> Room.remove_player_from_map("enemy2")

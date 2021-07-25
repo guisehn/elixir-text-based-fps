@@ -37,8 +37,8 @@ defmodule TextBasedFPS.PlayerCommands.SetNameTest do
       |> ServerState.add_player("player-in-another-room")
       |> ServerState.update_player("foo", &Map.put(&1, :name, "gui"))
       |> ServerState.add_room("spaceship", "foo")
-      |> ServerState.join_room("spaceship", "bar")
-      |> ServerState.join_room("spaceship", "qux")
+      |> ServerState.join_room!("spaceship", "bar")
+      |> ServerState.join_room!("spaceship", "qux")
       |> ServerState.add_room("another-room", "player-in-another-room")
       |> CommandExecutor.execute("foo", "set-name new-name")
 

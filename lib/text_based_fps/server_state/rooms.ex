@@ -11,7 +11,7 @@ defmodule TextBasedFPS.ServerState.Rooms do
     state
     |> remove_player_from_current_room(player_key)
     |> add_room(room_name)
-    |> join_room(room_name, player_key)
+    |> join_room!(room_name, player_key)
   end
 
   @spec get_room(ServerState.t(), String.t()) :: Room.t() | nil
@@ -29,14 +29,35 @@ defmodule TextBasedFPS.ServerState.Rooms do
     put_in(state.rooms[room.name], room)
   end
 
-  @spec join_room(ServerState.t(), String.t(), Player.key_t()) :: ServerState.t()
+  @spec join_room(ServerState.t(), String.t(), Player.key_t()) ::
+          {:ok, ServerState.t()} | {:error, ServerState.t(), :room_full}
   def join_room(state, room_name, player_key) do
-    state
-    |> remove_player_from_current_room(player_key)
-    |> update_room(room_name, fn room -> Room.add_player(room, player_key) end)
-    |> ServerState.Players.update_player(player_key, fn player ->
-      Map.put(player, :room, room_name)
-    end)
+    draft_state = remove_player_from_current_room(state, player_key)
+    room = draft_state.rooms[room_name]
+
+    case Room.add_player(room, player_key) do
+      {:ok, room} ->
+        state =
+          draft_state
+          |> update_room(room)
+          |> ServerState.Players.update_player(player_key, &Map.put(&1, :room, room_name))
+
+        {:ok, state}
+
+      {:error, _room, reason} ->
+        {:error, state, reason}
+    end
+  end
+
+  @spec join_room!(ServerState.t(), String.t(), Player.key_t()) :: ServerState.t()
+  def join_room!(state, room_name, player_key) do
+    case join_room(state, room_name, player_key) do
+      {:ok, updated_state} ->
+        updated_state
+
+      {:error, _state, reason} ->
+        raise("'#{player_key}' cannot join '#{room_name}'. Reason: #{reason}")
+    end
   end
 
   @spec remove_player_from_current_room(ServerState.t(), Player.key_t()) :: ServerState.t()

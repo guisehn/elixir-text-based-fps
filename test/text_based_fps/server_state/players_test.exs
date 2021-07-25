@@ -58,7 +58,7 @@ defmodule TextBasedFPS.ServerState.PlayersTest do
         |> ServerState.add_player("foo")
         |> ServerState.add_player("bar")
         |> ServerState.add_room("spaceship", "foo")
-        |> ServerState.join_room("spaceship", "bar")
+        |> ServerState.join_room!("spaceship", "bar")
         |> ServerState.remove_player("foo")
 
       refute Map.has_key?(state.players, "foo")
