@@ -26,7 +26,10 @@ defmodule TextBasedFPS.CLI.Server do
       }'"
     )
 
-    IO.puts(~s(You can also type commands below to manage the server. Type "help" to see available commands.))
+    IO.puts(
+      ~s(You can also type commands below to manage the server. Type "help" to see available commands.)
+    )
+
     IO.puts("")
 
     CLI.Server.Console.start()
@@ -41,8 +44,13 @@ defmodule TextBasedFPS.CLI.Server do
   end
 
   defp epmd_warning do
-    if Node.self() == :"nonode@nohost" do
-      IO.puts(Text.danger("Looks like epmd is not running. Run the 'epmd' daemon before starting the server."))
+    if Node.self() == :nonode@nohost do
+      IO.puts(
+        Text.danger(
+          "Looks like epmd is not running. Run the 'epmd' daemon before starting the server."
+        )
+      )
+
       IO.puts("")
     end
   end

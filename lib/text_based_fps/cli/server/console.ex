@@ -26,5 +26,6 @@ defmodule TextBasedFPS.CLI.Server.Console do
 
   defp command(""), do: nil
 
-  defp command(_), do: IO.puts(Text.danger(~s(Command not found. Type "help" to see the available commands.)))
+  defp command(_),
+    do: IO.puts(Text.danger(~s(Command not found. Type "help" to see the available commands.)))
 end
