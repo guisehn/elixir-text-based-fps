@@ -22,9 +22,12 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 ### Running in your terminal
 
-It can also be played in the terminal.
+It can also be played in the terminal using OTP distribution.
+
+In theory it should be able to work in multiple machines but I haven't been able to make it work just yet.
 
   * Install dependencies with `mix deps.get`
+  * Ensure that the [epmd daemon](https://erlang.org/doc/man/epmd.html) is active by running `epmd &`.
   * Run `mix cli.server` to start the server
   * Run `mix cli.client` in another Terminal session to join the server. You can open multiple sessions for multiple players.
 
@@ -45,9 +48,9 @@ The engine automatically ignores empty lines at the start and end of the map, an
 
 ## How the game works
 
-The entire game is a giant `%TextBasedFPS.ServerState` struct. The `IO.inspect` dump below is for a server with two players `John` and `Jane`, and one room `spaceship`.
+The entire game state is a big `%TextBasedFPS.ServerState` struct. The `IO.inspect` dump below is for a server with two players `John` and `Jane`, and one room `spaceship`.
 
-The server state is stored in an [Agent](https://hexdocs.pm/elixir/1.12/Agent.html) at [/lib/text_based_fps/server_agent.ex](/lib/text_based_fps/server_agent.ex).
+The server state is stored in-memory in an [Agent](https://hexdocs.pm/elixir/1.12/Agent.html) at [/lib/text_based_fps/server_agent.ex](/lib/text_based_fps/server_agent.ex).
 
 The `%TextBasedFPS.ServerState` struct has the following members:
 
