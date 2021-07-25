@@ -11,6 +11,8 @@ defmodule TextBasedFPS.CLI.Server do
     Node.start(@node_name)
     CLI.Utils.maybe_set_cookie(options)
 
+    epmd_warning()
+
     IO.puts("Server node started: #{Node.self()}")
     IO.puts("Cookie: #{Node.get_cookie()}")
 
@@ -36,6 +38,13 @@ defmodule TextBasedFPS.CLI.Server do
     ServerAgent.add_player(player_pid)
     send(player_pid, {:notification, @welcome})
     wait_client_message(player_pid)
+  end
+
+  defp epmd_warning do
+    if Node.self() == :"nonode@nohost" do
+      IO.puts(Text.danger("Looks like epmd is not running. Run the 'epmd' daemon before starting the server."))
+      IO.puts("")
+    end
   end
 
   defp wait_client_message(player_pid) do
