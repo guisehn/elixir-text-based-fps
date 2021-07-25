@@ -24,7 +24,7 @@ defmodule TextBasedFPS.CLI.Server do
       }'"
     )
 
-    IO.puts("You can also run commands to manage the server:")
+    IO.puts(~s(You can also type commands below to manage the server. Type "help" to see available commands.))
     IO.puts("")
 
     CLI.Server.Console.start()

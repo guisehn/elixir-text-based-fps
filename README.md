@@ -27,7 +27,7 @@ It can also be played in the terminal using OTP distribution.
 In theory it should be able to work in multiple machines but I haven't been able to make it work just yet.
 
   * Install dependencies with `mix deps.get`
-  * Ensure that the [epmd daemon](https://erlang.org/doc/man/epmd.html) is active by running `epmd &`.
+  * Ensure that the [epmd daemon](https://erlang.org/doc/man/epmd.html) is active by running `epmd`.
   * Run `mix cli.server` to start the server
   * Run `mix cli.client` in another Terminal session to join the server. You can open multiple sessions for multiple players.
 
