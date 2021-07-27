@@ -1,13 +1,15 @@
 defmodule TextBasedFPS.Room do
   alias TextBasedFPS.{GameMap, Player, Room, RoomPlayer}
 
+  defstruct [:name, :game_map, :players]
+
   @type t :: %TextBasedFPS.Room{
           name: String.t(),
           game_map: TextBasedFPS.GameMap.t(),
           players: %{Player.key_t() => TextBasedFPS.RoomPlayer.t()}
         }
 
-  defstruct [:name, :game_map, :players]
+  @name_max_length 20
 
   @spec new(String.t()) :: t
   def new(name) do
@@ -167,11 +169,14 @@ defmodule TextBasedFPS.Room do
   def validate_name(name) do
     cond do
       name == "" -> {:error, :empty}
-      String.length(name) > 20 -> {:error, :too_large}
+      String.length(name) > @name_max_length -> {:error, :too_large}
       String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, :invalid_chars}
       true -> :ok
     end
   end
+
+  @spec name_max_length() :: non_neg_integer()
+  def name_max_length, do: @name_max_length
 
   defp update_game_map(room, fun) do
     Map.put(room, :game_map, fun.(room.game_map))

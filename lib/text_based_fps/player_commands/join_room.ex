@@ -8,7 +8,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   @error_messages %{
     already_in_room: "You're already in this room",
     name_empty: "Room name cannot be empty",
-    name_too_large: "Room name cannot exceed 20 characters",
+    name_too_large: "Room name cannot exceed #{Room.name_max_length()} characters",
     name_invalid_chars: "Room name can only contain letters, numbers and hyphens",
     player_name_required:
       "You need to have a name before joining a room. Type #{highlight("set-name <name>")} to set your name.",

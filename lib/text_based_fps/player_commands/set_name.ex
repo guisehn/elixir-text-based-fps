@@ -5,6 +5,13 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
 
   @behaviour PlayerCommand
 
+  @error_messages %{
+    already_in_use: "Name is already in use",
+    empty: "Name cannot be empty",
+    invalid_chars: "Name can only contain letters, numbers and hyphens.",
+    too_large: "Name cannot exceed #{Player.name_max_length()} characters"
+  }
+
   @impl true
   def execute(state, player, name) do
     name = String.trim(name)
@@ -43,19 +50,8 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
     "Your name is now #{name}."
   end
 
-  defp error_message(:empty) do
-    "Name cannot be empty"
-  end
-
-  defp error_message(:too_large) do
-    "Name cannot exceed 20 characters"
-  end
-
-  defp error_message(:invalid_chars) do
-    "Name can only contain letters, numbers and hyphens."
-  end
-
-  defp error_message(:already_in_use) do
-    "Name is already in use"
+  @spec error_message(atom) :: String.t()
+  defp error_message(reason) do
+    @error_messages[reason] || "Error: #{reason}"
   end
 end
