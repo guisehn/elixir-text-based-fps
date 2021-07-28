@@ -5,18 +5,14 @@ defmodule TextBasedFPS.Application do
 
   use Application
 
+  @typep boot_mode :: :phoenix | :"cli.server" | :"cli.client"
+
   def start(_type, _args) do
-    children = [
-      # Start the Telemetry supervisor
-      TextBasedFPSWeb.Telemetry,
-      # Start the PubSub system
-      {Phoenix.PubSub, name: TextBasedFPS.PubSub},
-      # Start the Endpoint (http/https)
-      TextBasedFPSWeb.Endpoint,
-      TextBasedFPS.ServerAgent
-      # Start a worker by calling: TextBasedFPS.Worker.start_link(arg)
-      # {TextBasedFPS.Worker, arg}
-    ]
+    # Starts by default in :phoenix boot mode (`mix phx.server`).
+    # It can also be started with `mix cli.server` and `mix cli.client`.
+    children =
+      Application.get_env(TextBasedFPS.Application, :boot_mode, :phoenix)
+      |> supervisor_children()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
@@ -30,4 +26,21 @@ defmodule TextBasedFPS.Application do
     TextBasedFPSWeb.Endpoint.config_change(changed, removed)
     :ok
   end
+
+  @spec supervisor_children(boot_mode) :: list()
+  defp supervisor_children(:phoenix) do
+    [
+      # Start the Telemetry supervisor
+      TextBasedFPSWeb.Telemetry,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: TextBasedFPS.PubSub},
+      # Start the Endpoint (http/https)
+      TextBasedFPSWeb.Endpoint,
+      TextBasedFPS.ServerAgent
+    ]
+  end
+
+  defp supervisor_children(:"cli.server"), do: [TextBasedFPS.ServerAgent]
+
+  defp supervisor_children(:"cli.client"), do: []
 end

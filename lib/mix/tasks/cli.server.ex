@@ -4,7 +4,10 @@ defmodule Mix.Tasks.Cli.Server do
   @impl Mix.Task
   def run(args) do
     {options, _, _} = OptionParser.parse(args, strict: [cookie: :string])
-    TextBasedFPS.ServerAgent.start_link([])
+
+    Application.put_env(TextBasedFPS.Application, :boot_mode, :"cli.server", persistent: true)
+    Mix.Tasks.Run.run(args)
+
     TextBasedFPS.CLI.Server.start(options)
   end
 end

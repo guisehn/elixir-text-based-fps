@@ -11,7 +11,7 @@ defmodule TextBasedFPS.CLI.Client do
   defp start_node(options) do
     random = SecureRandom.uuid()
     node_name = :"text-based-fps-client-#{random}"
-    Node.start(node_name)
+    Node.start(node_name, :shortnames)
     CLI.Utils.maybe_set_cookie(options)
   end
 
@@ -70,7 +70,7 @@ defmodule TextBasedFPS.CLI.Client do
       options[:server_hostname]
     else
       {:ok, hostname} = :inet.gethostname()
-      "#{hostname}.local"
+      "#{hostname}"
     end
   end
 end

@@ -8,7 +8,7 @@ defmodule TextBasedFPS.CLI.Server do
   @welcome "Welcome to the text-based FPS! Type #{Text.highlight("set-name <your name>")} to join the game."
 
   def start(options) do
-    Node.start(@node_name)
+    Node.start(@node_name, :shortnames)
     CLI.Utils.maybe_set_cookie(options)
 
     epmd_warning()
