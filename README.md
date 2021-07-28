@@ -27,7 +27,7 @@ It can also be played in the terminal using OTP distribution.
 In theory it should be able to work in multiple machines but I haven't been able to make it work just yet.
 
   * Install dependencies with `mix deps.get`
-  * Ensure that the [epmd daemon](https://erlang.org/doc/man/epmd.html) is active by running `epmd`.
+  * Ensure that the [epmd daemon](https://erlang.org/doc/man/epmd.html) is active by running `epmd -daemon`.
   * Run `mix cli.server` to start the server
   * Run `mix cli.client` in another Terminal session to join the server. You can open multiple sessions for multiple players.
 
@@ -56,8 +56,8 @@ The `%TextBasedFPS.ServerState` struct has the following members:
 
   * `players` is a map containing all players of the server of all rooms. The keys are UUIDs that uniquely identify those players in the server. Each player is a `%TextBasedFPS.Player` struct.
 
-  * `rooms` is a map containing all rooms of the game, and each room is a `%TextBasedFPS.Room` struct. Inside this struct, you'll find the keys: 
-  
+  * `rooms` is a map containing all rooms of the game, and each room is a `%TextBasedFPS.Room` struct. Inside this struct, you'll find the keys:
+
     * `name`: the name of the room
 
     * `players`: each player is a `%TextBasedFPS.RoomPlayer` with the room session specific information such as coordinates, direction, ammo, kills and killed, etc.
