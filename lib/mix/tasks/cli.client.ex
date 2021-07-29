@@ -9,7 +9,7 @@ defmodule Mix.Tasks.Cli.Client do
       OptionParser.parse(args, strict: [server_hostname: :string, cookie: :string])
 
     Application.put_env(TextBasedFPS.Application, :boot_mode, :"cli.client", persistent: true)
-    Mix.Tasks.Run.run(args)
+    Mix.Tasks.Run.run([])
 
     TextBasedFPS.CLI.Client.start(options)
   end
