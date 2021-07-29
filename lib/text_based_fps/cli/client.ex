@@ -9,10 +9,13 @@ defmodule TextBasedFPS.CLI.Client do
   end
 
   defp start_node(options) do
-    random = SecureRandom.uuid()
-    node_name = :"text-based-fps-client-#{random}"
-    Node.start(node_name, :shortnames)
+    Node.start(generate_client_node_name(), :longnames)
     CLI.Utils.maybe_set_cookie(options)
+  end
+
+  defp generate_client_node_name do
+    random = SecureRandom.uuid()
+    :"text-based-fps-client-#{random}@#{CLI.Utils.get_internal_ipaddr()}"
   end
 
   defp join_server(options) do
@@ -62,15 +65,14 @@ defmodule TextBasedFPS.CLI.Client do
   end
 
   defp server_node_name(options) do
-    String.to_atom("#{CLI.Server.node_name()}@#{server_hostname(options)}")
+    String.to_atom("#{CLI.Server.node_shortname()}@#{server_hostname(options)}")
   end
 
   defp server_hostname(options) do
     if options[:server_hostname] do
       options[:server_hostname]
     else
-      {:ok, hostname} = :inet.gethostname()
-      "#{hostname}"
+      CLI.Utils.get_internal_ipaddr()
     end
   end
 end

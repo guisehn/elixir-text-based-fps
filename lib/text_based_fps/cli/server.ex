@@ -8,7 +8,7 @@ defmodule TextBasedFPS.CLI.Server do
   @welcome "Welcome to the text-based FPS! Type #{Text.highlight("set-name <your name>")} to join the game."
 
   def start(options) do
-    Node.start(@node_name, :shortnames)
+    Node.start(node_longname(), :longnames)
     CLI.Utils.maybe_set_cookie(options)
 
     epmd_warning()
@@ -35,7 +35,12 @@ defmodule TextBasedFPS.CLI.Server do
     CLI.Server.Console.start()
   end
 
-  def node_name, do: @node_name
+  def node_shortname, do: @node_name
+
+  def node_longname do
+    ip_address = TextBasedFPS.CLI.Utils.get_internal_ipaddr()
+    :"#{@node_name}@#{ip_address}"
+  end
 
   def join_client(player_pid) do
     ServerAgent.add_player(player_pid)
