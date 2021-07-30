@@ -6,18 +6,19 @@ defmodule Mix.Tasks.Cli.Client do
   @impl Mix.Task
   def run(args) do
     {options, _, _} =
-      OptionParser.parse(args, strict: [server_hostname: :string, cookie: :string])
+      OptionParser.parse(args, strict: [server: :string, cookie: :string])
 
     Application.put_env(TextBasedFPS.Application, :boot_mode, :"cli.client", persistent: true)
     Mix.Tasks.Run.run([])
 
-    TextBasedFPS.CLI.Client.start(options)
+    options
+    |> Enum.into(%{})
+    |> TextBasedFPS.CLI.Client.start()
   end
 
-  def example, do: @command
+  def command_example, do: @command
 
-  def example(server_node, cookie) do
-    [_, hostname] = server_node |> Atom.to_string() |> String.split("@")
-    "#{@command} --server-hostname #{hostname} --cookie #{cookie}"
+  def command_example(server, cookie) do
+    "#{@command} --server #{server} --cookie #{cookie}"
   end
 end

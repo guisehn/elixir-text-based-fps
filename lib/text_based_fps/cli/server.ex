@@ -1,63 +1,51 @@
 defmodule TextBasedFPS.CLI.Server do
-  use Agent
-
-  alias Mix.Tasks.Cli.Client, as: MixClient
   alias TextBasedFPS.{CLI, ServerAgent, Text}
+  alias TextBasedFPS.CLI.Server.Messages
+
+  @type options :: %{
+    optional(:external) => boolean(),
+    optional(:cookie) => String.t()
+  }
 
   @node_name :"text-based-fps-server"
+
   @welcome "Welcome to the text-based FPS! Type #{Text.highlight("set-name <your name>")} to join the game."
 
   def start(options) do
-    Node.start(node_longname(), :longnames)
-    CLI.Utils.maybe_set_cookie(options)
+    start_node(options)
 
-    epmd_warning()
+    if node_started?() do
+      CLI.Utils.set_cookie(options)
+    else
+      Messages.display_start_failed_warning()
+    end
 
-    IO.puts("Server node started: #{Node.self()}")
-    IO.puts("Cookie: #{Node.get_cookie()}")
-
-    IO.puts(
-      "Connect a new player locally by running '#{MixClient.example()}' in another terminal session."
-    )
-
-    IO.puts(
-      "If you wanna join from another computer on the same network, '#{
-        external_connection_example()
-      }'"
-    )
-
-    IO.puts(
-      ~s(You can also type commands below to manage the server. Type "help" to see available commands.)
-    )
-
-    IO.puts("")
+    Messages.display_welcome_message(options)
 
     CLI.Server.Console.start()
   end
 
   def node_shortname, do: @node_name
 
-  def node_longname do
-    ip_address = TextBasedFPS.CLI.Utils.get_internal_ipaddr()
-    :"#{@node_name}@#{ip_address}"
-  end
-
+  @spec join_client(pid) :: no_return
   def join_client(player_pid) do
     ServerAgent.add_player(player_pid)
     send(player_pid, {:notification, @welcome})
     wait_client_message(player_pid)
   end
 
-  defp epmd_warning do
-    if Node.self() == :nonode@nohost do
-      IO.puts(
-        Text.danger(
-          "Looks like epmd is not running. Run the 'epmd' daemon before starting the server."
-        )
-      )
+  defp start_node(%{external: true}) do
+    ip_address = CLI.Utils.get_private_ipaddr()
+    node_longname = :"#{@node_name}@#{ip_address}"
+    Node.start(node_longname, :longnames)
+  end
 
-      IO.puts("")
-    end
+  defp start_node(_) do
+    Node.start(@node_name, :shortnames)
+  end
+
+  defp node_started? do
+    Node.self() != :nonode@nohost
   end
 
   defp wait_client_message(player_pid) do
@@ -77,9 +65,5 @@ defmodule TextBasedFPS.CLI.Server do
 
   defp dispatch_notification(%{body: body, player_key: player_pid}) do
     send(player_pid, {:notification, body})
-  end
-
-  defp external_connection_example do
-    MixClient.example(Node.self(), Node.get_cookie())
   end
 end

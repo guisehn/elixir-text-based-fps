@@ -1,21 +1,32 @@
 defmodule TextBasedFPS.CLI.Client do
   alias TextBasedFPS.{CLI, Text}
 
+  @type options :: %{
+    optional(:server) => boolean(),
+    optional(:cookie) => String.t()
+  }
+
   def start(options) do
     start_node(options)
+    CLI.Utils.set_cookie(options)
     server_pid = join_server(options)
     Task.start(fn -> ask_command(server_pid) end)
     wait_server_message()
   end
 
-  defp start_node(options) do
-    Node.start(generate_client_node_name(), :longnames)
-    CLI.Utils.maybe_set_cookie(options)
+  defp start_node(%{server: _}) do
+    ip_address = CLI.Utils.get_private_ipaddr()
+    node_longname = :"#{generate_unique_name()}@#{ip_address}"
+    Node.start(node_longname, :longnames)
   end
 
-  defp generate_client_node_name do
+  defp start_node(_) do
+    Node.start(generate_unique_name(), :shortnames)
+  end
+
+  defp generate_unique_name do
     random = SecureRandom.uuid()
-    :"text-based-fps-client-#{random}@#{CLI.Utils.get_internal_ipaddr()}"
+    :"text-based-fps-client-#{random}"
   end
 
   defp join_server(options) do
@@ -64,15 +75,12 @@ defmodule TextBasedFPS.CLI.Client do
     IO.puts(IO.ANSI.clear_line() <> IO.ANSI.cursor_left(999_999) <> IO.ANSI.reset() <> msg)
   end
 
-  defp server_node_name(options) do
-    String.to_atom("#{CLI.Server.node_shortname()}@#{server_hostname(options)}")
+  defp server_node_name(%{server: server}) do
+    String.to_atom(server)
   end
 
-  defp server_hostname(options) do
-    if options[:server_hostname] do
-      options[:server_hostname]
-    else
-      CLI.Utils.get_internal_ipaddr()
-    end
+  defp server_node_name(_) do
+    [_, hostname] = Node.self() |> Atom.to_string() |> String.split("@")
+    String.to_atom("#{CLI.Server.node_shortname()}@#{hostname}")
   end
 end
