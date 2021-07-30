@@ -24,12 +24,15 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 It can also be played in the terminal using OTP distribution.
 
-In theory it should be able to work in multiple machines but I haven't been able to make it work just yet.
-
   * Install dependencies with `mix deps.get`
   * Ensure that the [epmd daemon](https://erlang.org/doc/man/epmd.html) is active by running `epmd -daemon`.
-  * Run `mix cli.server` to start the server
+  * Run `mix cli.server` to start the server.
   * Run `mix cli.client` in another Terminal session to join the server. You can open multiple sessions for multiple players.
+
+Communicating between multiple computers:
+
+  * Run `mix cli.server --external --cookie mysecret` to start the server.
+  * Run `mix cli.client --server=text-based-fps-server@192.168.0.xx --cookie mysecret` (replace with the server private network IP address).
 
 ## How to deploy
 
