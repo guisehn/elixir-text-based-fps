@@ -1,7 +1,14 @@
 defmodule TextBasedFPS.PlayerCommands.LookTest do
   use ExUnit.Case, async: true
 
-  alias TextBasedFPS.{CommandExecutor, Room, ServerState, Text}
+  alias TextBasedFPS.{
+    CommandExecutor,
+    Room,
+    ServerState,
+    Text
+  }
+
+  alias TextBasedFPS.GameMap.Objects
 
   setup do
     state = ServerState.new() |> ServerState.add_player("foo")
@@ -30,7 +37,7 @@ defmodule TextBasedFPS.PlayerCommands.LookTest do
       # Creates a room and places the players on the map like this:
       #
       #  # # # # # # # # # #
-      #  #       #         #
+      #  #     ¶ #         #
       #  #   #       # #   #
       #  # ▼ #   #         #
       #  #       # #   # # #
@@ -60,6 +67,8 @@ defmodule TextBasedFPS.PlayerCommands.LookTest do
           |> Room.place_player_at!("enemy1", {1, 6})
           |> Room.place_player_at!("enemy2", {4, 8})
           |> Room.place_player_at!("enemy3", {1, 3})
+          |> Room.add_object({3, 1}, Objects.AmmoPack)
+          |> Room.update_player("foo", &Map.put(&1, :direction, :north))
           |> Room.update_player("enemy1", &Map.put(&1, :direction, :east))
           |> Room.update_player("enemy2", &Map.put(&1, :direction, :west))
           |> Room.update_player("enemy3", &Map.put(&1, :direction, :south))
@@ -68,94 +77,27 @@ defmodule TextBasedFPS.PlayerCommands.LookTest do
       Map.put(context, :state, state)
     end
 
-    defp turn_and_look(state, direction) do
-      state =
-        ServerState.update_room(state, "spaceship", fn room ->
-          Room.update_player(room, "foo", &Map.put(&1, :direction, direction))
-        end)
-
-      assert {:ok, %ServerState{}, vision} = CommandExecutor.execute(state, "foo", "look")
-      {vision, Text.unpaint(vision)}
-    end
-
     test "shows the player vision", %{state: state} do
-      # looking north
-      {vision, unpainted_vision} = turn_and_look(state, :north)
+      assert {:ok, %ServerState{}, vision} = CommandExecutor.execute(state, "foo", "look")
+      unpainted_vision = Text.unpaint(vision)
 
       assert unpainted_vision ==
                String.trim("""
                # # # # # # # # # #
-               #       #         #
+               #     ¶ #         #
                #   #       # #   #
-               #   #   #         #
+               # ▼ #   #         #
                #       # #   # # #
                # #               #
                # ►   #   # # #   #
                #   # #       #   #
-               # ▲       #       #
+               # ▲     ◄ #       #
                # # # # # # # # # #
                """)
 
       assert Text.find_painted_text(vision, :success) == ["▲"]
-      assert Text.find_painted_text(vision, :danger) == ["►"]
-
-      # looking east
-      {vision, unpainted_vision} = turn_and_look(state, :east)
-
-      assert unpainted_vision ==
-               String.trim("""
-               # # # # # # # # # #
-               #       #         #
-               #   #       # #   #
-               #   #   #         #
-               #       # #   # # #
-               # #               #
-               #     #   # # #   #
-               #   # #       #   #
-               # ►     ◄ #       #
-               # # # # # # # # # #
-               """)
-
-      assert Text.find_painted_text(vision, :success) == ["►"]
-      assert Text.find_painted_text(vision, :danger) == ["◄"]
-
-      # looking south
-      {vision, unpainted_vision} = turn_and_look(state, :south)
-
-      assert unpainted_vision ==
-               String.trim("""
-               # # # # # # # # # #
-               #       #         #
-               #   #       # #   #
-               #   #   #         #
-               #       # #   # # #
-               # #               #
-               #     #   # # #   #
-               #   # #       #   #
-               # ▼       #       #
-               # # # # # # # # # #
-               """)
-
-      assert Text.find_painted_text(vision, :success) == ["▼"]
-
-      # looking west
-      {vision, unpainted_vision} = turn_and_look(state, :west)
-
-      assert unpainted_vision ==
-               String.trim("""
-               # # # # # # # # # #
-               #       #         #
-               #   #       # #   #
-               #   #   #         #
-               #       # #   # # #
-               # #               #
-               #     #   # # #   #
-               #   # #       #   #
-               # ◄       #       #
-               # # # # # # # # # #
-               """)
-
-      assert Text.find_painted_text(vision, :success) == ["◄"]
+      assert Text.find_painted_text(vision, :danger) == ["▼", "►", "◄"]
+      assert Text.find_painted_text(vision, :info) == ["¶"]
     end
   end
 end

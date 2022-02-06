@@ -190,6 +190,24 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
     end
   end
 
+  describe "map/2" do
+    test "maps all positions of matrix" do
+      matrix = [
+        [:" ", :"#"],
+        [:"#", :" "],
+      ]
+
+      fun = fn x -> if(x == :" ", do: :"#", else: :" ") end
+
+      expected = [
+        [:"#", :" "],
+        [:" ", :"#"],
+      ]
+
+      assert Matrix.map(matrix, fun) == expected
+    end
+  end
+
   describe "iterate_towards/5" do
     setup [:set_up_iterate_towards_matrix]
 

@@ -1,5 +1,12 @@
 defmodule TextBasedFPS.Room do
-  alias TextBasedFPS.{GameMap, Player, Room, RoomPlayer}
+  alias TextBasedFPS.{
+    GameMap,
+    Player,
+    Room,
+    RoomPlayer
+  }
+
+  alias TextBasedFPS.GameMap.Object
 
   defstruct [:name, :game_map, :players]
 
@@ -47,6 +54,11 @@ defmodule TextBasedFPS.Room do
   @spec add_random_object(t, GameMap.Coordinates.t()) :: t
   def add_random_object(room, {x, y}) do
     object = Enum.random(GameMap.Objects.all())
+    add_object(room, {x, y}, object)
+  end
+
+  @spec add_object(t, GameMap.Coordinates.t(), Object.t()) :: t
+  def add_object(room, {x, y}, object) do
     update_game_map_matrix(room, {x, y}, object.new())
   end
 

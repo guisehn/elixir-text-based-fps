@@ -73,9 +73,14 @@ defmodule TextBasedFPS.GameMap.Matrix do
   defp get_col(nil, _x), do: nil
   defp get_col(row, x), do: Enum.at(row, x)
 
+  @spec map(t, function) :: t
+  def map(matrix, fun) do
+    Enum.map(matrix, fn line -> Enum.map(line, fun) end)
+  end
+
   @spec clean(t) :: t
   def clean(matrix) do
-    Enum.map(matrix, fn line -> Enum.map(line, &clean_position/1) end)
+    map(matrix, &clean_position/1)
   end
 
   defp clean_position(:"#"), do: :"#"

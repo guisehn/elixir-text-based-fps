@@ -18,6 +18,11 @@ defmodule TextBasedFPS.RoomTest do
     end)
   end
 
+  test "add_object/3" do
+    room = Room.new("room") |> Room.add_object({1, 1}, Objects.AmmoPack)
+    assert %Objects.AmmoPack{} = Matrix.at(room.game_map.matrix, {1, 1})
+  end
+
   test "add_random_object/2" do
     for _i <- 0..20 do
       room = Room.new("room") |> Room.add_random_object({1, 1})
