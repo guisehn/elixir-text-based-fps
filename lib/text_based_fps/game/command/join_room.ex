@@ -20,7 +20,6 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
          :ok <- check_already_in_room(player, room_name),
          :ok <- Game.leave_room(player.key),
          :ok <- join_existing_or_create_room(player, room_name) do
-      IO.puts("até aqui ok")
       notify_room(room_name, player)
       {:ok, success_message(room_name)}
     else
@@ -40,13 +39,9 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
 
   @spec join_existing_or_create_room(Player.t(), String.t()) :: :ok | {:error, atom}
   defp join_existing_or_create_room(player, room_name) do
-    IO.puts("=======aaaaaa")
-
     if Process.Room.exists?(room_name) do
-      IO.puts("====exists?")
       join_existing_room(player, room_name)
     else
-      IO.puts("====exists?no")
       create_room(player, room_name)
     end
   end
@@ -74,9 +69,6 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
     case Room.validate_name(room_name) do
       :ok ->
         Process.RoomSupervisor.add_room(name: room_name, first_player_key: player.key)
-        |> IO.inspect(label: "...")
-
-        IO.puts("== added room==")
         update_player_room(player, room_name)
         :ok
 

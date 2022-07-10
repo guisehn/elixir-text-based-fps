@@ -9,6 +9,7 @@ defmodule TextBasedFPS.Game do
 
   defdelegate execute_command(player_key, command), to: CommandExecutor, as: :execute
 
+  @spec remove_player(Player.key_t()) :: :ok
   def remove_player(player_key) do
     leave_room(player_key)
     Process.Players.remove_player(player_key)
@@ -23,7 +24,6 @@ defmodule TextBasedFPS.Game do
   defp do_leave_room(%Player{room: nil}), do: nil
 
   defp do_leave_room(player) do
-    IO.inspect(player, label: "== player ==")
     Process.Players.update_player(player.key, &Map.put(&1, :room, nil))
 
     room = Process.Room.get(player.room)
