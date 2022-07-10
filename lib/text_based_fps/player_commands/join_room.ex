@@ -1,7 +1,7 @@
 defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   import TextBasedFPS.Text, only: [highlight: 1]
 
-  alias TextBasedFPS.{Player, PlayerCommand, Room, ServerState}
+  alias TextBasedFPS.{Game, Process, Player, PlayerCommand, Room, ServerAgent}
 
   @behaviour PlayerCommand
 
@@ -16,14 +16,14 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   }
 
   @impl true
-  def execute(state, player, room_name) do
+  def execute(player, room_name) do
     with :ok <- require_player_name(player),
          :ok <- check_already_in_room(player, room_name),
-         {:ok, state} <- join_existing_or_create_room(state, room_name, player.key),
-         state <- notify_room(state, room_name, player) do
-      {:ok, state, success_message(room_name)}
+         :ok <- join_existing_or_create_room(player, room_name) do
+      notify_room(room_name, player)
+      {:ok, success_message(room_name)}
     else
-      {:error, reason} -> {:error, state, error_message(reason)}
+      {:error, reason} -> {:error, error_message(reason)}
     end
   end
 
@@ -37,44 +37,34 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
     if player.room != room_name, do: :ok, else: {:error, :already_in_room}
   end
 
-  @spec join_existing_or_create_room(ServerState.t(), String.t(), Player.key_t()) ::
-          {:ok, ServerState.t()} | {:error, atom()}
-  defp join_existing_or_create_room(state, room_name, player_key) do
-    if state.rooms[room_name] do
-      join_existing_room(state, room_name, player_key)
+  @spec join_existing_or_create_room(Player.t(), String.t()) :: :ok | {:error, atom}
+  defp join_existing_or_create_room(player, room_name) do
+    if Process.Room.exists?(room_name) do
+      Game.join_existing_room(player, room_name)
     else
-      create_room(state, room_name, player_key)
+      create_room(player, room_name)
     end
   end
 
-  @spec join_existing_room(ServerState.t(), String.t(), Player.key_t()) ::
-          {:ok, ServerState.t()} | {:error, :room_full}
-  defp join_existing_room(state, room_name, player_key) do
-    case ServerState.join_room(state, room_name, player_key) do
-      {:ok, updated_state} ->
-        {:ok, updated_state}
-
-      {:error, _state, reason} ->
-        {:error, reason}
-    end
-  end
-
-  @spec create_room(ServerState.t(), String.t(), Player.key_t()) ::
-          {:ok, ServerState.t()}
+  @spec create_room(Player.t(), String.t()) ::
+          :ok
           | {:error, :name_empty}
           | {:error, :name_too_large}
           | {:error, :name_invalid_chars}
-  defp create_room(state, room_name, player_key) do
+  defp create_room(player, room_name) do
     case Room.validate_name(room_name) do
-      :ok -> {:ok, ServerState.add_room(state, room_name, player_key)}
-      {:error, reason} -> {:error, :"name_#{reason}"}
+      :ok ->
+        Process.RoomSupervisor.add_room(name: room_name, first_player_key: player.key)
+        :ok
+
+      {:error, reason} ->
+        {:error, :"name_#{reason}"}
     end
   end
 
-  @spec notify_room(ServerState.t(), String.t(), Player.t()) :: ServerState.t()
-  defp notify_room(state, room_name, player) do
-    ServerState.notify_room_except_player(
-      state,
+  @spec notify_room(String.t(), Player.t()) :: :ok
+  defp notify_room(room_name, player) do
+    ServerAgent.notify_room_except_player(
       room_name,
       player.key,
       highlight("#{player.name} joined the room!")

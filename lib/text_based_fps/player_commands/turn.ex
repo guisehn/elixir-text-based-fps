@@ -11,7 +11,7 @@ defmodule TextBasedFPS.PlayerCommand.Turn do
     with {:ok, room} <- require_alive_player(player) do
       room_player = Room.get_player(room, player.key)
       parsed_direction = parse_direction(room_player, direction)
-      turn(layer.room, player, parsed_direction)
+      turn(player.room, player, parsed_direction)
     end
   end
 

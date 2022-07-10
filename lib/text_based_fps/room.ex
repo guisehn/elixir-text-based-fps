@@ -19,18 +19,22 @@ defmodule TextBasedFPS.Room do
   @name_max_length 20
 
   @spec new(String.t()) :: t
-  def new(name) do
+  def new(name, first_player_key \\ nil) do
     %Room{
       name: name,
       game_map: GameMap.new(),
       players: %{}
     }
+    |> add_player_if_present(first_player_key)
   end
 
-  @spec add_player(t, Player.key_t()) :: {:ok, t} | {:error, t, :room_full}
+  defp add_player_if_present(room, nil), do: room
+  defp add_player_if_present(room, player_key), do: add_player!(room, player_key)
+
+  @spec add_player(t, Player.key_t()) :: {:ok, t} | {:error, :room_full}
   def add_player(room, player_key) do
     if Enum.count(room.players) == Enum.count(room.game_map.respawn_positions) do
-      {:error, room, :room_full}
+      {:error, :room_full}
     else
       put_in(room.players[player_key], RoomPlayer.new(player_key))
       |> respawn_player(player_key)

@@ -2,7 +2,7 @@ defmodule TextBasedFPS.PlayerCommand.Move do
   import TextBasedFPS.CommandHelper
   import TextBasedFPS.Text, only: [highlight: 1]
 
-  alias TextBasedFPS.{Direction, PlayerCommand, Room, ServerState}
+  alias TextBasedFPS.{Direction, PlayerCommand, Room}
 
   @behaviour PlayerCommand
 

@@ -4,10 +4,10 @@ defmodule TextBasedFPS.Process.Room do
   use Agent
 
   @spec start_link(String.t()) :: Agent.on_start()
-  def start_link(room_name) do
+  def start_link(opts) do
     Agent.start_link(
-      fn -> GameRoom.new(room_name) end,
-      name: get_process_reference(room_name)
+      fn -> GameRoom.new(opts[:name], opts[:first_player_key]) end,
+      name: get_process_reference(opts[:name])
     )
   end
 
@@ -30,23 +30,7 @@ defmodule TextBasedFPS.Process.Room do
     get_process_reference(room_name) |> Agent.get_and_update(fun)
   end
 
-  @doc """
-  Executes a function from the `TextBasedFPS.Room` module on the room with the
-  given name, returning the current state of the room.
-
-  Example:
-  > Room.exec("room_name", :add_random_object, {5, 5})
-  """
-  @spec exec(String.t(), atom, list) :: GameRoom.t()
-  def exec(room_name, fun, args) do
-    Agent.get_and_update(
-      get_process_reference(room_name),
-      fn state ->
-        new_state = apply(GameRoom, fun, [state | args])
-        {new_state, new_state}
-      end
-    )
-  end
+  def exists?(room_name), do: whereis(room_name) != :undefined
 
   @doc """
   Returns PID of the room with the given name, or :undefined if it doesn't exist.

@@ -50,7 +50,7 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
 
     push_notifications(player, shot_players)
 
-    {:ok, generate_message(state, shot_players)}
+    {:ok, generate_message(shot_players)}
   end
 
   defp players_on_path(matrix, {x, y}, direction) do
@@ -129,23 +129,23 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
 
   defp maybe_update_score(room, _shooter, _shot_player), do: room
 
-  defp generate_message(_state, []) do
+  defp generate_message([]) do
     "You've shot the wall."
   end
 
-  defp generate_message(state, shot_players) do
+  defp generate_message(shot_players) do
     killed = Enum.filter(shot_players, &RoomPlayer.dead?/1)
     hit = shot_players -- killed
 
     phrase_parts =
-      [action_message("hit", state, hit), action_message("killed", state, killed)]
+      [action_message("hit", hit), action_message("killed", killed)]
       |> Stream.filter(fn part -> part != nil end)
       |> Enum.join(" and ")
 
     "You've #{phrase_parts}"
   end
 
-  defp action_message(verb, state, shot_players) do
+  defp action_message(verb, shot_players) do
     names =
       shot_players
       |> Stream.map(fn shot -> Process.Players.get_player(shot.player_key) end)

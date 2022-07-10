@@ -12,15 +12,15 @@ defmodule TextBasedFPS.Process.RoomSupervisor do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def add_room(room_name) do
-    case Room.whereis(room_name) do
-      :undefined -> do_add_room(room_name)
+  def add_room(opts) do
+    case Room.whereis(opts[:name]) do
+      :undefined -> do_add_room(opts)
       pid -> {:ok, pid}
     end
   end
 
-  defp do_add_room(room_name),
-    do: DynamicSupervisor.start_child(__MODULE__, {Room, room_name})
+  defp do_add_room(opts),
+    do: DynamicSupervisor.start_child(__MODULE__, {Room, opts})
 
   def remove_room(room_name) do
     case Room.whereis(room_name) do
