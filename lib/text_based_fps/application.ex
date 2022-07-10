@@ -9,7 +9,8 @@ defmodule TextBasedFPS.Application do
 
   @server_processes [
     TextBasedFPS.ServerAgent,
-    TextBasedFPS.Process.RoomSupervisor
+    TextBasedFPS.Process.RoomSupervisor,
+    TextBasedFPS.Process.Players
   ]
 
   def start(_type, _args) do
