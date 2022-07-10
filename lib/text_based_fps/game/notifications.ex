@@ -1,5 +1,5 @@
-defmodule TextBasedFPS.Notifications do
-  alias TextBasedFPS.{Process, Room}
+defmodule TextBasedFPS.Game.Notifications do
+  alias TextBasedFPS.{Game, Process}
 
   def notify(player_key, msg) when is_pid(player_key) do
     send(player_key, {:notification, msg})
@@ -17,7 +17,7 @@ defmodule TextBasedFPS.Notifications do
     |> notify_room(msg, opts)
   end
 
-  def notify_room(%Room{} = room, msg, opts) do
+  def notify_room(%Game.Room{} = room, msg, opts) do
     opts = Enum.into(opts, %{})
     player_keys = get_room_players(room, opts)
     Enum.each(player_keys, &notify(&1, msg))

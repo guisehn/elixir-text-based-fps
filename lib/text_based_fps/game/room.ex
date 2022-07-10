@@ -1,17 +1,10 @@
-defmodule TextBasedFPS.Room do
-  alias TextBasedFPS.{
-    GameMap,
-    Notification,
-    Player,
-    Room,
-    RoomPlayer
-  }
-
-  alias TextBasedFPS.GameMap.Object
+defmodule TextBasedFPS.Game.Room do
+  alias TextBasedFPS.Game.{Player, Room, RoomPlayer}
+  alias TextBasedFPS.GameMap
 
   defstruct [:name, :game_map, :players, :notifications]
 
-  @type t :: %TextBasedFPS.Room{
+  @type t :: %Room{
           name: String.t(),
           game_map: TextBasedFPS.GameMap.t(),
           players: %{Player.key_t() => TextBasedFPS.RoomPlayer.t()}
@@ -62,7 +55,7 @@ defmodule TextBasedFPS.Room do
     add_object(room, {x, y}, object)
   end
 
-  @spec add_object(t, GameMap.Coordinates.t(), Object.t()) :: t
+  @spec add_object(t, GameMap.Coordinates.t(), GameMap.Object.t()) :: t
   def add_object(room, {x, y}, object) do
     update_game_map_matrix(room, {x, y}, object.new())
   end

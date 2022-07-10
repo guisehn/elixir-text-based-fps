@@ -1,16 +1,11 @@
-defmodule TextBasedFPS.PlayerCommand.Look do
-  import TextBasedFPS.CommandHelper
+defmodule TextBasedFPS.Game.Command.Look do
+  import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.{
-    GameMap,
-    PlayerCommand,
-    Room,
-    Text
-  }
-
+  alias TextBasedFPS.Game.{Command, Room}
+  alias TextBasedFPS.{GameMap, Text}
   alias TextBasedFPS.GameMap.Objects
 
-  @behaviour PlayerCommand
+  @behaviour Command
 
   @impl true
   def execute(player, _) do

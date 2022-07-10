@@ -30,15 +30,15 @@ defmodule TextBasedFPSWeb.GameChannel do
     Game.remove_player(player_key)
   end
 
-  defp welcome_message(%TextBasedFPS.Player{name: nil}) do
+  defp welcome_message(%Game.Player{name: nil}) do
     "Welcome to the text-based FPS! Type #{Text.highlight("set-name <your name>")} to join the game."
   end
 
-  defp welcome_message(%TextBasedFPS.Player{room: nil}) do
+  defp welcome_message(%Game.Player{room: nil}) do
     "Welcome to the text-based FPS! Type #{Text.highlight("join-room <room name>")} to join the game."
   end
 
-  defp welcome_message(%TextBasedFPS.Player{}) do
+  defp welcome_message(%Game.Player{}) do
     "You're currently in the game. Type #{Text.highlight("look")} to see where you are in the map."
   end
 

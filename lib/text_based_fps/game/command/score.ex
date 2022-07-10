@@ -1,11 +1,10 @@
-defmodule TextBasedFPS.PlayerCommand.Score do
-  import TextBasedFPS.CommandHelper
+defmodule TextBasedFPS.Game.Command.Score do
+  import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.{PlayerCommand, Process}
+  alias TextBasedFPS.Process
+  alias TextBasedFPS.Game.Command
 
-  @table_header ~w(Name Score Deaths)
-
-  @behaviour PlayerCommand
+  @behaviour Command
 
   @impl true
   def execute(player, _) do
@@ -14,6 +13,7 @@ defmodule TextBasedFPS.PlayerCommand.Score do
     end
   end
 
+  @table_header ~w(Name Score Deaths)
   defp generate_table(room_players) do
     rows =
       room_players

@@ -1,10 +1,9 @@
-defmodule TextBasedFPS.PlayerCommand.RoomList do
-  import TextBasedFPS.Text, only: [highlight: 1]
-
-  alias TextBasedFPS.PlayerCommand
+defmodule TextBasedFPS.Game.Command.RoomList do
+  alias TextBasedFPS.Game.Command
   alias TextBasedFPS.Process.RoomSupervisor
+  alias TextBasedFPS.Text
 
-  @behaviour PlayerCommand
+  @behaviour Command
 
   @impl true
   def execute(_, _) do
@@ -15,7 +14,7 @@ defmodule TextBasedFPS.PlayerCommand.RoomList do
   end
 
   defp empty_message do
-    "There are no rooms. Create your own room by typing #{highlight("join-room <room name>")}"
+    "There are no rooms. Create your own room by typing #{Text.highlight("join-room <room name>")}"
   end
 
   defp generate_table() do

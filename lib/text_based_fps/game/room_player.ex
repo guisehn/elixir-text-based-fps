@@ -1,11 +1,11 @@
-defmodule TextBasedFPS.RoomPlayer do
-  alias TextBasedFPS.{Direction, Player, RoomPlayer}
+defmodule TextBasedFPS.Game.RoomPlayer do
+  alias TextBasedFPS.Game.{Direction, Player, RoomPlayer}
 
   @max_health 100
   @max_loaded_ammo 8
   @max_unloaded_ammo 24
 
-  @type t :: %TextBasedFPS.RoomPlayer{
+  @type t :: %RoomPlayer{
           player_key: Player.key_t(),
           coordinates: TextBasedFPS.GameMap.Coordinates.t() | nil,
           direction: Direction.t() | nil,

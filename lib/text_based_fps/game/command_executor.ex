@@ -1,27 +1,27 @@
-defmodule TextBasedFPS.CommandExecutor do
-  alias TextBasedFPS.{Player, PlayerCommand}
-  alias TextBasedFPS.Process.Players
+defmodule TextBasedFPS.Game.CommandExecutor do
+  alias TextBasedFPS.{Game, Process}
+  alias TextBasedFPS.Game.Command
 
   @commands %{
-    "room-list" => PlayerCommand.RoomList,
-    "join-room" => PlayerCommand.JoinRoom,
-    "leave-room" => PlayerCommand.LeaveRoom,
-    "set-name" => PlayerCommand.SetName,
-    "health" => PlayerCommand.Health,
-    "ammo" => PlayerCommand.Ammo,
-    "reload" => PlayerCommand.Reload,
-    "score" => PlayerCommand.Score,
-    "respawn" => PlayerCommand.Respawn,
-    "turn" => PlayerCommand.Turn,
-    "move" => PlayerCommand.Move,
-    "look" => PlayerCommand.Look,
-    "fire" => PlayerCommand.Fire
+    "room-list" => Command.RoomList,
+    "join-room" => Command.JoinRoom,
+    "leave-room" => Command.LeaveRoom,
+    "set-name" => Command.SetName,
+    "health" => Command.Health,
+    "ammo" => Command.Ammo,
+    "reload" => Command.Reload,
+    "score" => Command.Score,
+    "respawn" => Command.Respawn,
+    "turn" => Command.Turn,
+    "move" => Command.Move,
+    "look" => Command.Look,
+    "fire" => Command.Fire
   }
 
-  @spec execute(Player.key_t(), String.t(), Map.t()) ::
+  @spec execute(Game.Player.key_t(), String.t(), Map.t()) ::
           {:ok, String.t() | nil} | {:error, String.t()}
   def execute(player_key, command_text, commands \\ @commands) do
-    player = Players.update_player(player_key, &Player.touch/1)
+    player = Process.Players.update_player(player_key, &Game.Player.touch/1)
     {command, command_arg} = parse_command(command_text, commands)
     execute_command_with_args(player, command, command_arg)
   end

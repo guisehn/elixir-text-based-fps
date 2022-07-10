@@ -1,17 +1,10 @@
-defmodule TextBasedFPS.PlayerCommand.Fire do
-  import TextBasedFPS.CommandHelper
-  import TextBasedFPS.Text, only: [danger: 1, highlight: 1]
+defmodule TextBasedFPS.Game.Command.Fire do
+  import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.{
-    GameMap,
-    Notifications,
-    PlayerCommand,
-    Process,
-    Room,
-    RoomPlayer
-  }
+  alias TextBasedFPS.{GameMap, Process, Text}
+  alias TextBasedFPS.Game.{Command, Notifications, Room, RoomPlayer}
 
-  @behaviour PlayerCommand
+  @behaviour Command
 
   @impl true
   def execute(player, _) do
@@ -26,7 +19,7 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
   end
 
   defp fire(_, %{ammo: {0, _}}, _) do
-    {:error, "Reload your gun by typing #{highlight("reload")}"}
+    {:error, "Reload your gun by typing #{Text.highlight("reload")}"}
   end
 
   defp fire(player, room_player, room) do
@@ -37,7 +30,7 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
         apply_damage(room, {shot_player_key, distance, index})
       end)
 
-    Process.Room.update_room(room.name, fn room ->
+    Process.Room.update(room.name, fn room ->
       shot_players
       |> Enum.reduce(room, fn shot_player, room ->
         apply_update(room, room_player, shot_player)
@@ -163,13 +156,13 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
     end)
   end
 
-  defp generate_shot_message(shooter_player, shot_player = %{health: 0}) do
-    danger(
-      "#{shooter_player.name} killed you! Type #{highlight("respawn")} to return to the game"
+  defp generate_shot_message(shooter_player, %{health: 0} = _shot_player) do
+    Text.danger(
+      "#{shooter_player.name} killed you! Type #{Text.highlight("respawn")} to return to the game"
     )
   end
 
-  defp generate_shot_message(shooter_player, shot_player) do
-    danger("uh oh! #{shooter_player.name} shot you!")
+  defp generate_shot_message(shooter_player, _shot_player) do
+    Text.danger("uh oh! #{shooter_player.name} shot you!")
   end
 end

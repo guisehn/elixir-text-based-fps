@@ -1,26 +1,26 @@
 defmodule TextBasedFPS.Process.Room do
   @moduledoc "An agent that represents a room of the server"
 
-  alias TextBasedFPS.Room, as: GameRoom
+  alias TextBasedFPS.Game
 
   use Agent
 
   @spec start_link(Keyword.t()) :: Agent.on_start()
   def start_link(opts) do
     Agent.start_link(
-      fn -> GameRoom.new(opts[:name], opts[:first_player_key]) end,
+      fn -> Game.Room.new(opts[:name], opts[:first_player_key]) end,
       name: get_process_reference(opts[:name])
     )
   end
 
   @doc "Gets the current state of the room with the given name or PID"
-  @spec get(String.t() | pid) :: GameRoom.t()
+  @spec get(String.t() | pid) :: Game.Room.t()
   def get(pid) when is_pid(pid), do: Agent.get(pid, & &1)
   def get(room_name), do: Agent.get(get_process_reference(room_name), & &1)
 
   @doc "Updates the room with the given name using the function passed"
-  @spec update_room(String.t(), (Room.t() -> Room.t())) :: Room.t() | nil
-  def update_room(room_name, fun) do
+  @spec update(String.t(), (Room.t() -> Room.t())) :: Room.t() | nil
+  def update(room_name, fun) do
     get_process_reference(room_name)
     |> Agent.get_and_update(fn room ->
       room = fun.(room)

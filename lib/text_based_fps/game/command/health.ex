@@ -1,9 +1,9 @@
-defmodule TextBasedFPS.PlayerCommand.Health do
-  import TextBasedFPS.CommandHelper
+defmodule TextBasedFPS.Game.Command.Health do
+  import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.{PlayerCommand, Room}
+  alias TextBasedFPS.Game.{Command, Room}
 
-  @behaviour PlayerCommand
+  @behaviour Command
 
   @impl true
   def execute(player, _) do

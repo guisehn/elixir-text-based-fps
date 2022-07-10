@@ -1,9 +1,10 @@
-defmodule TextBasedFPS.PlayerCommand.LeaveRoom do
-  import TextBasedFPS.CommandHelper
+defmodule TextBasedFPS.Game.Command.LeaveRoom do
+  import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.{Game, PlayerCommand}
+  alias TextBasedFPS.Game
+  alias TextBasedFPS.Game.Command
 
-  @behaviour PlayerCommand
+  @behaviour Command
 
   @impl true
   def execute(player, _) do

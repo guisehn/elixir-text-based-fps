@@ -1,9 +1,10 @@
-defmodule TextBasedFPS.PlayerCommand.Respawn do
-  import TextBasedFPS.CommandHelper
+defmodule TextBasedFPS.Game.Command.Respawn do
+  import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.{PlayerCommand, Process, Room}
+  alias TextBasedFPS.Process
+  alias TextBasedFPS.Game.{Command, Room}
 
-  @behaviour PlayerCommand
+  @behaviour Command
 
   @impl true
   def execute(player, _) do

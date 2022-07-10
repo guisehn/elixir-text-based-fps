@@ -1,4 +1,4 @@
-defmodule TextBasedFPS.Direction do
+defmodule TextBasedFPS.Game.Direction do
   @type t :: :north | :south | :west | :east
 
   defguard is_direction(direction) when direction in [:north, :south, :west, :east]

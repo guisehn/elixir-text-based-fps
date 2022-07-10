@@ -1,16 +1,8 @@
-defmodule TextBasedFPS.PlayerCommand.JoinRoom do
-  import TextBasedFPS.Text, only: [highlight: 1]
+defmodule TextBasedFPS.Game.Command.JoinRoom do
+  alias TextBasedFPS.{Game, Process, Text}
+  alias TextBasedFPS.Game.{Command, Notifications, Player, Room}
 
-  alias TextBasedFPS.{
-    Game,
-    Notifications,
-    Process,
-    Player,
-    PlayerCommand,
-    Room
-  }
-
-  @behaviour PlayerCommand
+  @behaviour Command
 
   @error_messages %{
     already_in_room: "You're already in this room",
@@ -18,7 +10,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
     name_too_large: "Room name cannot exceed #{Room.name_max_length()} characters",
     name_invalid_chars: "Room name can only contain letters, numbers and hyphens",
     player_name_required:
-      "You need to have a name before joining a room. Type #{highlight("set-name <name>")} to set your name.",
+      "You need to have a name before joining a room. Type #{Text.highlight("set-name <name>")} to set your name.",
     room_full: "This room is full"
   }
 
@@ -28,6 +20,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
          :ok <- check_already_in_room(player, room_name),
          :ok <- Game.leave_room(player.key),
          :ok <- join_existing_or_create_room(player, room_name) do
+      IO.puts("até aqui ok")
       notify_room(room_name, player)
       {:ok, success_message(room_name)}
     else
@@ -47,9 +40,13 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
 
   @spec join_existing_or_create_room(Player.t(), String.t()) :: :ok | {:error, atom}
   defp join_existing_or_create_room(player, room_name) do
+    IO.puts("=======aaaaaa")
+
     if Process.Room.exists?(room_name) do
+      IO.puts("====exists?")
       join_existing_room(player, room_name)
     else
+      IO.puts("====exists?no")
       create_room(player, room_name)
     end
   end
@@ -77,6 +74,9 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
     case Room.validate_name(room_name) do
       :ok ->
         Process.RoomSupervisor.add_room(name: room_name, first_player_key: player.key)
+        |> IO.inspect(label: "...")
+
+        IO.puts("== added room==")
         update_player_room(player, room_name)
         :ok
 
@@ -89,14 +89,14 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   defp notify_room(room_name, player) do
     Notifications.notify_room(
       room_name,
-      highlight("#{player.name} joined the room!"),
+      Text.highlight("#{player.name} joined the room!"),
       except: [player.key]
     )
   end
 
   @spec success_message(String.t()) :: String.t()
   defp success_message(room_name) do
-    "You're now on #{room_name}! Type #{highlight("look")} to see where you are in the map."
+    "You're now on #{room_name}! Type #{Text.highlight("look")} to see where you are in the map."
   end
 
   @spec error_message(atom) :: String.t()

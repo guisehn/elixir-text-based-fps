@@ -1,9 +1,10 @@
-defmodule TextBasedFPS.Player do
+defmodule TextBasedFPS.Game.Player do
+  alias __MODULE__
   alias TextBasedFPS.Process.Players
 
   defstruct [:key, name: nil, room: nil, last_command_at: nil]
 
-  @type t :: %TextBasedFPS.Player{
+  @type t :: %Player{
           key: key_t,
           name: String.t() | nil,
           room: String.t() | nil,
@@ -16,7 +17,7 @@ defmodule TextBasedFPS.Player do
 
   @spec new(key_t) :: t
   def new(key) do
-    %TextBasedFPS.Player{key: key}
+    %Player{key: key}
   end
 
   @spec generate_key() :: String.t()

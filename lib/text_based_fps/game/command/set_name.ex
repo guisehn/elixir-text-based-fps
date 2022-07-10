@@ -1,10 +1,8 @@
-defmodule TextBasedFPS.PlayerCommand.SetName do
-  import TextBasedFPS.Text, only: [highlight: 1]
+defmodule TextBasedFPS.Game.Command.SetName do
+  alias TextBasedFPS.Game.{Command, Player, Notifications}
+  alias TextBasedFPS.{Process, Text}
 
-  alias TextBasedFPS.{Player, PlayerCommand, Notifications}
-  alias TextBasedFPS.Process.Players
-
-  @behaviour PlayerCommand
+  @behaviour Command
 
   @error_messages %{
     already_in_use: "Name is already in use",
@@ -20,7 +18,7 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
     case Player.validate_name(name) do
       :ok ->
         notify_room(player, name)
-        player = Players.update_player(player.key, &Map.put(&1, :name, name))
+        player = Process.Players.update_player(player.key, &Map.put(&1, :name, name))
         {:ok, success_message(player)}
 
       {:error, reason} ->
@@ -29,14 +27,14 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
   end
 
   defp notify_room(%Player{room: room} = player, new_name) when not is_nil(room) do
-    msg = highlight("#{player.name} changed their name to #{new_name}")
+    msg = Text.highlight("#{player.name} changed their name to #{new_name}")
     Notifications.notify_room(room, msg, except: [player.key])
   end
 
   defp notify_room(_player, _new_name), do: nil
 
   defp success_message(%Player{name: name, room: nil}) do
-    "Your name is now #{name}. Now, type #{highlight("join-room <room-name>")} to join a room."
+    "Your name is now #{name}. Now, type #{Text.highlight("join-room <room-name>")} to join a room."
   end
 
   defp success_message(%Player{name: name}) do

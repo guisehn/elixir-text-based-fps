@@ -1,10 +1,10 @@
-defmodule TextBasedFPS.PlayerCommand.Move do
-  import TextBasedFPS.CommandHelper
-  import TextBasedFPS.Text, only: [highlight: 1]
+defmodule TextBasedFPS.Game.Command.Move do
+  import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.{Direction, PlayerCommand, Room, Process}
+  alias TextBasedFPS.{Process, Text}
+  alias TextBasedFPS.Game.{Command, Direction, Room}
 
-  @behaviour PlayerCommand
+  @behaviour Command
 
   @impl true
   def execute(player, direction) do
@@ -21,7 +21,7 @@ defmodule TextBasedFPS.PlayerCommand.Move do
   defp parse_direction(_room_player, direction), do: Direction.from_string(direction)
 
   defp move(room, _room_player, nil = _parsed_direction) do
-    msg = {:error, "Unknown direction. Use #{highlight("<north/south/west/east>")}"}
+    msg = {:error, "Unknown direction. Use #{Text.highlight("<north/south/west/east>")}"}
     {msg, room}
   end
 
