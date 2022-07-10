@@ -1,6 +1,5 @@
 defmodule TextBasedFPS.PlayerCommand do
-  alias TextBasedFPS.{Player, ServerState}
+  alias TextBasedFPS.Player
 
-  @callback execute(ServerState.t(), Player.t(), String.t()) ::
-              {:ok, ServerState.t(), String.t() | nil} | {:error, ServerState.t(), String.t()}
+  @callback execute(Player.t(), String.t()) :: {:ok, String.t() | nil} | {:error, String.t()}
 end

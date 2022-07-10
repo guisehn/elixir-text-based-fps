@@ -7,10 +7,10 @@ defmodule TextBasedFPS.PlayerCommand.Ammo do
   @behaviour PlayerCommand
 
   @impl true
-  def execute(state, player, _) do
-    with {:ok, room} <- require_room(state, player) do
+  def execute(player, _) do
+    with {:ok, room} <- require_room(player) do
       room_player = Room.get_player(room, player.key)
-      {:ok, state, "Ammo: #{display_ammo(room_player)}"}
+      {:ok, "Ammo: #{display_ammo(room_player)}"}
     end
   end
 end

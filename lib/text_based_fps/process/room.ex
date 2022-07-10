@@ -15,6 +15,16 @@ defmodule TextBasedFPS.Process.Room do
   @spec get(String.t()) :: GameRoom.t()
   def get(room_name), do: Agent.get(get_process_reference(room_name), & &1)
 
+  @doc "Updates the room with the given name using the function passed"
+  @spec update_room(String.t(), (Room.t() -> Room.t())) :: Room.t() | nil
+  def update_room(room_name, fun) do
+    get_process_reference(room_name)
+    |> Agent.get_and_update(fn room ->
+      room = fun.(room)
+      {room, room}
+    end)
+  end
+
   @doc """
   Executes a function from the `TextBasedFPS.Room` module on the room with the
   given name, returning the current state of the room.

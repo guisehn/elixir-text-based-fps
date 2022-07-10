@@ -27,14 +27,11 @@ defmodule TextBasedFPS.Process.Players do
   @spec get_player(Player.key_t()) :: Player.t() | nil
   def get_player(player_key), do: Agent.get(__MODULE__, &Map.get(&1, player_key))
 
-  @spec update_player(Player.key_t(), (Player.t() -> Player.t())) :: :ok
+  @spec update_player(Player.key_t(), (Player.t() -> Player.t())) :: Player.t() | nil
   def update_player(player_key, fun) do
-    Agent.update(__MODULE__, fn players ->
-      if Map.has_key?(players, player_key) do
-        Map.update!(players, player_key, fun)
-      else
-        players
-      end
+    Agent.get_and_update(__MODULE__, fn players ->
+      players = Map.update(players, player_key, nil, fun)
+      {players, players}
     end)
   end
 

@@ -1,33 +1,30 @@
 defmodule TextBasedFPS.CommandHelper do
   import TextBasedFPS.Text, only: [highlight: 1]
 
-  alias TextBasedFPS.{Room, ServerState}
+  alias TextBasedFPS.{Process, Room}
 
-  @spec require_alive_player(ServerState.t(), Player.t()) ::
-          {:ok, Room.t()} | {:error, ServerState.t(), String.t()}
-  def require_alive_player(state, player) do
-    with {:ok, room} <- require_room(state, player) do
+  @spec require_alive_player(Player.t()) :: {:ok, Room.t()} | {:error, String.t()}
+  def require_alive_player(player) do
+    with {:ok, room} <- require_room(player) do
       room_player = Room.get_player(room, player.key)
-      require_alive_player(state, player, room, room_player)
+      require_alive_player(player, room, room_player)
     end
   end
 
-  defp require_alive_player(state, _player, _room, %{coordinates: nil}) do
-    {:error, state, "You're dead. Type #{highlight("respawn")} to return to the game."}
+  defp require_alive_player(_player, _room, %{coordinates: nil}) do
+    {:error, "You're dead. Type #{highlight("respawn")} to return to the game."}
   end
 
-  defp require_alive_player(_state, _player, room, _room_player) do
+  defp require_alive_player(_player, room, _room_player) do
     {:ok, room}
   end
 
-  @spec require_room(ServerState.t(), Player.t()) ::
-          {:ok, Room.t()} | {:error, ServerState.t(), String.t()}
-  def require_room(state, player) do
+  @spec require_room(Player.t()) :: {:ok, Room.t()} | {:error, String.t()}
+  def require_room(player) do
     if player.room do
-      room = ServerState.get_room(state, player.room)
-      {:ok, room}
+      {:ok, Process.Room.get(player.room)}
     else
-      {:error, state, room_required_message()}
+      {:error, room_required_message()}
     end
   end
 

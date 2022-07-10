@@ -32,6 +32,10 @@ defmodule TextBasedFPS.ServerAgent do
     Agent.update(__MODULE__, &ServerState.remove_player(&1, player_key))
   end
 
+  def add_notifications(notifications) do
+    Agent.update(__MODULE__, &ServerState.add_notifications(&1, notifications))
+  end
+
   @spec get_and_clear_notifications() :: list(Notification.t())
   def get_and_clear_notifications do
     Agent.get_and_update(__MODULE__, &ServerState.get_and_clear_notifications/1)

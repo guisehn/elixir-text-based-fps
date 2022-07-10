@@ -6,30 +6,31 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
     GameMap,
     Notification,
     PlayerCommand,
+    Process,
     Room,
     RoomPlayer,
-    ServerState
+    ServerAgent
   }
 
   @behaviour PlayerCommand
 
   @impl true
-  def execute(state, player, _) do
-    with {:ok, room} <- require_alive_player(state, player) do
+  def execute(player, _) do
+    with {:ok, room} <- require_alive_player(player) do
       room_player = Room.get_player(room, player.key)
-      fire(state, player, room_player, room)
+      fire(player, room_player, room)
     end
   end
 
-  defp fire(state, _, %{ammo: {0, 0}}, _) do
-    {:error, state, "You're out of ammo"}
+  defp fire(_, %{ammo: {0, 0}}, _) do
+    {:error, "You're out of ammo"}
   end
 
-  defp fire(state, _, %{ammo: {0, _}}, _) do
-    {:error, state, "Reload your gun by typing #{highlight("reload")}"}
+  defp fire(_, %{ammo: {0, _}}, _) do
+    {:error, "Reload your gun by typing #{highlight("reload")}"}
   end
 
-  defp fire(state, player, room_player, room) do
+  defp fire(player, room_player, room) do
     shot_players =
       players_on_path(room.game_map.matrix, room_player.coordinates, room_player.direction)
       |> Enum.with_index()
@@ -37,20 +38,19 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
         apply_damage(room, {shot_player_key, distance, index})
       end)
 
-    updated_state =
-      ServerState.update_room(state, room.name, fn room ->
-        shot_players
-        |> Enum.reduce(room, fn shot_player, room ->
-          apply_update(room, room_player, shot_player)
-        end)
-        |> Room.update_player(room_player.player_key, fn player ->
-          RoomPlayer.decrement(player, :ammo)
-        end)
+    Process.Room.update_room(room.name, fn room ->
+      shot_players
+      |> Enum.reduce(room, fn shot_player, room ->
+        apply_update(room, room_player, shot_player)
       end)
+      |> Room.update_player(room_player.player_key, fn player ->
+        RoomPlayer.decrement(player, :ammo)
+      end)
+    end)
 
-    updated_state = push_notifications(updated_state, player, shot_players)
+    push_notifications(player, shot_players)
 
-    {:ok, updated_state, generate_message(state, shot_players)}
+    {:ok, generate_message(state, shot_players)}
   end
 
   defp players_on_path(matrix, {x, y}, direction) do
@@ -148,7 +148,7 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
   defp action_message(verb, state, shot_players) do
     names =
       shot_players
-      |> Stream.map(fn shot -> ServerState.get_player(state, shot.player_key) end)
+      |> Stream.map(fn shot -> Process.Players.get_player(shot.player_key) end)
       |> Enum.map(& &1.name)
 
     case length(names) do
@@ -157,9 +157,10 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
     end
   end
 
-  defp push_notifications(state, shooter_player, shot_players) do
+  # TODO: move notifications to room
+  defp push_notifications(shooter_player, shot_players) do
     notifications = Enum.map(shot_players, &build_shot_notification(shooter_player, &1))
-    ServerState.add_notifications(state, notifications)
+    ServerAgent.add_notifications(notifications)
   end
 
   defp build_shot_notification(shooter_player, shot_player = %{health: 0}) do
