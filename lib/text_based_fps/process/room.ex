@@ -1,9 +1,11 @@
 defmodule TextBasedFPS.Process.Room do
+  @moduledoc "An agent that represents a room of the server"
+
   alias TextBasedFPS.Room, as: GameRoom
 
   use Agent
 
-  @spec start_link(String.t()) :: Agent.on_start()
+  @spec start_link(Keyword.t()) :: Agent.on_start()
   def start_link(opts) do
     Agent.start_link(
       fn -> GameRoom.new(opts[:name], opts[:first_player_key]) end,

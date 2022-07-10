@@ -2,13 +2,6 @@ defmodule TextBasedFPS.Game do
   alias TextBasedFPS.{Notifications, Player, Process, Room, Text, CommandExecutor}
   alias TextBasedFPS.Process.Players
 
-  # TODO:
-  # Game.add_player()
-  # Game.add_player(key)
-  # Game.remove_player(key)
-  # Game.leave_room(player_key)
-  # Game.run_command(player_key, command)
-
   defdelegate add_player(), to: Players
   defdelegate add_player(player_key), to: Players
 
