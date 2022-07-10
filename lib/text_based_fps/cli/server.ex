@@ -21,8 +21,6 @@ defmodule TextBasedFPS.CLI.Server do
     end
 
     Messages.display_welcome_message(options)
-
-    CLI.Server.Console.start()
   end
 
   def node_shortname, do: @node_name
