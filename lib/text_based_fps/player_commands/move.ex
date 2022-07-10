@@ -7,31 +7,33 @@ defmodule TextBasedFPS.PlayerCommand.Move do
   @behaviour PlayerCommand
 
   @impl true
-  def execute(state, player, direction) do
-    with {:ok, room} <- require_alive_player(state, player) do
-      room_player = Room.get_player(room, player.key)
-      parsed_direction = parse_direction(room_player, direction)
-      move(state, room, room_player, parsed_direction)
+  def execute(player, direction) do
+    with {:ok, _} <- require_alive_player(player) do
+      Process.Room.get_and_update(player.room, fn room ->
+        room_player = Room.get_player(room, player.key)
+        parsed_direction = parse_direction(room_player, direction)
+        move(room, room_player, parsed_direction)
+      end)
     end
   end
 
   defp parse_direction(room_player, ""), do: room_player.direction
   defp parse_direction(_room_player, direction), do: Direction.from_string(direction)
 
-  defp move(state, _room, _room_player, nil) do
-    {:error, state, "Unknown direction. Use #{highlight("<north/south/west/east>")}"}
+  defp move(room, _room_player, nil = _parsed_direction) do
+    msg = {:error, "Unknown direction. Use #{highlight("<north/south/west/east>")}"}
+    {msg, room}
   end
 
-  defp move(state, room, room_player, direction) do
+  defp move(room, room_player, direction) do
     {x, y} = Direction.calculate_movement(direction, room_player.coordinates)
 
     case Room.place_player_at(room, room_player.player_key, {x, y}) do
       {:ok, updated_room, object_grabbed} ->
-        updated_state = ServerState.update_room(state, updated_room)
-        {:ok, updated_state, grabbed_object_message(object_grabbed)}
+        {{:ok, grabbed_object_message(object_grabbed)}, updated_room}
 
       {:error, _} ->
-        {:error, state, "You can't go in that direction."}
+        {{:error, "You can't go in that direction."}, room}
     end
   end
 

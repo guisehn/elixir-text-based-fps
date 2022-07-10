@@ -62,13 +62,13 @@ defmodule TextBasedFPS.Room do
     update_game_map_matrix(room, {x, y}, object.new())
   end
 
-  @spec respawn_player(t, Player.key_t()) :: {:ok, t} | {:error, t, :player_is_alive}
+  @spec respawn_player(t, Player.key_t()) :: {:ok, t} | {:error, :player_is_alive}
   def respawn_player(room, player_key) do
     room_player = get_player(room, player_key)
     respawn_player(room, room_player, RoomPlayer.dead?(room_player))
   end
 
-  defp respawn_player(room, _room_player, false), do: {:error, room, :player_is_alive}
+  defp respawn_player(_room, _room_player, false), do: {:error, :player_is_alive}
 
   defp respawn_player(room, room_player, true) do
     %{coordinates: coordinates, direction: direction} =

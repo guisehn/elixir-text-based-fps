@@ -19,6 +19,9 @@ defmodule TextBasedFPS.Process.RoomSupervisor do
     end
   end
 
+  defp do_add_room(room_name),
+    do: DynamicSupervisor.start_child(__MODULE__, {Room, room_name})
+
   def remove_room(room_name) do
     case Room.whereis(room_name) do
       :undefined -> :ok
@@ -26,6 +29,13 @@ defmodule TextBasedFPS.Process.RoomSupervisor do
     end
   end
 
-  defp do_add_room(room_name),
-    do: DynamicSupervisor.start_child(__MODULE__, {Room, room_name})
+  @spec get_rooms() :: list(Room.t())
+  def get_rooms do
+    DynamicSupervisor.which_children()
+    |> Stream.map(fn {_, pid, _, _} -> pid end)
+    |> Stream.filter(&is_pid/1)
+    |> Enum.map(&Room.get/1)
+  end
+
+  def count_rooms, do: DynamicSupervisor.count_children(__MODULE__).specs
 end

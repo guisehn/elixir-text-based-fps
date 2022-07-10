@@ -1,23 +1,22 @@
 defmodule TextBasedFPS.PlayerCommand.Respawn do
   import TextBasedFPS.CommandHelper
 
-  alias TextBasedFPS.{PlayerCommand, Room, ServerState}
+  alias TextBasedFPS.{PlayerCommand, Process, Room}
 
   @behaviour PlayerCommand
 
   @impl true
-  def execute(state, player, _) do
-    with {:ok, room} <- require_room(state, player) do
-      case Room.respawn_player(room, player.key) do
-        {:ok, updated_room} ->
-          updated_state = ServerState.update_room(state, updated_room)
-          {:ok, updated_state, "You're back!"}
+  def execute(player, _) do
+    with {:ok, _} <- require_room(player) do
+      Process.Room.get_and_update(player.room, fn room ->
+        case Room.respawn_player(room, player.key) do
+          {:ok, updated_room} ->
+            {{:ok, "You're back!"}, updated_room}
 
-        {:error, _room, reason} ->
-          {:error, state, get_error_message(reason)}
-      end
+          {:error, :player_is_alive} ->
+            {{:error, "You're already alive!"}, room}
+        end
+      end)
     end
   end
-
-  defp get_error_message(:player_is_alive), do: "You're already alive!"
 end

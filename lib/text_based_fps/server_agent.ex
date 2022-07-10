@@ -36,6 +36,13 @@ defmodule TextBasedFPS.ServerAgent do
     Agent.update(__MODULE__, &ServerState.add_notifications(&1, notifications))
   end
 
+  def notify_room_except_player(room_name, except_player_key, notification_body) do
+    Agent.get_and_update(
+      __MODULE__,
+      &ServerState.notify_room_except_player(&1, room_name, except_player_key, notification_body)
+    )
+  end
+
   @spec get_and_clear_notifications() :: list(Notification.t())
   def get_and_clear_notifications do
     Agent.get_and_update(__MODULE__, &ServerState.get_and_clear_notifications/1)

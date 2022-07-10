@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.Player do
-  alias TextBasedFPS.ServerState
+  alias TextBasedFPS.Process.Players
 
   defstruct [:key, name: nil, room: nil, last_command_at: nil]
 
@@ -27,18 +27,18 @@ defmodule TextBasedFPS.Player do
     Map.put(player, :last_command_at, DateTime.utc_now())
   end
 
-  @spec validate_name(ServerState.t(), String.t()) ::
+  @spec validate_name(String.t()) ::
           :ok
           | {:error, :empty}
           | {:error, :too_large}
           | {:error, :invalid_chars}
           | {:error, :already_in_use}
-  def validate_name(state, name) do
+  def validate_name(name) do
     cond do
       name == "" -> {:error, :empty}
       String.length(name) > @name_max_length -> {:error, :too_large}
       String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, :invalid_chars}
-      name_exists?(state, name) -> {:error, :already_in_use}
+      name_exists?(name) -> {:error, :already_in_use}
       true -> :ok
     end
   end
@@ -46,7 +46,7 @@ defmodule TextBasedFPS.Player do
   @spec name_max_length() :: non_neg_integer()
   def name_max_length, do: @name_max_length
 
-  defp name_exists?(state, name) do
-    Enum.any?(state.players, fn {_, player} -> player.name == name end)
+  defp name_exists?(name) do
+    Enum.any?(Players.get_all_players(), fn {_, player} -> player.name == name end)
   end
 end

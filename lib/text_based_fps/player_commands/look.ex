@@ -13,9 +13,9 @@ defmodule TextBasedFPS.PlayerCommand.Look do
   @behaviour PlayerCommand
 
   @impl true
-  def execute(state, player, _) do
-    with {:ok, room} <- require_alive_player(state, player) do
-      {:ok, state, generate_vision(player, room)}
+  def execute(player, _) do
+    with {:ok, room} <- require_alive_player(player) do
+      {:ok, generate_vision(player, room)}
     end
   end
 

@@ -1,27 +1,29 @@
 defmodule TextBasedFPS.PlayerCommand.Reload do
   import TextBasedFPS.CommandHelper
-  import TextBasedFPS.RoomPlayer, only: [display_ammo: 1, reload_gun: 1]
 
-  alias TextBasedFPS.{PlayerCommand, Room}
+  alias TextBasedFPS.{PlayerCommand, Process, Room, RoomPlayer}
 
   @behaviour PlayerCommand
 
   @impl true
-  def execute(state, player, _) do
-    with {:ok, room} <- require_alive_player(state, player) do
-      room_player = Room.get_player(room, player.key)
+  def execute(player, _) do
+    with {:ok, _} <- require_alive_player(player) do
+      Process.Room.get_and_update(player.room, fn room ->
+        room_player = Room.get_player(room, player.key)
 
-      case reload_gun(room_player) do
-        {:reloaded, updated_player} ->
-          updated_state = put_in(state.rooms[room.name].players[player.key], updated_player)
-          {:ok, updated_state, "You've reloaded. Ammo: #{display_ammo(updated_player)}"}
+        case RoomPlayer.reload_gun(room_player) do
+          {:reloaded, updated_player} ->
+            updated_room = put_in(room.players[player.key], updated_player)
+            msg = {:ok, "You've reloaded. Ammo: #{RoomPlayer.display_ammo(updated_player)}"}
+            {msg, updated_room}
 
-        {:no_ammo, _} ->
-          {:error, state, "You're out of ammo"}
+          {:no_ammo, _} ->
+            {{:error, "You're out of ammo"}, room}
 
-        {:full, _} ->
-          {:error, state, "Your gun is full"}
-      end
+          {:full, _} ->
+            {{:error, "Your gun is full"}, room}
+        end
+      end)
     end
   end
 end

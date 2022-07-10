@@ -11,8 +11,9 @@ defmodule TextBasedFPS.Process.Room do
     )
   end
 
-  @doc "Gets the current state of the room with the given name"
-  @spec get(String.t()) :: GameRoom.t()
+  @doc "Gets the current state of the room with the given name or PID"
+  @spec get(String.t() | pid) :: GameRoom.t()
+  def get(pid) when is_pid(pid), do: Agent.get(pid, & &1)
   def get(room_name), do: Agent.get(get_process_reference(room_name), & &1)
 
   @doc "Updates the room with the given name using the function passed"
@@ -23,6 +24,10 @@ defmodule TextBasedFPS.Process.Room do
       room = fun.(room)
       {room, room}
     end)
+  end
+
+  def get_and_update(room_name, fun) do
+    get_process_reference(room_name) |> Agent.get_and_update(fun)
   end
 
   @doc """
