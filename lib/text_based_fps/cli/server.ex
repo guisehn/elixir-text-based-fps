@@ -1,11 +1,11 @@
 defmodule TextBasedFPS.CLI.Server do
-  alias TextBasedFPS.{CLI, ServerAgent, Text}
+  alias TextBasedFPS.{CLI, CommandExecutor, Text}
   alias TextBasedFPS.CLI.Server.Messages
 
   @type options :: %{
-    optional(:external) => boolean(),
-    optional(:cookie) => String.t()
-  }
+          optional(:external) => boolean(),
+          optional(:cookie) => String.t()
+        }
 
   @node_name :"text-based-fps-server"
 
@@ -51,7 +51,7 @@ defmodule TextBasedFPS.CLI.Server do
   defp wait_client_message(player_pid) do
     receive do
       {:command, command} ->
-        result = ServerAgent.run_command(player_pid, command)
+        result = CommandExecutor.execute(player_pid, command)
         send(player_pid, {:reply, result})
         dispatch_notifications()
     end

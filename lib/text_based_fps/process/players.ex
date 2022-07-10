@@ -31,7 +31,7 @@ defmodule TextBasedFPS.Process.Players do
   def update_player(player_key, fun) do
     Agent.get_and_update(__MODULE__, fn players ->
       players = Map.update(players, player_key, nil, fun)
-      {players, players}
+      {Map.get(players, player_key), players}
     end)
   end
 

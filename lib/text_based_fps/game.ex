@@ -1,5 +1,24 @@
 defmodule TextBasedFPS.Game do
   alias TextBasedFPS.{Notification, Player, Process, Room, ServerAgent}
+  alias TextBasedFPS.Process.Players
+
+  # TODO:
+  # Game.add_player()
+  # Game.add_player(key)
+  # Game.remove_player(key)
+  # Game.join_room(player_key, room_name)
+  # Game.leave_room(player_key)
+  # Game.notify(room_name, body, except: x)
+  # Game.notify(room_name, body, only: x)
+  # Game.notify(room_name, body)
+  # Game.flush_notifications(room_name)
+  # Game.run_command(player_key, command)
+
+  def remove_player(player_key) do
+    player = Players.get_player(player_key)
+    remove_player_from_current_room(player)
+    Players.remove_player(player_key)
+  end
 
   def join_existing_room(player, room_name) do
     remove_player_from_current_room(player)
@@ -25,10 +44,10 @@ defmodule TextBasedFPS.Game do
 
     Process.Players.update_player(player.key, &Map.put(&1, :room, nil))
 
-    if length(room.players) == 1 do
+    if map_size(room.players) |> IO.inspect("== map size ==") == 1 do
       Process.RoomSupervisor.remove_room(room.name)
     else
-      room = Process.Room.update_room(&Room.remove_player(&1, player.key))
+      room = Process.Room.update_room(player.room, &Room.remove_player(&1, player.key))
       notify_player_leaving_room(room, player.name)
     end
 

@@ -17,6 +17,8 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
   def execute(player, name) do
     name = String.trim(name)
 
+    IO.inspect(player, label: "== player ==")
+
     case Player.validate_name(name) do
       :ok ->
         notify_room(player, name)

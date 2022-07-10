@@ -31,7 +31,7 @@ defmodule TextBasedFPS.Process.RoomSupervisor do
 
   @spec get_rooms() :: list(Room.t())
   def get_rooms do
-    DynamicSupervisor.which_children()
+    DynamicSupervisor.which_children(__MODULE__)
     |> Stream.map(fn {_, pid, _, _} -> pid end)
     |> Stream.filter(&is_pid/1)
     |> Enum.map(&Room.get/1)

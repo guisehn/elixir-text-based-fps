@@ -52,15 +52,4 @@ defmodule TextBasedFPS.ServerAgent do
   def get_and_clear_notifications(player_key) do
     Agent.get_and_update(__MODULE__, &ServerState.get_and_clear_notifications(&1, player_key))
   end
-
-  @spec run_command(Player.key_t(), String.t()) :: {:ok, String.t() | nil} | {:error, String.t()}
-  def run_command(player_key, command) do
-    Agent.get_and_update(
-      __MODULE__,
-      fn state ->
-        {status, state, message} = CommandExecutor.execute(state, player_key, command)
-        {{status, message}, state}
-      end
-    )
-  end
 end

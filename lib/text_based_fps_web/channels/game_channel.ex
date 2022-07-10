@@ -2,7 +2,8 @@ defmodule TextBasedFPSWeb.GameChannel do
   use TextBasedFPSWeb, :channel
 
   alias TextBasedFPSWeb.Endpoint
-  alias TextBasedFPS.{ServerAgent, Text}
+  alias TextBasedFPS.{CommandExecutor, ServerAgent, Game, Text}
+  alias TextBasedFPS.Process.Players
 
   @impl true
   def join(_topic, _payload, socket) do
@@ -13,7 +14,7 @@ defmodule TextBasedFPSWeb.GameChannel do
   @impl true
   def handle_in(command, _payload, socket) do
     %{player_key: player_key} = socket.assigns
-    {status, result} = ServerAgent.run_command(player_key, command)
+    {status, result} = CommandExecutor.execute(player_key, command)
 
     # The action just performed might have generated notifications for other players.
     # We call dispatch_notifications/0 to deliver the newly created notifications
@@ -26,7 +27,7 @@ defmodule TextBasedFPSWeb.GameChannel do
   @impl true
   def handle_info(:after_join, socket) do
     IO.puts("Player joined: #{socket.assigns.player_key}")
-    player = ServerAgent.get_player(socket.assigns.player_key)
+    player = Players.get_player(socket.assigns.player_key)
     push(socket, "welcome", %{message: welcome_message(player)})
     {:noreply, socket}
   end
@@ -34,7 +35,7 @@ defmodule TextBasedFPSWeb.GameChannel do
   @impl true
   def terminate(reason, %{assigns: %{player_key: player_key}}) do
     IO.puts("Player left: #{player_key}, reason: #{inspect(reason)}")
-    ServerAgent.remove_player(player_key)
+    Game.remove_player(player_key)
   end
 
   defp welcome_message(%TextBasedFPS.Player{name: nil}) do

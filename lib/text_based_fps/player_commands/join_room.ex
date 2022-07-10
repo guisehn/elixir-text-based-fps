@@ -20,7 +20,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
     with :ok <- require_player_name(player),
          :ok <- check_already_in_room(player, room_name),
          :ok <- join_existing_or_create_room(player, room_name) do
-      notify_room(room_name, player)
+      # notify_room(room_name, player)
       {:ok, success_message(room_name)}
     else
       {:error, reason} -> {:error, error_message(reason)}
@@ -55,6 +55,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
     case Room.validate_name(room_name) do
       :ok ->
         Process.RoomSupervisor.add_room(name: room_name, first_player_key: player.key)
+        Process.Players.update_player(player.key, &Map.put(&1, :room, room_name))
         :ok
 
       {:error, reason} ->
