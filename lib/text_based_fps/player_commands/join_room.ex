@@ -1,7 +1,14 @@
 defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   import TextBasedFPS.Text, only: [highlight: 1]
 
-  alias TextBasedFPS.{Game, Process, Player, PlayerCommand, Room, ServerAgent}
+  alias TextBasedFPS.{
+    Game,
+    Notifications,
+    Process,
+    Player,
+    PlayerCommand,
+    Room
+  }
 
   @behaviour PlayerCommand
 
@@ -19,8 +26,9 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   def execute(player, room_name) do
     with :ok <- require_player_name(player),
          :ok <- check_already_in_room(player, room_name),
+         :ok <- Game.leave_room(player.key),
          :ok <- join_existing_or_create_room(player, room_name) do
-      # notify_room(room_name, player)
+      notify_room(room_name, player)
       {:ok, success_message(room_name)}
     else
       {:error, reason} -> {:error, error_message(reason)}
@@ -40,10 +48,24 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   @spec join_existing_or_create_room(Player.t(), String.t()) :: :ok | {:error, atom}
   defp join_existing_or_create_room(player, room_name) do
     if Process.Room.exists?(room_name) do
-      Game.join_existing_room(player, room_name)
+      join_existing_room(player, room_name)
     else
       create_room(player, room_name)
     end
+  end
+
+  @spec join_existing_room(Player.t(), String.t()) :: :ok | {:error, :room_full}
+  defp join_existing_room(player, room_name) do
+    Process.Room.get_and_update(room_name, fn room ->
+      case Room.add_player(room, player.key) do
+        {:ok, updated_room} ->
+          update_player_room(player, room_name)
+          {:ok, updated_room}
+
+        {:error, reason} ->
+          {{:error, reason}, room}
+      end
+    end)
   end
 
   @spec create_room(Player.t(), String.t()) ::
@@ -55,7 +77,7 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
     case Room.validate_name(room_name) do
       :ok ->
         Process.RoomSupervisor.add_room(name: room_name, first_player_key: player.key)
-        Process.Players.update_player(player.key, &Map.put(&1, :room, room_name))
+        update_player_room(player, room_name)
         :ok
 
       {:error, reason} ->
@@ -65,10 +87,10 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
 
   @spec notify_room(String.t(), Player.t()) :: :ok
   defp notify_room(room_name, player) do
-    ServerAgent.notify_room_except_player(
+    Notifications.notify_room(
       room_name,
-      player.key,
-      highlight("#{player.name} joined the room!")
+      highlight("#{player.name} joined the room!"),
+      except: [player.key]
     )
   end
 
@@ -80,5 +102,9 @@ defmodule TextBasedFPS.PlayerCommand.JoinRoom do
   @spec error_message(atom) :: String.t()
   defp error_message(reason) do
     @error_messages[reason] || "Error: #{reason}"
+  end
+
+  defp update_player_room(player, room_name) do
+    Process.Players.update_player(player.key, &Map.put(&1, :room, room_name))
   end
 end

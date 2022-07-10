@@ -1,9 +1,7 @@
 defmodule TextBasedFPSWeb.GameChannel do
   use TextBasedFPSWeb, :channel
 
-  alias TextBasedFPSWeb.Endpoint
-  alias TextBasedFPS.{CommandExecutor, ServerAgent, Game, Text}
-  alias TextBasedFPS.Process.Players
+  alias TextBasedFPS.{Game, Text}
 
   @impl true
   def join(_topic, _payload, socket) do
@@ -14,20 +12,14 @@ defmodule TextBasedFPSWeb.GameChannel do
   @impl true
   def handle_in(command, _payload, socket) do
     %{player_key: player_key} = socket.assigns
-    {status, result} = CommandExecutor.execute(player_key, command)
-
-    # The action just performed might have generated notifications for other players.
-    # We call dispatch_notifications/0 to deliver the newly created notifications
-    # to those players.
-    dispatch_notifications()
-
+    {status, result} = Game.execute_command(player_key, command)
     {:reply, {status, %{message: result}}, socket}
   end
 
   @impl true
   def handle_info(:after_join, socket) do
     IO.puts("Player joined: #{socket.assigns.player_key}")
-    player = Players.get_player(socket.assigns.player_key)
+    player = Game.get_player(socket.assigns.player_key)
     push(socket, "welcome", %{message: welcome_message(player)})
     {:noreply, socket}
   end
@@ -52,13 +44,5 @@ defmodule TextBasedFPSWeb.GameChannel do
 
   defp welcome_message(_) do
     Text.danger("It looks like the server may have crashed. 👀 Reload the page to keep playing.")
-  end
-
-  defp dispatch_notifications do
-    Enum.each(ServerAgent.get_and_clear_notifications(), &dispatch_notification/1)
-  end
-
-  defp dispatch_notification(%{body: body, player_key: player_key}) do
-    Endpoint.broadcast("game:#{player_key}", "notification", %{message: body})
   end
 end

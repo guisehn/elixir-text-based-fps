@@ -1,9 +1,8 @@
 defmodule TextBasedFPS.CLI.Server.Console do
-  alias TextBasedFPS.{Text, ServerAgent}
+  alias TextBasedFPS.Text
 
-  @help %{
-    "state" => "Prints the server state"
-  }
+  # TODO: re-introduce a way to see the server state
+  @help %{}
 
   def start, do: handle_command()
 
@@ -15,8 +14,6 @@ defmodule TextBasedFPS.CLI.Server.Console do
 
     handle_command()
   end
-
-  defp command("state"), do: IO.inspect(ServerAgent.get_state())
 
   defp command("help") do
     IO.puts("Commands:")

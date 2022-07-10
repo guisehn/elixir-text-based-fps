@@ -4,12 +4,11 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
 
   alias TextBasedFPS.{
     GameMap,
-    Notification,
+    Notifications,
     PlayerCommand,
     Process,
     Room,
-    RoomPlayer,
-    ServerAgent
+    RoomPlayer
   }
 
   @behaviour PlayerCommand
@@ -157,25 +156,20 @@ defmodule TextBasedFPS.PlayerCommand.Fire do
     end
   end
 
-  # TODO: move notifications to room
   defp push_notifications(shooter_player, shot_players) do
-    notifications = Enum.map(shot_players, &build_shot_notification(shooter_player, &1))
-    ServerAgent.add_notifications(notifications)
+    Enum.each(shot_players, fn shot_player ->
+      msg = generate_shot_message(shooter_player, shot_player)
+      Notifications.notify(shot_player.player_key, msg)
+    end)
   end
 
-  defp build_shot_notification(shooter_player, shot_player = %{health: 0}) do
-    Notification.new(
-      shot_player.player_key,
-      danger(
-        "#{shooter_player.name} killed you! Type #{highlight("respawn")} to return to the game"
-      )
+  defp generate_shot_message(shooter_player, shot_player = %{health: 0}) do
+    danger(
+      "#{shooter_player.name} killed you! Type #{highlight("respawn")} to return to the game"
     )
   end
 
-  defp build_shot_notification(shooter_player, shot_player) do
-    Notification.new(
-      shot_player.player_key,
-      danger("uh oh! #{shooter_player.name} shot you!")
-    )
+  defp generate_shot_message(shooter_player, shot_player) do
+    danger("uh oh! #{shooter_player.name} shot you!")
   end
 end

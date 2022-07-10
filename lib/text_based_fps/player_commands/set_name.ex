@@ -1,7 +1,7 @@
 defmodule TextBasedFPS.PlayerCommand.SetName do
   import TextBasedFPS.Text, only: [highlight: 1]
 
-  alias TextBasedFPS.{Player, PlayerCommand, ServerAgent}
+  alias TextBasedFPS.{Player, PlayerCommand, Notifications}
   alias TextBasedFPS.Process.Players
 
   @behaviour PlayerCommand
@@ -17,8 +17,6 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
   def execute(player, name) do
     name = String.trim(name)
 
-    IO.inspect(player, label: "== player ==")
-
     case Player.validate_name(name) do
       :ok ->
         notify_room(player, name)
@@ -31,8 +29,8 @@ defmodule TextBasedFPS.PlayerCommand.SetName do
   end
 
   defp notify_room(%Player{room: room} = player, new_name) when not is_nil(room) do
-    body = highlight("#{player.name} changed their name to #{new_name}")
-    ServerAgent.notify_room_except_player(room, player.key, body)
+    msg = highlight("#{player.name} changed their name to #{new_name}")
+    Notifications.notify_room(room, msg, except: [player.key])
   end
 
   defp notify_room(_player, _new_name), do: nil

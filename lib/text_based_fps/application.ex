@@ -8,7 +8,6 @@ defmodule TextBasedFPS.Application do
   @typep boot_mode :: :phoenix | :"cli.server" | :"cli.client"
 
   @server_processes [
-    TextBasedFPS.ServerAgent,
     TextBasedFPS.Process.RoomSupervisor,
     {TextBasedFPS.Process.Players, %{}}
   ]

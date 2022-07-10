@@ -1,6 +1,7 @@
 defmodule TextBasedFPS.Room do
   alias TextBasedFPS.{
     GameMap,
+    Notification,
     Player,
     Room,
     RoomPlayer
@@ -8,7 +9,7 @@ defmodule TextBasedFPS.Room do
 
   alias TextBasedFPS.GameMap.Object
 
-  defstruct [:name, :game_map, :players]
+  defstruct [:name, :game_map, :players, :notifications]
 
   @type t :: %TextBasedFPS.Room{
           name: String.t(),
@@ -45,7 +46,7 @@ defmodule TextBasedFPS.Room do
   def add_player!(room, player_key) do
     case add_player(room, player_key) do
       {:ok, updated_room} -> updated_room
-      {:error, _room, reason} -> raise("Cannot add player. Reason: #{reason}")
+      {:error, reason} -> raise("Cannot add player. Reason: #{reason}")
     end
   end
 
@@ -194,15 +195,15 @@ defmodule TextBasedFPS.Room do
   @spec name_max_length() :: non_neg_integer()
   def name_max_length, do: @name_max_length
 
-  defp update_game_map(room, fun) do
-    Map.put(room, :game_map, fun.(room.game_map))
-  end
-
   defp update_game_map_matrix(room, fun) do
     update_game_map(room, fn game_map -> GameMap.update_matrix(game_map, fun) end)
   end
 
   defp update_game_map_matrix(room, {x, y}, value) do
     update_game_map_matrix(room, fn matrix -> GameMap.Matrix.set(matrix, {x, y}, value) end)
+  end
+
+  defp update_game_map(room, fun) do
+    Map.put(room, :game_map, fun.(room.game_map))
   end
 end

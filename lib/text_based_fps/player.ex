@@ -4,7 +4,7 @@ defmodule TextBasedFPS.Player do
   defstruct [:key, name: nil, room: nil, last_command_at: nil]
 
   @type t :: %TextBasedFPS.Player{
-          key: String.t(),
+          key: key_t,
           name: String.t() | nil,
           room: String.t() | nil,
           last_command_at: DateTime.t() | nil
