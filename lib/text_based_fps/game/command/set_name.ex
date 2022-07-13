@@ -27,7 +27,7 @@ defmodule TextBasedFPS.Game.Command.SetName do
   end
 
   defp ensure_not_used?(name) do
-    if Process.Players.name_exists?(name) do
+    unless Process.Players.name_exists?(name) do
       :ok
     else
       {:error, :already_in_use}
