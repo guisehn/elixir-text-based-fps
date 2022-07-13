@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.Game.CommandExecutor do
-  alias TextBasedFPS.{Game, Process}
+  alias TextBasedFPS.Game
   alias TextBasedFPS.Game.Command
 
   @commands %{
@@ -21,7 +21,7 @@ defmodule TextBasedFPS.Game.CommandExecutor do
   @spec execute(Game.Player.key_t(), String.t(), Map.t()) ::
           {:ok, String.t() | nil} | {:error, String.t()}
   def execute(player_key, command_text, commands \\ @commands) do
-    player = Process.Players.update_player(player_key, &Game.Player.touch/1)
+    player = players_process_impl().update_player(player_key, &Game.Player.touch/1)
     {command, command_arg} = parse_command(command_text, commands)
     execute_command_with_args(player, command, command_arg)
   end
@@ -44,4 +44,7 @@ defmodule TextBasedFPS.Game.CommandExecutor do
   defp execute_command_with_args(player, command, command_arg) do
     command.execute(player, command_arg)
   end
+
+  defp players_process_impl,
+    do: Application.get_env(:text_based_fps, :players_process, TextBasedFPS.Process.Players)
 end
