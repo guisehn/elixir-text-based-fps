@@ -1,51 +1,48 @@
 defmodule TextBasedFPS.Game.CommandHelperTest do
   use ExUnit.Case, async: true
 
-  alias TextBasedFPS.Game.{CommandHelper, Room, ServerState}
+  alias TextBasedFPS.Game.{CommandHelper, Player, Room}
+  alias TextBasedFPS.Process
 
-  setup do
-    state = ServerState.new() |> ServerState.add_player("foo")
-    %{state: state}
-  end
+  import Mox
 
-  describe "require_room/2" do
-    test "returns {:ok, room} if player is in a room", %{state: state} do
-      state = ServerState.add_room(state, "spaceship", "foo")
-      player = ServerState.get_player(state, "foo")
-      assert {:ok, %Room{}} = CommandHelper.require_room(state, player)
+  setup :verify_on_exit!
+
+  describe "require_room/1" do
+    test "returns {:ok, room} when player is in a room" do
+      player = %{Player.new("foo") | room: "spaceship"}
+      expect(Process.Room.Mock, :get, fn room_name -> Room.new(room_name) end)
+      assert {:ok, %Room{name: "spaceship"}} = CommandHelper.require_room(player)
     end
 
-    test "returns {:error, state, error_message} if player is not in a room", %{state: state} do
-      player = ServerState.get_player(state, "foo")
-      assert {:error, ^state, error_message} = CommandHelper.require_room(state, player)
+    test "returns {:error, error_message} when player is not in a room" do
+      player = Player.new("foo")
+      assert {:error, error_message} = CommandHelper.require_room(player)
       assert error_message =~ "You need to be in a room to use this command"
     end
   end
 
   describe "require_alive_player/2" do
-    test "returns {:ok, room} if player is in a room and is alive", %{state: state} do
-      state = ServerState.add_room(state, "spaceship", "foo")
-      player = ServerState.get_player(state, "foo")
-      assert {:ok, %Room{}} = CommandHelper.require_alive_player(state, player)
+    test "returns {:ok, room} when player is in a room and is alive" do
+      player = %{Player.new("foo") | room: "spaceship"}
+      expect(Process.Room.Mock, :get, fn room_name -> Room.new(room_name, "foo") end)
+      assert {:ok, %Room{name: "spaceship"}} = CommandHelper.require_alive_player(player)
     end
 
-    test "returns {:error, state, error_message} if player is in a room but is dead", %{
-      state: state
-    } do
-      state =
-        state
-        |> ServerState.add_room("spaceship", "foo")
-        |> ServerState.update_room("spaceship", &Room.kill_player(&1, "foo"))
+    test "returns {:error, message} when player is in a room but is dead" do
+      player = %{Player.new("foo") | room: "spaceship"}
 
-      player = ServerState.get_player(state, "foo")
+      expect(Process.Room.Mock, :get, fn room_name ->
+        Room.new(room_name, "foo")
+        |> Room.kill_player("foo")
+      end)
 
-      assert {:error, ^state, error_message} = CommandHelper.require_alive_player(state, player)
-      assert error_message =~ "You're dead"
+      assert {:error, "You're dead" <> _} = CommandHelper.require_alive_player(player)
     end
 
-    test "returns {:error, state, error_message} if player is not in a room", %{state: state} do
-      player = ServerState.get_player(state, "foo")
-      assert {:error, ^state, error_message} = CommandHelper.require_alive_player(state, player)
+    test "returns {:error, message} when player is not in a room" do
+      player = Player.new("foo")
+      assert {:error, error_message} = CommandHelper.require_alive_player(player)
       assert error_message =~ "You need to be in a room to use this command"
     end
   end
