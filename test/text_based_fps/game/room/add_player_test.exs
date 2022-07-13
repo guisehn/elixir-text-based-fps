@@ -1,5 +1,6 @@
-defmodule TextBasedFPS.Room.AddPlayerTest do
-  alias TextBasedFPS.{GameMap, Room, RoomPlayer}
+defmodule TextBasedFPS.Game.Room.AddPlayerTest do
+  alias TextBasedFPS.Game.{Room, RoomPlayer}
+  alias TextBasedFPS.GameMap
   alias TextBasedFPS.GameMap.Matrix
 
   use ExUnit.Case, async: true
@@ -14,7 +15,7 @@ defmodule TextBasedFPS.Room.AddPlayerTest do
       room = new_test_room()
       assert {:ok, room} = Room.add_player(room, "foo")
       assert {:ok, room} = Room.add_player(room, "bar")
-      assert {:error, ^room, :room_full} = Room.add_player(room, "baz")
+      assert {:error, :room_full} = Room.add_player(room, "baz")
     end
   end
 
