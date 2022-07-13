@@ -1,5 +1,5 @@
-defmodule TextBasedFPS.RoomTest do
-  alias TextBasedFPS.{Room, RoomPlayer}
+defmodule TextBasedFPS.Game.RoomTest do
+  alias TextBasedFPS.Game.{Room, RoomPlayer}
   alias TextBasedFPS.GameMap.{Matrix, Objects}
 
   use ExUnit.Case, async: true
@@ -32,7 +32,7 @@ defmodule TextBasedFPS.RoomTest do
   end
 
   describe "respawn_player/2" do
-    test "dead player is respawned" do
+    test "respawns dead player" do
       {:ok, room} =
         Room.new("room")
         |> Room.add_player!("foo")
@@ -49,13 +49,13 @@ defmodule TextBasedFPS.RoomTest do
                true
     end
 
-    test "alive player is not respawned" do
+    test "does not respawn player that is already alive" do
       room =
         Room.new("room")
         |> Room.add_player!("foo")
         |> Room.update_player("foo", &Map.put(&1, :health, 90))
 
-      {:error, room, :player_is_alive} = Room.respawn_player(room, "foo")
+      {:error, :player_is_alive} = Room.respawn_player(room, "foo")
       assert room.players["foo"].health == 90
     end
   end

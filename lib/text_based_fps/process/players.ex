@@ -42,4 +42,11 @@ defmodule TextBasedFPS.Process.Players do
 
   @spec get_all_players() :: list(Player.t())
   def get_all_players, do: Agent.get(__MODULE__, & &1)
+
+  @spec name_exists?(String.t()) :: boolean
+  def name_exists?(name) do
+    Agent.get(__MODULE__, fn players ->
+      Enum.any?(players, fn {_, player} -> player.name == name end)
+    end)
+  end
 end

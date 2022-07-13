@@ -15,14 +15,22 @@ defmodule TextBasedFPS.Game.Command.SetName do
   def execute(player, name) do
     name = String.trim(name)
 
-    case Player.validate_name(name) do
-      :ok ->
-        notify_room(player, name)
-        player = Process.Players.update_player(player.key, &Map.put(&1, :name, name))
-        {:ok, success_message(player)}
-
+    with :ok <- Player.validate_name(name),
+         :ok <- ensure_not_used?(name) do
+      notify_room(player, name)
+      player = Process.Players.update_player(player.key, &Map.put(&1, :name, name))
+      {:ok, success_message(player)}
+    else
       {:error, reason} ->
         {:error, error_message(reason)}
+    end
+  end
+
+  defp ensure_not_used?(name) do
+    if Process.Players.name_exists?(name) do
+      :ok
+    else
+      {:error, :already_in_use}
     end
   end
 

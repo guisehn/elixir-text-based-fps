@@ -1,6 +1,5 @@
 defmodule TextBasedFPS.GameMap.MatrixTest do
-  alias TextBasedFPS.GameMap.Matrix
-  alias TextBasedFPS.GameMap.Objects
+  alias TextBasedFPS.GameMap.{Matrix, Objects}
 
   use ExUnit.Case, async: true
 
@@ -194,14 +193,14 @@ defmodule TextBasedFPS.GameMap.MatrixTest do
     test "maps all positions of matrix" do
       matrix = [
         [:" ", :"#"],
-        [:"#", :" "],
+        [:"#", :" "]
       ]
 
       fun = fn x -> if(x == :" ", do: :"#", else: :" ") end
 
       expected = [
         [:"#", :" "],
-        [:" ", :"#"],
+        [:" ", :"#"]
       ]
 
       assert Matrix.map(matrix, fun) == expected

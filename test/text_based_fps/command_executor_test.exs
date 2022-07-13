@@ -1,7 +1,7 @@
-defmodule TextBasedFPS.CommandExecutorTest do
+defmodule TextBasedFPS.Game.CommandExecutorTest do
   use ExUnit.Case, async: true
 
-  alias TextBasedFPS.{CommandExecutor, ServerState}
+  alias TextBasedFPS.Game.{CommandExecutor, ServerState}
 
   describe "execute/4" do
     test "executes command and updates 'last_command_at' of executor" do
@@ -15,7 +15,7 @@ defmodule TextBasedFPS.CommandExecutorTest do
       end
 
       commands = %{
-        "my-command" => TextBasedFPS.CommandExecutorTest.MyTestCommand
+        "my-command" => TextBasedFPS.Game.CommandExecutorTest.MyTestCommand
       }
 
       assert {:ok, updated_state, "returned message"} =
@@ -27,7 +27,7 @@ defmodule TextBasedFPS.CommandExecutorTest do
     end
 
     test "returns error if player does not exist" do
-      commands = %{"my-command" => TextBasedFPS.CommandExecutorTest.DummyCommand}
+      commands = %{"my-command" => TextBasedFPS.Game.CommandExecutorTest.DummyCommand}
       state = ServerState.new()
 
       assert {:error, ^state, error_message} =

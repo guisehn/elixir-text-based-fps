@@ -1,6 +1,5 @@
 defmodule TextBasedFPS.Game.Player do
   alias __MODULE__
-  alias TextBasedFPS.Process.Players
 
   defstruct [:key, name: nil, room: nil, last_command_at: nil]
 
@@ -33,21 +32,15 @@ defmodule TextBasedFPS.Game.Player do
           | {:error, :empty}
           | {:error, :too_large}
           | {:error, :invalid_chars}
-          | {:error, :already_in_use}
   def validate_name(name) do
     cond do
       name == "" -> {:error, :empty}
       String.length(name) > @name_max_length -> {:error, :too_large}
       String.match?(name, ~r/[^a-zA-Z0-9-]/) -> {:error, :invalid_chars}
-      name_exists?(name) -> {:error, :already_in_use}
       true -> :ok
     end
   end
 
   @spec name_max_length() :: non_neg_integer()
   def name_max_length, do: @name_max_length
-
-  defp name_exists?(name) do
-    Enum.any?(Players.get_all_players(), fn {_, player} -> player.name == name end)
-  end
 end

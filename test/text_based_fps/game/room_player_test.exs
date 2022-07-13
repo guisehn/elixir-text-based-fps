@@ -1,5 +1,5 @@
-defmodule TextBasedFPS.RoomPlayerTest do
-  alias TextBasedFPS.RoomPlayer
+defmodule TextBasedFPS.Game.RoomPlayerTest do
+  alias TextBasedFPS.Game.RoomPlayer
 
   use ExUnit.Case, async: true
 
