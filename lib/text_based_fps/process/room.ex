@@ -1,11 +1,5 @@
-defmodule TextBasedFPS.Process.Room.Behavior do
-  @callback get(String.t() | pid) :: Game.Room.t() | no_return()
-end
-
 defmodule TextBasedFPS.Process.Room do
   @moduledoc "An agent that represents a room of the server"
-
-  @behaviour __MODULE__.Behavior
 
   alias TextBasedFPS.Game
 
@@ -20,7 +14,7 @@ defmodule TextBasedFPS.Process.Room do
   end
 
   @doc "Gets the current state of the room with the given name or PID"
-  @impl true
+  @spec get(String.t() | pid) :: Game.Room.t() | no_return()
   def get(pid) when is_pid(pid), do: Agent.get(pid, & &1)
   def get(room_name), do: Agent.get(get_process_reference(room_name), & &1)
 

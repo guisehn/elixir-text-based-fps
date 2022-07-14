@@ -1,11 +1,5 @@
-defmodule TextBasedFPS.Process.Players.Behavior do
-  @callback update_player(Player.key_t(), (Player.t() -> Player.t())) :: Player.t() | nil
-end
-
 defmodule TextBasedFPS.Process.Players do
   @moduledoc "An agent that keeps track of all players of the server"
-
-  @behaviour __MODULE__.Behavior
 
   alias TextBasedFPS.Game.Player
 
@@ -37,7 +31,7 @@ defmodule TextBasedFPS.Process.Players do
   @spec get_player(Player.key_t()) :: Player.t() | nil
   def get_player(player_key), do: Agent.get(process_ref(), &Map.get(&1, player_key))
 
-  @impl true
+  @spec update_player(Player.key_t(), (Player.t() -> Player.t())) :: Player.t() | nil
   def update_player(player_key, fun) do
     Agent.get_and_update(process_ref(), fn players ->
       players = Map.update(players, player_key, nil, fun)
