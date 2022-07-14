@@ -1,12 +1,8 @@
 defmodule TextBasedFPS.Game.CommandExecutorTest do
-  use ExUnit.Case, async: true
+  use TextBasedFPS.GameCase, async: true
 
-  alias TextBasedFPS.Game.{CommandExecutor, Player}
+  alias TextBasedFPS.Game.CommandExecutor
   alias TextBasedFPS.Process
-
-  import Mox
-
-  setup :verify_on_exit!
 
   describe "execute/4" do
     test "executes command and updates 'last_command_at' of executor" do
@@ -19,14 +15,11 @@ defmodule TextBasedFPS.Game.CommandExecutorTest do
         end
       end
 
-      expect(Process.Players.Mock, :update_player, fn player_key, fun ->
-        assert player_key == "foo"
-        fun.(Player.new("foo"))
-      end)
-
       commands = %{
         "my-command" => MyTestCommand
       }
+
+      Process.Players.add_player("foo")
 
       assert {:ok, "returned message"} =
                CommandExecutor.execute("foo", "my-command hello world", commands)
@@ -34,8 +27,6 @@ defmodule TextBasedFPS.Game.CommandExecutorTest do
 
     test "returns error when player does not exist" do
       commands = %{"my-command" => DummyCommand}
-
-      expect(Process.Players.Mock, :update_player, fn _, _ -> nil end)
 
       assert {:error, error_message} =
                CommandExecutor.execute("foo", "my-command hello world", commands)
@@ -46,9 +37,7 @@ defmodule TextBasedFPS.Game.CommandExecutorTest do
     test "returns error when command specified does not exist" do
       commands = %{}
 
-      expect(Process.Players.Mock, :update_player, fn player_key, fun ->
-        fun.(Player.new(player_key))
-      end)
+      Process.Players.add_player("foo")
 
       assert {:error, "Command not found"} =
                CommandExecutor.execute("foo", "my-command hello world", commands)

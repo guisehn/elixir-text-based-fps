@@ -1,7 +1,7 @@
 defmodule TextBasedFPS.Game.CommandHelper do
   import TextBasedFPS.Text, only: [highlight: 1]
 
-  alias TextBasedFPS.Game
+  alias TextBasedFPS.{Game, Process}
 
   @spec require_alive_player(Game.Player.t()) :: {:ok, Game.Room.t()} | {:error, String.t()}
   def require_alive_player(player) do
@@ -22,7 +22,7 @@ defmodule TextBasedFPS.Game.CommandHelper do
   @spec require_room(Game.Player.t()) :: {:ok, Game.Room.t()} | {:error, String.t()}
   def require_room(player) do
     if player.room do
-      {:ok, room_process_impl().get(player.room)}
+      {:ok, Process.Room.get(player.room)}
     else
       {:error, room_required_message()}
     end
@@ -31,7 +31,4 @@ defmodule TextBasedFPS.Game.CommandHelper do
   defp room_required_message do
     "You need to be in a room to use this command. Type #{highlight("join-room <room_name>")} to join a room."
   end
-
-  defp room_process_impl,
-    do: Application.get_env(:text_based_fps, :room_process, TextBasedFPS.Process.Room)
 end

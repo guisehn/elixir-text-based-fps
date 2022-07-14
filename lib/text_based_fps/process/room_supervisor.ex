@@ -6,7 +6,7 @@ defmodule TextBasedFPS.Process.RoomSupervisor do
   use DynamicSupervisor
 
   def start_link(init_arg) do
-    DynamicSupervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
+    DynamicSupervisor.start_link(__MODULE__, init_arg, name: process_ref())
   end
 
   @impl true
@@ -22,22 +22,27 @@ defmodule TextBasedFPS.Process.RoomSupervisor do
   end
 
   defp do_add_room(opts),
-    do: DynamicSupervisor.start_child(__MODULE__, {Room, opts})
+    do: DynamicSupervisor.start_child(process_ref(), {Room, opts})
 
   def remove_room(room_name) do
     case Room.whereis(room_name) do
       :undefined -> :ok
-      pid -> DynamicSupervisor.terminate_child(__MODULE__, pid)
+      pid -> DynamicSupervisor.terminate_child(process_ref(), pid)
     end
   end
 
   @spec get_rooms() :: list(Room.t())
   def get_rooms do
-    DynamicSupervisor.which_children(__MODULE__)
+    DynamicSupervisor.which_children(process_ref())
     |> Stream.map(fn {_, pid, _, _} -> pid end)
     |> Stream.filter(&is_pid/1)
     |> Enum.map(&Room.get/1)
   end
 
-  def count_rooms, do: DynamicSupervisor.count_children(__MODULE__).specs
+  def count_rooms, do: DynamicSupervisor.count_children(process_ref()).specs
+
+  defp process_ref, do: Process.get(__MODULE__, __MODULE__)
+
+  def setup_local_process_ref,
+    do: Process.put(__MODULE__, :"#{__MODULE__}_#{inspect(self())}")
 end

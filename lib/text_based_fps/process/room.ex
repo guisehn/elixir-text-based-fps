@@ -47,8 +47,12 @@ defmodule TextBasedFPS.Process.Room do
   def whereis(room_name), do: room_name |> get_process_name() |> :global.whereis_name()
 
   @spec get_process_name(String.t()) :: String.t()
-  defp get_process_name(room_name), do: "room_" <> room_name
+  defp get_process_name(room_name), do: "#{process_prefix()}_room_" <> room_name
 
   @spec get_process_reference(String.t()) :: {:global, String.t()}
   defp get_process_reference(room_name), do: {:global, get_process_name(room_name)}
+
+  defp process_prefix, do: Process.get(:room_process_prefix, "global")
+
+  def setup_local_process_prefix, do: Process.put(__MODULE__, inspect(self()))
 end

@@ -4,14 +4,12 @@ defmodule TextBasedFPS.Game.CommandHelperTest do
   alias TextBasedFPS.Game.{CommandHelper, Player, Room}
   alias TextBasedFPS.Process
 
-  import Mox
-
-  setup :verify_on_exit!
-
   describe "require_room/1" do
     test "returns {:ok, room} when player is in a room" do
-      player = %{Player.new("foo") | room: "spaceship"}
-      expect(Process.Room.Mock, :get, fn room_name -> Room.new(room_name) end)
+      Process.Players.add_player("foo")
+      Process.RoomSupervisor.add_room(name: "spaceship", first_player_key: "foo")
+
+      player = %{Process.Players.get_player("foo") | room: "spaceship"}
       assert {:ok, %Room{name: "spaceship"}} = CommandHelper.require_room(player)
     end
 
@@ -24,19 +22,19 @@ defmodule TextBasedFPS.Game.CommandHelperTest do
 
   describe "require_alive_player/2" do
     test "returns {:ok, room} when player is in a room and is alive" do
-      player = %{Player.new("foo") | room: "spaceship"}
-      expect(Process.Room.Mock, :get, fn room_name -> Room.new(room_name, "foo") end)
+      Process.Players.add_player("foo")
+      Process.RoomSupervisor.add_room(name: "spaceship", first_player_key: "foo")
+
+      player = %{Process.Players.get_player("foo") | room: "spaceship"}
       assert {:ok, %Room{name: "spaceship"}} = CommandHelper.require_alive_player(player)
     end
 
     test "returns {:error, message} when player is in a room but is dead" do
+      Process.Players.add_player("foo")
+      Process.RoomSupervisor.add_room(name: "spaceship", first_player_key: "foo")
+      Process.Room.update("spaceship", &Room.kill_player(&1, "foo"))
+
       player = %{Player.new("foo") | room: "spaceship"}
-
-      expect(Process.Room.Mock, :get, fn room_name ->
-        Room.new(room_name, "foo")
-        |> Room.kill_player("foo")
-      end)
-
       assert {:error, "You're dead" <> _} = CommandHelper.require_alive_player(player)
     end
 
