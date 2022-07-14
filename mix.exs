@@ -43,7 +43,8 @@ defmodule TextBasedFPS.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:secure_random, "~> 0.5"},
-      {:table_rex, "~> 3.1.1"}
+      {:table_rex, "~> 3.1.1"},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 

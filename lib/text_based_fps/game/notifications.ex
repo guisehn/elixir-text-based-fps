@@ -1,13 +1,8 @@
 defmodule TextBasedFPS.Game.Notifications do
   alias TextBasedFPS.{Game, Process}
 
-  def notify(player_key, msg) when is_pid(player_key) do
-    send(player_key, {:notification, msg})
-  end
-
-  def notify(player_key, msg) when is_binary(player_key) do
-    TextBasedFPSWeb.Endpoint.broadcast("game:#{player_key}", "notification", %{message: msg})
-  end
+  @spec notify(Player.key_t(), String.t()) :: :ok
+  def notify(player_key, msg), do: notifier_impl().notify(player_key, msg)
 
   def notify_room(room, msg, opts \\ [])
 
@@ -32,4 +27,7 @@ defmodule TextBasedFPS.Game.Notifications do
     do: Map.keys(room.players) -- player_keys
 
   defp get_room_players(room, _), do: Map.keys(room.players)
+
+  defp notifier_impl,
+    do: Application.get_env(:text_based_fps, :notifier, TextBasedFPS.Game.Notifications.Notifier)
 end
