@@ -1,7 +1,9 @@
 defmodule TextBasedFPS.GameMap do
-  @type t :: %TextBasedFPS.GameMap{
-          matrix: TextBasedFPS.GameMap.Matrix.t(),
-          respawn_positions: list(TextBasedFPS.GameMap.RespawnPosition.t())
+  alias __MODULE__
+
+  @type t :: %GameMap{
+          matrix: GameMap.Matrix.t(),
+          respawn_positions: list(GameMap.RespawnPosition.t())
         }
 
   defstruct [:matrix, :respawn_positions]
@@ -9,7 +11,7 @@ defmodule TextBasedFPS.GameMap do
   @spec new() :: t
   def new do
     text_representation = File.read!(map_file_path())
-    TextBasedFPS.GameMap.Builder.build(text_representation)
+    GameMap.Builder.build(text_representation)
   end
 
   @spec update_matrix(t, function) :: t

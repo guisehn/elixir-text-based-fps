@@ -1,6 +1,6 @@
 defmodule TextBasedFPS.GameMap.Objects.Player do
   alias TextBasedFPS.GameMap.Objects
-  alias TextBasedFPS.Player
+  alias TextBasedFPS.Game.Player
 
   @type t :: %TextBasedFPS.GameMap.Objects.Player{
           player_key: Player.key_t()
@@ -11,8 +11,7 @@ defmodule TextBasedFPS.GameMap.Objects.Player do
   def new(player_key), do: %Objects.Player{player_key: player_key}
 
   defimpl TextBasedFPS.GameMap.Object do
-    alias TextBasedFPS.Room
-    alias TextBasedFPS.Direction
+    alias TextBasedFPS.Game.{Direction, Room}
 
     def color(_), do: :danger
 

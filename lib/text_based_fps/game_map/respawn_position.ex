@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.GameMap.RespawnPosition do
-  alias TextBasedFPS.{Direction, Room}
+  alias TextBasedFPS.Game.{Direction, Room}
   alias TextBasedFPS.GameMap.{Coordinates, Matrix, RespawnPosition}
 
   @type t :: %RespawnPosition{

@@ -1,5 +1,6 @@
 defmodule TextBasedFPS.GameMap.BuilderTest do
-  alias TextBasedFPS.GameMap.Builder
+  alias TextBasedFPS.GameMap
+  alias TextBasedFPS.GameMap.{Builder, RespawnPosition}
 
   use ExUnit.Case, async: true
 
@@ -13,10 +14,10 @@ defmodule TextBasedFPS.GameMap.BuilderTest do
     respawn_positions = Builder.get_respawn_positions(matrix)
 
     assert respawn_positions == [
-             %TextBasedFPS.GameMap.RespawnPosition{coordinates: {2, 1}, direction: :north},
-             %TextBasedFPS.GameMap.RespawnPosition{coordinates: {3, 1}, direction: :south},
-             %TextBasedFPS.GameMap.RespawnPosition{coordinates: {4, 1}, direction: :west},
-             %TextBasedFPS.GameMap.RespawnPosition{coordinates: {5, 1}, direction: :east}
+             %RespawnPosition{coordinates: {2, 1}, direction: :north},
+             %RespawnPosition{coordinates: {3, 1}, direction: :south},
+             %RespawnPosition{coordinates: {4, 1}, direction: :west},
+             %RespawnPosition{coordinates: {5, 1}, direction: :east}
            ]
   end
 
@@ -31,17 +32,17 @@ defmodule TextBasedFPS.GameMap.BuilderTest do
 
     game_map = Builder.build(text_representation)
 
-    assert game_map == %TextBasedFPS.GameMap{
+    assert game_map == %GameMap{
              matrix: [
                [:"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#"],
                [:"#", :" ", :" ", :" ", :" ", :" ", :" ", :" ", :" ", :"#"],
                [:"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#"]
              ],
              respawn_positions: [
-               %TextBasedFPS.GameMap.RespawnPosition{coordinates: {2, 1}, direction: :north},
-               %TextBasedFPS.GameMap.RespawnPosition{coordinates: {3, 1}, direction: :south},
-               %TextBasedFPS.GameMap.RespawnPosition{coordinates: {4, 1}, direction: :west},
-               %TextBasedFPS.GameMap.RespawnPosition{coordinates: {5, 1}, direction: :east}
+               %RespawnPosition{coordinates: {2, 1}, direction: :north},
+               %RespawnPosition{coordinates: {3, 1}, direction: :south},
+               %RespawnPosition{coordinates: {4, 1}, direction: :west},
+               %RespawnPosition{coordinates: {5, 1}, direction: :east}
              ]
            }
   end

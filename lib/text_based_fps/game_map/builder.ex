@@ -1,5 +1,6 @@
 defmodule TextBasedFPS.GameMap.Builder do
-  alias TextBasedFPS.{Direction, GameMap}
+  alias TextBasedFPS.Game.Direction
+  alias TextBasedFPS.GameMap
   alias TextBasedFPS.GameMap.RespawnPosition
 
   @spec build(String.t()) :: GameMap.t()

@@ -6,7 +6,7 @@ defmodule Mix.Tasks.Cli.Server do
     {options, _, _} = OptionParser.parse(args, strict: [cookie: :string, external: :boolean])
 
     Application.put_env(TextBasedFPS.Application, :boot_mode, :"cli.server", persistent: true)
-    Mix.Tasks.Run.run([])
+    Mix.Tasks.Run.run(["--no-halt"])
 
     options
     |> Enum.into(%{})
