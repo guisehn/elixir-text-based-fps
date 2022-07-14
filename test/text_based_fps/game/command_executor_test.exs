@@ -4,7 +4,7 @@ defmodule TextBasedFPS.Game.CommandExecutorTest do
   alias TextBasedFPS.Game.CommandExecutor
   alias TextBasedFPS.Process
 
-  describe "execute/4" do
+  describe "execute/3" do
     test "executes command and updates 'last_command_at' of executor" do
       defmodule MyTestCommand do
         def execute(player, command_arg) do

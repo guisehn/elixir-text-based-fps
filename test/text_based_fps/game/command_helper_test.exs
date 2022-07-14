@@ -20,7 +20,7 @@ defmodule TextBasedFPS.Game.CommandHelperTest do
     end
   end
 
-  describe "require_alive_player/2" do
+  describe "require_alive_player/1" do
     test "returns {:ok, room} when player is in a room and is alive" do
       Process.Players.add_player("foo")
       Process.RoomSupervisor.add_room(name: "spaceship", first_player_key: "foo")
