@@ -5,9 +5,7 @@ defmodule TextBasedFPS.Game.Command.HealthTest do
   alias TextBasedFPS.Process
 
   setup do
-    Process.Players.add_player("foo")
-    Process.RoomSupervisor.add_room(name: "spaceship", first_player_key: "foo")
-    Process.Players.update_player("foo", &%{&1 | room: "spaceship"})
+    join_room("foo", "spaceship")
     :ok
   end
 

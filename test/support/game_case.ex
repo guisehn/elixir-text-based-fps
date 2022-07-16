@@ -9,6 +9,18 @@ defmodule TextBasedFPS.GameCase do
 
   use ExUnit.CaseTemplate
 
+  using do
+    quote do
+      import Mox
+
+      setup do
+        Mox.verify_on_exit!()
+      end
+
+      import TextBasedFPS.GameTestUtils
+    end
+  end
+
   setup do
     TextBasedFPS.Process.Players.setup_local_process_ref()
     TextBasedFPS.Process.RoomSupervisor.setup_local_process_ref()

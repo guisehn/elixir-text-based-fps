@@ -1,12 +1,8 @@
 defmodule TextBasedFPS.Game.Command.JoinRoomTest do
   use TextBasedFPS.GameCase, async: true
 
-  alias TextBasedFPS.{Game, Process}
-  alias TextBasedFPS.Game.{CommandExecutor, Room, RoomPlayer}
-
-  import Mox
-
-  setup :verify_on_exit!
+  alias TextBasedFPS.Game.{CommandExecutor, RoomPlayer}
+  alias TextBasedFPS.Process
 
   setup do
     Process.Players.add_player("foo")
@@ -42,15 +38,13 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
     setup [:setup_existing_room]
 
     defp setup_existing_room(_) do
-      Process.Players.add_player("bar")
+      join_room("bar", "spaceship")
       Process.Players.update_player("bar", &%{&1 | name: "bar"})
-      Process.RoomSupervisor.add_room(name: "spaceship", first_player_key: "bar")
       :ok
     end
 
     test "adds player to existing room, notifying users on the room" do
-      Game.Notifications.Notifier.Mock
-      |> expect(:notify, fn player_key, msg ->
+      expect_notification(fn player_key, msg ->
         assert player_key == "bar"
         assert msg == "\e[33mfoo joined the room!\e[0m"
         :ok
@@ -74,12 +68,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
     defp create_full_room(_) do
       Process.RoomSupervisor.add_room(name: "full-room")
       respawn_positions = length(Process.Room.get("full-room").game_map.respawn_positions)
-
-      for i <- 1..respawn_positions do
-        Process.Players.add_player("player-#{i}")
-        Process.Room.update("full-room", &Room.add_player!(&1, "player-#{i}"))
-      end
-
+      for i <- 1..respawn_positions, do: join_room("player-#{i}", "full-room")
       :ok
     end
 
@@ -114,7 +103,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
       Process.Players.update_player("bar", &%{&1 | name: "bar"})
       Process.RoomSupervisor.add_room(name: "spaceship", first_player_key: "bar")
 
-      Game.Notifications.Notifier.Mock |> expect(:notify, 2, fn _, _ -> :ok end)
+      expect_notifications(2)
 
       assert {:ok, _} = CommandExecutor.execute("foo", "join-room spaceship")
       assert {:ok, _} = CommandExecutor.execute("foo", "join-room other")
