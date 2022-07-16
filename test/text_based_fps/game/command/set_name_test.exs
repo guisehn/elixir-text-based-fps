@@ -5,7 +5,7 @@ defmodule TextBasedFPS.Game.Command.SetNameTest do
   alias TextBasedFPS.Process
 
   setup do
-    Process.Players.add_player("foo")
+    create_player("foo")
     :ok
   end
 
@@ -29,13 +29,16 @@ defmodule TextBasedFPS.Game.Command.SetNameTest do
   end
 
   test "notifies players on the same room" do
-    Process.Players.update_player("foo", &%{&1 | name: "gui"})
+    Enum.each(["foo", "qux", "bar"], fn player ->
+      create_player(player)
+      join_room(player, "spaceship")
+    end)
 
-    Enum.each(["foo", "qux", "bar"], &join_room(&1, "spaceship"))
+    create_player("player-in-another-room")
     join_room("player-in-another-room", "another-room")
 
     expect_notifications(2, fn _, msg ->
-      assert msg == "\e[33mgui changed their name to new-name\e[0m"
+      assert msg == "\e[33mfoo changed their name to new-name\e[0m"
     end)
 
     assert {:ok, message} = CommandExecutor.execute("foo", "set-name new-name")

@@ -5,6 +5,7 @@ defmodule TextBasedFPS.Game.Command.HealthTest do
   alias TextBasedFPS.Process
 
   setup do
+    create_player("foo")
     join_room("foo", "spaceship")
     :ok
   end

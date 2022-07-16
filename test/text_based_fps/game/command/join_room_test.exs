@@ -5,9 +5,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
   alias TextBasedFPS.Process
 
   setup do
-    Process.Players.add_player("foo")
-    Process.Players.update_player("foo", &%{&1 | name: "foo"})
-
+    create_player("foo")
     :ok
   end
 
@@ -38,8 +36,8 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
     setup [:setup_existing_room]
 
     defp setup_existing_room(_) do
+      create_player("bar")
       join_room("bar", "spaceship")
-      Process.Players.update_player("bar", &%{&1 | name: "bar"})
       :ok
     end
 

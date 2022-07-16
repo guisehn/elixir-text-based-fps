@@ -5,6 +5,9 @@ defmodule TextBasedFPS.GameCase do
   `TextBasedFPS.Process.Room`, etc.
 
   Each test case gets brand new processes, with an empty server state.
+
+  It also injects utility functions from TextBasedFPS.GameTestUtils, for testing
+  game logic.
   """
 
   use ExUnit.CaseTemplate
