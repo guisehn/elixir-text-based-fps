@@ -1,7 +1,7 @@
 defmodule TextBasedFPSWeb.UserSocket do
   use Phoenix.Socket
 
-  alias TextBasedFPS.Game
+  alias TextBasedFPS.Process
 
   ## Channels
   # channel "room:*", TextBasedFPSWeb.RoomChannel
@@ -20,7 +20,7 @@ defmodule TextBasedFPSWeb.UserSocket do
   # performing token verification on connect.
   @impl true
   def connect(%{"key" => player_key}, socket, _connect_info) do
-    Game.add_player(player_key)
+    Process.add_player(player_key)
     {:ok, assign(socket, :player_key, player_key)}
   end
 

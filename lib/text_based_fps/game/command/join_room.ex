@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.Game.Command.JoinRoom do
-  alias TextBasedFPS.{Game, Process, Text}
+  alias TextBasedFPS.{Process, Text}
   alias TextBasedFPS.Game.{Command, Notifications, Player, Room}
 
   @behaviour Command
@@ -18,7 +18,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
   def execute(player, room_name) do
     with :ok <- require_player_name(player),
          :ok <- check_already_in_room(player, room_name),
-         :ok <- Game.leave_room(player.key),
+         :ok <- Process.leave_room(player.key),
          :ok <- join_existing_or_create_room(player, room_name) do
       update_player_room(room_name, player)
       notify_room(room_name, player)

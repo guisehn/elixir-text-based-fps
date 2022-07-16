@@ -1,5 +1,6 @@
 defmodule TextBasedFPS.CLI.Server do
-  alias TextBasedFPS.{CLI, Game, Text}
+  alias TextBasedFPS.{CLI, Process, Text}
+  alias TextBasedFPS.Game.CommandExecutor
   alias TextBasedFPS.CLI.Server.Messages
 
   @type options :: %{
@@ -27,7 +28,7 @@ defmodule TextBasedFPS.CLI.Server do
 
   @spec join_client(pid) :: no_return
   def join_client(player_pid) do
-    Game.add_player(player_pid)
+    Process.add_player(player_pid)
     send(player_pid, {:notification, @welcome})
     wait_client_message(player_pid)
   end
@@ -49,7 +50,7 @@ defmodule TextBasedFPS.CLI.Server do
   defp wait_client_message(player_pid) do
     receive do
       {:command, command} ->
-        result = Game.execute_command(player_pid, command)
+        result = CommandExecutor.execute(player_pid, command)
         send(player_pid, {:reply, result})
     end
 
