@@ -21,8 +21,10 @@ defmodule TextBasedFPS.Process.RoomSupervisor do
     end
   end
 
-  defp do_add_room(opts),
-    do: DynamicSupervisor.start_child(process_ref(), {Room, opts})
+  defp do_add_room(opts) do
+    opts = Keyword.put(opts, :process_reference, Room.get_process_reference(opts[:name]))
+    DynamicSupervisor.start_child(process_ref(), {Room, opts})
+  end
 
   def remove_room(room_name) do
     case Room.whereis(room_name) do

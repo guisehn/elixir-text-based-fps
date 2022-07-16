@@ -9,7 +9,7 @@ defmodule TextBasedFPS.Process.Room do
   def start_link(opts) do
     Agent.start_link(
       fn -> Game.Room.new(opts[:name], opts[:first_player_key]) end,
-      name: get_process_reference(opts[:name])
+      name: opts[:process_reference] || get_process_reference(opts[:name])
     )
   end
 
@@ -44,9 +44,9 @@ defmodule TextBasedFPS.Process.Room do
   defp get_process_name(room_name), do: "#{process_prefix()}_room_" <> room_name
 
   @spec get_process_reference(String.t()) :: {:global, String.t()}
-  defp get_process_reference(room_name), do: {:global, get_process_name(room_name)}
+  def get_process_reference(room_name), do: {:global, get_process_name(room_name)}
 
   defp process_prefix, do: Process.get(:room_process_prefix, "global")
 
-  def setup_local_process_prefix, do: Process.put(__MODULE__, inspect(self()))
+  def setup_local_process_prefix, do: Process.put(:room_process_prefix, inspect(self()))
 end
