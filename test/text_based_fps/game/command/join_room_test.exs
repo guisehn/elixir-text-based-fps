@@ -66,7 +66,12 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
     defp create_full_room(_) do
       Process.RoomSupervisor.add_room(name: "full-room")
       respawn_positions = length(Process.Room.get("full-room").game_map.respawn_positions)
-      for i <- 1..respawn_positions, do: join_room("player-#{i}", "full-room")
+
+      for i <- 1..respawn_positions do
+        create_player("player-#{i}")
+        join_room("player-#{i}", "full-room")
+      end
+
       :ok
     end
 

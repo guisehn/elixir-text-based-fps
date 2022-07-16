@@ -10,7 +10,6 @@ defmodule TextBasedFPS.Game.Command.LookTest do
   end
 
   test "requires player to be in a room" do
-    Process.Players.update_player("foo", &%{&1 | room: nil})
     assert {:error, error_message} = CommandExecutor.execute("foo", "move")
     assert error_message =~ "You need to be in a room"
   end
