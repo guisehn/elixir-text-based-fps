@@ -2,7 +2,7 @@ defmodule TextBasedFPS.Game.CommandExecutorTest do
   use TextBasedFPS.GameCase, async: true
 
   alias TextBasedFPS.Game.CommandExecutor
-  alias TextBasedFPS.Process
+  alias TextBasedFPS.GameState
 
   describe "execute/3" do
     test "executes command and updates 'last_command_at' of executor" do
@@ -19,7 +19,7 @@ defmodule TextBasedFPS.Game.CommandExecutorTest do
         "my-command" => MyTestCommand
       }
 
-      Process.Players.add_player("foo")
+      GameState.Players.add_player("foo")
 
       assert {:ok, "returned message"} =
                CommandExecutor.execute("foo", "my-command hello world", commands)
@@ -37,7 +37,7 @@ defmodule TextBasedFPS.Game.CommandExecutorTest do
     test "returns error when command specified does not exist" do
       commands = %{}
 
-      Process.Players.add_player("foo")
+      GameState.Players.add_player("foo")
 
       assert {:error, "Command not found"} =
                CommandExecutor.execute("foo", "my-command hello world", commands)

@@ -8,8 +8,8 @@ defmodule TextBasedFPS.Application do
   @typep boot_mode :: :phoenix | :"cli.server" | :"cli.client"
 
   @server_processes [
-    TextBasedFPS.Process.RoomSupervisor,
-    {TextBasedFPS.Process.Players, %{}}
+    TextBasedFPS.GameState.RoomSupervisor,
+    {TextBasedFPS.GameState.Players, %{}}
   ]
 
   def start(_type, _args) do

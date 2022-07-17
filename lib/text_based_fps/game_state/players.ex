@@ -1,4 +1,4 @@
-defmodule TextBasedFPS.Process.Players do
+defmodule TextBasedFPS.GameState.Players do
   @moduledoc "An agent that keeps track of all players of the server"
 
   alias TextBasedFPS.Game.Player

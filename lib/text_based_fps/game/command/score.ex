@@ -1,7 +1,7 @@
 defmodule TextBasedFPS.Game.Command.Score do
   import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.Process
+  alias TextBasedFPS.GameState
   alias TextBasedFPS.Game.Command
 
   @behaviour Command
@@ -27,7 +27,7 @@ defmodule TextBasedFPS.Game.Command.Score do
   end
 
   defp generate_table_row(room_player) do
-    player = Process.Players.get_player(room_player.player_key)
+    player = GameState.Players.get_player(room_player.player_key)
     [player.name, room_player.kills, room_player.killed]
   end
 end

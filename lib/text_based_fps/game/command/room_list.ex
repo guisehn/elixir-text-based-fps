@@ -1,6 +1,6 @@
 defmodule TextBasedFPS.Game.Command.RoomList do
   alias TextBasedFPS.Game.Command
-  alias TextBasedFPS.Process.RoomSupervisor
+  alias TextBasedFPS.GameState.RoomSupervisor
   alias TextBasedFPS.Text
 
   @behaviour Command

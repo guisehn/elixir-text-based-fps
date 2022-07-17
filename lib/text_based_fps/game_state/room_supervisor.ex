@@ -1,7 +1,7 @@
-defmodule TextBasedFPS.Process.RoomSupervisor do
+defmodule TextBasedFPS.GameState.RoomSupervisor do
   @moduledoc "A dynamic supervisor for all the server rooms"
 
-  alias TextBasedFPS.Process.Room
+  alias TextBasedFPS.GameState.Room
 
   use DynamicSupervisor
 

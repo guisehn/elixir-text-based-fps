@@ -2,7 +2,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
   use TextBasedFPS.GameCase, async: true
 
   alias TextBasedFPS.Game.{CommandExecutor, RoomPlayer}
-  alias TextBasedFPS.Process
+  alias TextBasedFPS.GameState
 
   setup do
     create_player("foo")
@@ -11,7 +11,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
 
   describe "player requirements" do
     test "requires player to have a name" do
-      Process.Players.update_player("foo", &%{&1 | name: nil})
+      GameState.Players.update_player("foo", &%{&1 | name: nil})
 
       assert {:error, message} = CommandExecutor.execute("foo", "join-room spaceship")
       assert message =~ "You need to have a name before joining a room"
@@ -23,7 +23,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
       assert {:ok, message} = CommandExecutor.execute("foo", "join-room spaceship")
       assert message =~ "You're now on spaceship"
 
-      assert %{players: %{"foo" => %RoomPlayer{}}} = Process.Room.get("spaceship")
+      assert %{players: %{"foo" => %RoomPlayer{}}} = GameState.Room.get("spaceship")
     end
 
     test "validates room name" do
@@ -56,7 +56,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
                  "foo" => %RoomPlayer{},
                  "bar" => %RoomPlayer{}
                }
-             } = Process.Room.get("spaceship")
+             } = GameState.Room.get("spaceship")
     end
   end
 
@@ -64,8 +64,8 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
     setup [:create_full_room]
 
     defp create_full_room(_) do
-      Process.RoomSupervisor.add_room(name: "full-room")
-      respawn_positions = length(Process.Room.get("full-room").game_map.respawn_positions)
+      GameState.RoomSupervisor.add_room(name: "full-room")
+      respawn_positions = length(GameState.Room.get("full-room").game_map.respawn_positions)
 
       for i <- 1..respawn_positions do
         create_player("player-#{i}")
@@ -81,16 +81,16 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
     end
 
     test "does not change anything on the target room" do
-      room_before = Process.Room.get("full-room")
+      room_before = GameState.Room.get("full-room")
       assert {:error, _message} = CommandExecutor.execute("foo", "join-room full-room")
-      room_after = Process.Room.get("full-room")
+      room_after = GameState.Room.get("full-room")
 
       assert room_before == room_after
     end
 
     test "keeps player room as nil" do
       assert {:error, _message} = CommandExecutor.execute("foo", "join-room full-room")
-      assert Process.Players.get_player("foo").room == nil
+      assert GameState.Players.get_player("foo").room == nil
     end
   end
 
@@ -102,17 +102,17 @@ defmodule TextBasedFPS.Game.Command.JoinRoomTest do
     end
 
     test "removes player from their previous room" do
-      Process.Players.add_player("bar")
-      Process.Players.update_player("bar", &%{&1 | name: "bar"})
-      Process.RoomSupervisor.add_room(name: "spaceship", first_player_key: "bar")
+      GameState.Players.add_player("bar")
+      GameState.Players.update_player("bar", &%{&1 | name: "bar"})
+      GameState.RoomSupervisor.add_room(name: "spaceship", first_player_key: "bar")
 
       expect_notifications(2)
 
       assert {:ok, _} = CommandExecutor.execute("foo", "join-room spaceship")
       assert {:ok, _} = CommandExecutor.execute("foo", "join-room other")
 
-      assert %{"bar" => %RoomPlayer{}} = Process.Room.get("spaceship").players
-      assert %{"foo" => %RoomPlayer{}} = Process.Room.get("other").players
+      assert %{"bar" => %RoomPlayer{}} = GameState.Room.get("spaceship").players
+      assert %{"foo" => %RoomPlayer{}} = GameState.Room.get("other").players
     end
   end
 end

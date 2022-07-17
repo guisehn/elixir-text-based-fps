@@ -1,4 +1,4 @@
-defmodule TextBasedFPS.Process.Room do
+defmodule TextBasedFPS.GameState.Room do
   @moduledoc "An agent that represents a room of the server"
 
   alias TextBasedFPS.Game

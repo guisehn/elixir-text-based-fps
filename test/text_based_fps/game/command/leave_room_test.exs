@@ -2,7 +2,7 @@ defmodule TextBasedFPS.Game.Command.LeaveRoomTest do
   use TextBasedFPS.GameCase, async: true
 
   alias TextBasedFPS.Game.{CommandExecutor, Room}
-  alias TextBasedFPS.Process
+  alias TextBasedFPS.GameState
 
   setup do
     create_player("foo")
@@ -15,7 +15,7 @@ defmodule TextBasedFPS.Game.Command.LeaveRoomTest do
   end
 
   test "requires player to be in a room" do
-    Process.Players.update_player("foo", &%{&1 | room: nil})
+    GameState.Players.update_player("foo", &%{&1 | room: nil})
     assert {:error, error_message} = CommandExecutor.execute("foo", "leave-room")
     assert error_message =~ "You need to be in a room"
   end
@@ -25,7 +25,7 @@ defmodule TextBasedFPS.Game.Command.LeaveRoomTest do
 
     assert {:ok, message} = CommandExecutor.execute("foo", "leave-room")
     assert message =~ "You have left the room"
-    room = Process.Room.get("spaceship")
+    room = GameState.Room.get("spaceship")
     refute Map.has_key?(room.players, "foo")
   end
 
@@ -39,9 +39,9 @@ defmodule TextBasedFPS.Game.Command.LeaveRoomTest do
   end
 
   test "removes room when only one player was on it" do
-    Process.Room.update("spaceship", &Room.remove_player(&1, "bar"))
+    GameState.Room.update("spaceship", &Room.remove_player(&1, "bar"))
 
     assert {:ok, _} = CommandExecutor.execute("foo", "leave-room")
-    refute Process.Room.exists?("spaceship")
+    refute GameState.Room.exists?("spaceship")
   end
 end

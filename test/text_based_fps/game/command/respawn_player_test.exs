@@ -2,7 +2,7 @@ defmodule TextBasedFPS.Game.Command.RespawnPlayerTest do
   use TextBasedFPS.GameCase, async: true
 
   alias TextBasedFPS.Game.{CommandExecutor, Room, RoomPlayer}
-  alias TextBasedFPS.{GameMap, Process}
+  alias TextBasedFPS.{GameMap, GameState}
 
   setup do
     create_player("foo")
@@ -15,11 +15,11 @@ defmodule TextBasedFPS.Game.Command.RespawnPlayerTest do
 
   test "respawns player when they're dead" do
     join_room("foo", "spaceship")
-    Process.Room.update("spaceship", &Room.kill_player(&1, "foo"))
+    GameState.Room.update("spaceship", &Room.kill_player(&1, "foo"))
 
     assert {:ok, "You're back!"} = CommandExecutor.execute("foo", "respawn")
 
-    room = Process.Room.get("spaceship")
+    room = GameState.Room.get("spaceship")
     assert room.players["foo"].health == RoomPlayer.max_health()
     assert room.players["foo"].coordinates != nil
     assert room.players["foo"].direction != nil
@@ -32,13 +32,13 @@ defmodule TextBasedFPS.Game.Command.RespawnPlayerTest do
   test "doesn't respawn player if they're alive" do
     join_room("foo", "spaceship")
 
-    Process.Room.update("spaceship", fn room ->
+    GameState.Room.update("spaceship", fn room ->
       Room.update_player(room, "foo", &Map.put(&1, :health, 90))
     end)
 
     assert {:error, "You're already alive!"} = CommandExecutor.execute("foo", "respawn")
 
-    room = Process.Room.get("spaceship")
+    room = GameState.Room.get("spaceship")
     assert room.players["foo"].health == 90
   end
 end

@@ -2,7 +2,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
   use TextBasedFPS.GameCase, async: true
 
   alias TextBasedFPS.Game.{CommandExecutor, Room, RoomPlayer}
-  alias TextBasedFPS.{Process, Text}
+  alias TextBasedFPS.{GameState, Text}
 
   setup do
     create_player("foo")
@@ -11,45 +11,45 @@ defmodule TextBasedFPS.Game.Command.FireTest do
   end
 
   test "requires player to be in a room" do
-    Process.Players.update_player("foo", &%{&1 | room: nil})
+    GameState.Players.update_player("foo", &%{&1 | room: nil})
     assert {:error, error_message} = CommandExecutor.execute("foo", "move")
     assert error_message =~ "You need to be in a room"
   end
 
   test "requires player to be alive" do
-    Process.Room.update("spaceship", &Room.kill_player(&1, "foo"))
+    GameState.Room.update("spaceship", &Room.kill_player(&1, "foo"))
 
     assert {:error, error_message} = CommandExecutor.execute("foo", "turn east")
     assert error_message =~ "You're dead"
   end
 
   test "requires player to have loaded ammo" do
-    Process.Room.update("spaceship", fn room ->
+    GameState.Room.update("spaceship", fn room ->
       Room.update_player(room, "foo", &%{&1 | ammo: {0, 5}})
     end)
 
     assert {:error, error_message} = CommandExecutor.execute("foo", "fire")
     assert error_message =~ "Reload your gun"
-    assert Process.Room.get("spaceship").players["foo"].ammo == {0, 5}
+    assert GameState.Room.get("spaceship").players["foo"].ammo == {0, 5}
   end
 
   test "returns specific message when the player is out of ammo" do
-    Process.Room.update("spaceship", fn room ->
+    GameState.Room.update("spaceship", fn room ->
       Room.update_player(room, "foo", &%{&1 | ammo: {0, 0}})
     end)
 
     assert {:error, error_message} = CommandExecutor.execute("foo", "fire")
     assert error_message =~ "You're out of ammo"
-    assert Process.Room.get("spaceship").players["foo"].ammo == {0, 0}
+    assert GameState.Room.get("spaceship").players["foo"].ammo == {0, 0}
   end
 
   test "decrements the ammo" do
-    Process.Room.update("spaceship", fn room ->
+    GameState.Room.update("spaceship", fn room ->
       Room.update_player(room, "foo", &%{&1 | ammo: {5, 8}})
     end)
 
     assert {:ok, _message} = CommandExecutor.execute("foo", "fire")
-    assert Process.Room.get("spaceship").players["foo"].ammo == {4, 8}
+    assert GameState.Room.get("spaceship").players["foo"].ammo == {4, 8}
   end
 
   describe "shot enemy" do
@@ -59,7 +59,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
       create_player("enemy")
       join_room("enemy", "spaceship")
 
-      Process.Room.update("spaceship", fn room ->
+      GameState.Room.update("spaceship", fn room ->
         room
         |> Room.remove_player_from_map("foo")
         |> Room.remove_player_from_map("enemy")
@@ -79,7 +79,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
       #          #   # #       #   #
       #   foo -> # ▲       #       #
       #          # # # # # # # # # #
-      Process.Room.update("spaceship", fn room ->
+      GameState.Room.update("spaceship", fn room ->
         room
         |> Room.place_player_at!("foo", {1, 8})
         |> Room.update_player("foo", &Map.put(&1, :direction, :north))
@@ -98,7 +98,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
       # formula = 30 (normal power) - 1 (it decreases 1 for each position of distance)
       expected_damage = 29
 
-      assert Process.Room.get("spaceship").players["enemy"].health ==
+      assert GameState.Room.get("spaceship").players["enemy"].health ==
                RoomPlayer.max_health() - expected_damage
     end
 
@@ -113,7 +113,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
       #          #   # #       #   #
       #   foo -> # ▲       #       #
       #          # # # # # # # # # #
-      Process.Room.update("spaceship", fn room ->
+      GameState.Room.update("spaceship", fn room ->
         room
         |> Room.place_player_at!("foo", {1, 8})
         |> Room.update_player("foo", &Map.put(&1, :direction, :north))
@@ -129,7 +129,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
 
       assert {:ok, error_message} = CommandExecutor.execute("foo", "fire")
       assert error_message =~ "You've killed enemy"
-      room = Process.Room.get("spaceship")
+      room = GameState.Room.get("spaceship")
       assert room.players["enemy"].health == 0
       assert room.players["enemy"].killed == 1
       assert room.players["foo"].kills == 1
@@ -146,7 +146,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
       #          #   # #       #   #
       #          #         #       #
       #          # # # # # # # # # #
-      Process.Room.update("spaceship", fn room ->
+      GameState.Room.update("spaceship", fn room ->
         room
         |> Room.place_player_at!("foo", {1, 6})
         |> Room.update_player("foo", &Map.put(&1, :direction, :north))
@@ -157,7 +157,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
       assert {:ok, error_message} = CommandExecutor.execute("foo", "fire")
       assert error_message =~ "You've shot the wall"
 
-      assert Process.Room.get("spaceship").players["enemy"].health == RoomPlayer.max_health()
+      assert GameState.Room.get("spaceship").players["enemy"].health == RoomPlayer.max_health()
     end
 
     test "allows multiple players to be hit" do
@@ -174,7 +174,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
       create_player("enemy2")
       join_room("enemy2", "spaceship")
 
-      Process.Room.update("spaceship", fn room ->
+      GameState.Room.update("spaceship", fn room ->
         room
         |> Room.remove_player_from_map("enemy2")
         |> Room.place_player_at!("foo", {1, 8})
@@ -193,7 +193,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
       # damage to enemy2 is maximum because they're only one position far from the shooter player
       expected_damage = 30
 
-      assert Process.Room.get("spaceship").players["enemy2"].health ==
+      assert GameState.Room.get("spaceship").players["enemy2"].health ==
                RoomPlayer.max_health() - expected_damage
 
       # damage to enemy is this value because:
@@ -201,7 +201,7 @@ defmodule TextBasedFPS.Game.Command.FireTest do
       # - the enemy is two positions away (reduces 1)
       expected_damage = 30 - 10 - 1
 
-      assert Process.Room.get("spaceship").players["enemy"].health ==
+      assert GameState.Room.get("spaceship").players["enemy"].health ==
                RoomPlayer.max_health() - expected_damage
     end
   end

@@ -1,7 +1,7 @@
 defmodule TextBasedFPS.Game.CommandHelper do
   import TextBasedFPS.Text, only: [highlight: 1]
 
-  alias TextBasedFPS.{Game, Process}
+  alias TextBasedFPS.{Game, GameState}
 
   @spec require_alive_player(Game.Player.t()) :: {:ok, Game.Room.t()} | {:error, String.t()}
   def require_alive_player(player) do
@@ -22,7 +22,7 @@ defmodule TextBasedFPS.Game.CommandHelper do
   @spec require_room(Game.Player.t()) :: {:ok, Game.Room.t()} | {:error, String.t()}
   def require_room(player) do
     if player.room do
-      {:ok, Process.Room.get(player.room)}
+      {:ok, GameState.Room.get(player.room)}
     else
       {:error, room_required_message()}
     end

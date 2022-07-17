@@ -1,6 +1,6 @@
 defmodule TextBasedFPS.Game.Command.SetName do
   alias TextBasedFPS.Game.{Command, Player, Notifications}
-  alias TextBasedFPS.{Process, Text}
+  alias TextBasedFPS.{GameState, Text}
 
   @behaviour Command
 
@@ -18,7 +18,7 @@ defmodule TextBasedFPS.Game.Command.SetName do
     with :ok <- Player.validate_name(name),
          :ok <- ensure_not_used?(name) do
       notify_room(player, name)
-      player = Process.Players.update_player(player.key, &Map.put(&1, :name, name))
+      player = GameState.Players.update_player(player.key, &Map.put(&1, :name, name))
       {:ok, success_message(player)}
     else
       {:error, reason} ->
@@ -27,7 +27,7 @@ defmodule TextBasedFPS.Game.Command.SetName do
   end
 
   defp ensure_not_used?(name) do
-    unless Process.Players.name_exists?(name) do
+    unless GameState.Players.name_exists?(name) do
       :ok
     else
       {:error, :already_in_use}

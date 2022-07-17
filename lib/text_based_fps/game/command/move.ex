@@ -1,7 +1,7 @@
 defmodule TextBasedFPS.Game.Command.Move do
   import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.{Process, Text}
+  alias TextBasedFPS.{GameState, Text}
   alias TextBasedFPS.Game.{Command, Direction, Room}
 
   @behaviour Command
@@ -9,7 +9,7 @@ defmodule TextBasedFPS.Game.Command.Move do
   @impl true
   def execute(player, direction) do
     with {:ok, _} <- require_alive_player(player) do
-      Process.Room.get_and_update(player.room, fn room ->
+      GameState.Room.get_and_update(player.room, fn room ->
         room_player = Room.get_player(room, player.key)
         parsed_direction = parse_direction(room_player, direction)
         move(room, room_player, parsed_direction)

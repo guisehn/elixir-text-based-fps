@@ -1,7 +1,7 @@
 defmodule TextBasedFPS.Game.Command.Reload do
   import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.Process
+  alias TextBasedFPS.GameState
   alias TextBasedFPS.Game.{Command, Room, RoomPlayer}
 
   @behaviour Command
@@ -9,7 +9,7 @@ defmodule TextBasedFPS.Game.Command.Reload do
   @impl true
   def execute(player, _) do
     with {:ok, _} <- require_alive_player(player) do
-      Process.Room.get_and_update(player.room, fn room ->
+      GameState.Room.get_and_update(player.room, fn room ->
         room_player = Room.get_player(room, player.key)
 
         case RoomPlayer.reload_gun(room_player) do

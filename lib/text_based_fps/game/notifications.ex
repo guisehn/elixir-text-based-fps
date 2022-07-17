@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.Game.Notifications do
-  alias TextBasedFPS.{Game, Process}
+  alias TextBasedFPS.{Game, GameState}
 
   @spec notify(Player.key_t(), String.t()) :: :ok
   def notify(player_key, msg), do: notifier_impl().notify(player_key, msg)
@@ -8,7 +8,7 @@ defmodule TextBasedFPS.Game.Notifications do
 
   def notify_room(room_name, msg, opts) when is_binary(room_name) do
     room_name
-    |> Process.Room.get()
+    |> GameState.Room.get()
     |> notify_room(msg, opts)
   end
 

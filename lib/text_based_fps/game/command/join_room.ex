@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.Game.Command.JoinRoom do
-  alias TextBasedFPS.{Process, Text}
+  alias TextBasedFPS.{GameState, Text}
   alias TextBasedFPS.Game.{Command, Notifications, Player, Room}
 
   @behaviour Command
@@ -18,7 +18,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
   def execute(player, room_name) do
     with :ok <- require_player_name(player),
          :ok <- check_already_in_room(player, room_name),
-         :ok <- Process.leave_room(player.key),
+         :ok <- GameState.leave_room(player.key),
          :ok <- join_existing_or_create_room(player, room_name) do
       update_player_room(room_name, player)
       notify_room(room_name, player)
@@ -40,7 +40,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
 
   @spec join_existing_or_create_room(Player.t(), String.t()) :: :ok | {:error, atom}
   defp join_existing_or_create_room(player, room_name) do
-    if Process.Room.exists?(room_name) do
+    if GameState.Room.exists?(room_name) do
       join_existing_room(player, room_name)
     else
       create_room(player, room_name)
@@ -49,7 +49,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
 
   @spec join_existing_room(Player.t(), String.t()) :: :ok | {:error, :room_full}
   defp join_existing_room(player, room_name) do
-    Process.Room.get_and_update(room_name, fn room ->
+    GameState.Room.get_and_update(room_name, fn room ->
       case Room.add_player(room, player.key) do
         {:ok, updated_room} ->
           {:ok, updated_room}
@@ -68,7 +68,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
   defp create_room(player, room_name) do
     case Room.validate_name(room_name) do
       :ok ->
-        Process.RoomSupervisor.add_room(name: room_name, first_player_key: player.key)
+        GameState.RoomSupervisor.add_room(name: room_name, first_player_key: player.key)
         :ok
 
       {:error, reason} ->
@@ -96,6 +96,6 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
   end
 
   defp update_player_room(room_name, player) do
-    Process.Players.update_player(player.key, &Map.put(&1, :room, room_name))
+    GameState.Players.update_player(player.key, &Map.put(&1, :room, room_name))
   end
 end

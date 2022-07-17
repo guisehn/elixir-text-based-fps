@@ -1,7 +1,7 @@
 defmodule TextBasedFPS.Game.Command.Fire do
   import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.{GameMap, Process, Text}
+  alias TextBasedFPS.{GameMap, GameState, Text}
   alias TextBasedFPS.Game.{Command, Notifications, Room, RoomPlayer}
 
   @behaviour Command
@@ -30,7 +30,7 @@ defmodule TextBasedFPS.Game.Command.Fire do
         apply_damage(room, {shot_player_key, distance, index})
       end)
 
-    Process.Room.update(room.name, fn room ->
+    GameState.Room.update(room.name, fn room ->
       shot_players
       |> Enum.reduce(room, fn shot_player, room ->
         apply_update(room, room_player, shot_player)
@@ -140,7 +140,7 @@ defmodule TextBasedFPS.Game.Command.Fire do
   defp action_message(verb, shot_players) do
     names =
       shot_players
-      |> Stream.map(fn shot -> Process.Players.get_player(shot.player_key) end)
+      |> Stream.map(fn shot -> GameState.Players.get_player(shot.player_key) end)
       |> Enum.map(& &1.name)
 
     case length(names) do

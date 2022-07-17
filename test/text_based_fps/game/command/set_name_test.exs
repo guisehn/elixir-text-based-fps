@@ -2,7 +2,7 @@ defmodule TextBasedFPS.Game.Command.SetNameTest do
   use TextBasedFPS.GameCase, async: true
 
   alias TextBasedFPS.Game.CommandExecutor
-  alias TextBasedFPS.Process
+  alias TextBasedFPS.GameState
 
   setup do
     create_player("foo")
@@ -11,7 +11,7 @@ defmodule TextBasedFPS.Game.Command.SetNameTest do
 
   test "changes the player name" do
     assert {:ok, message} = CommandExecutor.execute("foo", "set-name gui")
-    assert Process.Players.get_player("foo").name == "gui"
+    assert GameState.Players.get_player("foo").name == "gui"
     assert message =~ "Your name is now gui."
   end
 

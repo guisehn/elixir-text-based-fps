@@ -1,8 +1,8 @@
 defmodule TextBasedFPS.Game.Command.Turn do
   import TextBasedFPS.Game.CommandHelper
 
-  alias TextBasedFPS.Game.{Command, Direction, Process, Room}
-  alias TextBasedFPS.{Process, Text}
+  alias TextBasedFPS.Game.{Command, Direction, GameState, Room}
+  alias TextBasedFPS.{GameState, Text}
 
   @behaviour Command
 
@@ -18,13 +18,15 @@ defmodule TextBasedFPS.Game.Command.Turn do
   defp parse_direction(room_player, "around"), do: Direction.inverse_of(room_player.direction)
   defp parse_direction(_room_player, direction), do: Direction.from_string(direction)
 
-  @unknown_direction_message "Unknown direction. Use #{Text.highlight("<north/south/west/east/around>")}"
+  @unknown_direction_message "Unknown direction. Use #{
+                               Text.highlight("<north/south/west/east/around>")
+                             }"
   defp turn(_room_name, _player, nil) do
     {:error, @unknown_direction_message}
   end
 
   defp turn(room_name, player, direction) do
-    Process.Room.update(room_name, fn room ->
+    GameState.Room.update(room_name, fn room ->
       put_in(room.players[player.key].direction, direction)
     end)
 

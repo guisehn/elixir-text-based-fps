@@ -2,7 +2,7 @@ defmodule TextBasedFPSWeb.GameChannel do
   use TextBasedFPSWeb, :channel
 
   alias TextBasedFPS.Game.CommandExecutor
-  alias TextBasedFPS.{Game, Process, Text}
+  alias TextBasedFPS.{Game, GameState, Text}
 
   @impl true
   def join(_topic, _payload, socket) do
@@ -20,7 +20,7 @@ defmodule TextBasedFPSWeb.GameChannel do
   @impl true
   def handle_info(:after_join, socket) do
     IO.puts("Player joined: #{socket.assigns.player_key}")
-    player = Process.get_player(socket.assigns.player_key)
+    player = GameState.get_player(socket.assigns.player_key)
     push(socket, "welcome", %{message: welcome_message(player)})
     {:noreply, socket}
   end
@@ -28,7 +28,7 @@ defmodule TextBasedFPSWeb.GameChannel do
   @impl true
   def terminate(reason, %{assigns: %{player_key: player_key}}) do
     IO.puts("Player left: #{player_key}, reason: #{inspect(reason)}")
-    Process.remove_player(player_key)
+    GameState.remove_player(player_key)
   end
 
   defp welcome_message(%Game.Player{name: nil}) do

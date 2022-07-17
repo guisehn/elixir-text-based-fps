@@ -1,5 +1,5 @@
 defmodule TextBasedFPS.CLI.Server do
-  alias TextBasedFPS.{CLI, Process, Text}
+  alias TextBasedFPS.{CLI, GameState, Text}
   alias TextBasedFPS.Game.CommandExecutor
   alias TextBasedFPS.CLI.Server.Messages
 
@@ -28,7 +28,7 @@ defmodule TextBasedFPS.CLI.Server do
 
   @spec join_client(pid) :: no_return
   def join_client(player_pid) do
-    Process.add_player(player_pid)
+    GameState.add_player(player_pid)
     send(player_pid, {:notification, @welcome})
     wait_client_message(player_pid)
   end
