@@ -22,7 +22,7 @@ defmodule TextBasedFPS.Game.CommandHelper do
   @spec require_room(Game.Player.t()) :: {:ok, Game.Room.t()} | {:error, String.t()}
   def require_room(player) do
     if player.room do
-      {:ok, GameState.Room.get(player.room)}
+      {:ok, GameState.get_room(player.room)}
     else
       {:error, room_required_message()}
     end

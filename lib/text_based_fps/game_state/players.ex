@@ -45,8 +45,8 @@ defmodule TextBasedFPS.GameState.Players do
   @spec get_all_players() :: list(Player.t())
   def get_all_players, do: Agent.get(process_ref(), & &1)
 
-  @spec name_exists?(String.t()) :: boolean
-  def name_exists?(name) do
+  @spec player_name_exists?(String.t()) :: boolean
+  def player_name_exists?(name) do
     Agent.get(process_ref(), fn players ->
       Enum.any?(players, fn {_, player} -> player.name == name end)
     end)

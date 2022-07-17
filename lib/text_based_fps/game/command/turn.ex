@@ -26,7 +26,7 @@ defmodule TextBasedFPS.Game.Command.Turn do
   end
 
   defp turn(room_name, player, direction) do
-    GameState.Room.update(room_name, fn room ->
+    GameState.update_room(room_name, fn room ->
       put_in(room.players[player.key].direction, direction)
     end)
 

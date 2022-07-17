@@ -18,7 +18,7 @@ defmodule TextBasedFPS.Game.Command.SetName do
     with :ok <- Player.validate_name(name),
          :ok <- ensure_not_used?(name) do
       notify_room(player, name)
-      player = GameState.Players.update_player(player.key, &Map.put(&1, :name, name))
+      player = GameState.update_player(player.key, &Map.put(&1, :name, name))
       {:ok, success_message(player)}
     else
       {:error, reason} ->
@@ -27,7 +27,7 @@ defmodule TextBasedFPS.Game.Command.SetName do
   end
 
   defp ensure_not_used?(name) do
-    unless GameState.Players.name_exists?(name) do
+    unless GameState.player_name_exists?(name) do
       :ok
     else
       {:error, :already_in_use}

@@ -40,7 +40,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
 
   @spec join_existing_or_create_room(Player.t(), String.t()) :: :ok | {:error, atom}
   defp join_existing_or_create_room(player, room_name) do
-    if GameState.Room.exists?(room_name) do
+    if GameState.room_exists?(room_name) do
       join_existing_room(player, room_name)
     else
       create_room(player, room_name)
@@ -49,7 +49,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
 
   @spec join_existing_room(Player.t(), String.t()) :: :ok | {:error, :room_full}
   defp join_existing_room(player, room_name) do
-    GameState.Room.get_and_update(room_name, fn room ->
+    GameState.get_and_update_room(room_name, fn room ->
       case Room.add_player(room, player.key) do
         {:ok, updated_room} ->
           {:ok, updated_room}
@@ -68,7 +68,7 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
   defp create_room(player, room_name) do
     case Room.validate_name(room_name) do
       :ok ->
-        GameState.RoomSupervisor.add_room(name: room_name, first_player_key: player.key)
+        GameState.add_room(name: room_name, first_player_key: player.key)
         :ok
 
       {:error, reason} ->
@@ -96,6 +96,6 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
   end
 
   defp update_player_room(room_name, player) do
-    GameState.Players.update_player(player.key, &Map.put(&1, :room, room_name))
+    GameState.update_player(player.key, &Map.put(&1, :room, room_name))
   end
 end

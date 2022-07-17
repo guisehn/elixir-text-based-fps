@@ -19,7 +19,7 @@ defmodule TextBasedFPS.Game.CommandExecutorTest do
         "my-command" => MyTestCommand
       }
 
-      GameState.Players.add_player("foo")
+      GameState.add_player("foo")
 
       assert {:ok, "returned message"} =
                CommandExecutor.execute("foo", "my-command hello world", commands)
@@ -37,7 +37,7 @@ defmodule TextBasedFPS.Game.CommandExecutorTest do
     test "returns error when command specified does not exist" do
       commands = %{}
 
-      GameState.Players.add_player("foo")
+      GameState.add_player("foo")
 
       assert {:error, "Command not found"} =
                CommandExecutor.execute("foo", "my-command hello world", commands)

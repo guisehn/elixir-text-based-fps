@@ -1,13 +1,13 @@
 defmodule TextBasedFPS.Game.Command.RoomList do
   alias TextBasedFPS.Game.Command
-  alias TextBasedFPS.GameState.RoomSupervisor
+  alias TextBasedFPS.GameState
   alias TextBasedFPS.Text
 
   @behaviour Command
 
   @impl true
   def execute(_, _) do
-    case RoomSupervisor.count_rooms() do
+    case GameState.count_rooms() do
       0 -> {:ok, empty_message()}
       _ -> {:ok, generate_table()}
     end
@@ -19,7 +19,7 @@ defmodule TextBasedFPS.Game.Command.RoomList do
 
   defp generate_table() do
     rows =
-      RoomSupervisor.get_rooms()
+      GameState.get_rooms()
       |> Stream.map(fn room -> %{name: room.name, players: map_size(room.players)} end)
       |> Enum.sort_by(& &1.players)
       |> Stream.map(&[&1.name, &1.players])

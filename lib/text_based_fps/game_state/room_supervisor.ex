@@ -38,7 +38,7 @@ defmodule TextBasedFPS.GameState.RoomSupervisor do
     DynamicSupervisor.which_children(process_ref())
     |> Stream.map(fn {_, pid, _, _} -> pid end)
     |> Stream.filter(&is_pid/1)
-    |> Enum.map(&Room.get/1)
+    |> Enum.map(&Room.get_room/1)
   end
 
   def count_rooms, do: DynamicSupervisor.count_children(process_ref()).specs

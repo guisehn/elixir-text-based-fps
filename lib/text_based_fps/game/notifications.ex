@@ -8,7 +8,7 @@ defmodule TextBasedFPS.Game.Notifications do
 
   def notify_room(room_name, msg, opts) when is_binary(room_name) do
     room_name
-    |> GameState.Room.get()
+    |> GameState.get_room()
     |> notify_room(msg, opts)
   end
 

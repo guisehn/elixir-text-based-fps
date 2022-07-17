@@ -15,7 +15,7 @@ defmodule TextBasedFPS.Game.Command.TurnTest do
 
   test "requires player to be alive" do
     join_room("foo", "spaceship")
-    GameState.Room.update("spaceship", &Room.kill_player(&1, "foo"))
+    GameState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
     assert {:error, error_message} = CommandExecutor.execute("foo", "turn east")
     assert error_message =~ "You're dead"
@@ -25,23 +25,23 @@ defmodule TextBasedFPS.Game.Command.TurnTest do
     join_room("foo", "spaceship")
 
     assert {:ok, nil} = CommandExecutor.execute("foo", "turn north")
-    room = GameState.Room.get("spaceship")
+    room = GameState.get_room("spaceship")
     assert room.players["foo"].direction == :north
 
     assert {:ok, nil} = CommandExecutor.execute("foo", "turn south")
-    room = GameState.Room.get("spaceship")
+    room = GameState.get_room("spaceship")
     assert room.players["foo"].direction == :south
 
     assert {:ok, nil} = CommandExecutor.execute("foo", "turn west")
-    room = GameState.Room.get("spaceship")
+    room = GameState.get_room("spaceship")
     assert room.players["foo"].direction == :west
 
     assert {:ok, nil} = CommandExecutor.execute("foo", "turn east")
-    room = GameState.Room.get("spaceship")
+    room = GameState.get_room("spaceship")
     assert room.players["foo"].direction == :east
 
     assert {:ok, nil} = CommandExecutor.execute("foo", "turn around")
-    room = GameState.Room.get("spaceship")
+    room = GameState.get_room("spaceship")
     assert room.players["foo"].direction == :west
   end
 
@@ -53,7 +53,7 @@ defmodule TextBasedFPS.Game.Command.TurnTest do
     assert {:error, error_message} = CommandExecutor.execute("foo", "turn lol")
     assert error_message =~ "Unknown direction"
 
-    room = GameState.Room.get("spaceship")
+    room = GameState.get_room("spaceship")
     assert room.players["foo"].direction == :north
   end
 end

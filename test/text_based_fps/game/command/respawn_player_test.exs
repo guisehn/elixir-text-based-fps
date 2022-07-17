@@ -15,11 +15,11 @@ defmodule TextBasedFPS.Game.Command.RespawnPlayerTest do
 
   test "respawns player when they're dead" do
     join_room("foo", "spaceship")
-    GameState.Room.update("spaceship", &Room.kill_player(&1, "foo"))
+    GameState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
     assert {:ok, "You're back!"} = CommandExecutor.execute("foo", "respawn")
 
-    room = GameState.Room.get("spaceship")
+    room = GameState.get_room("spaceship")
     assert room.players["foo"].health == RoomPlayer.max_health()
     assert room.players["foo"].coordinates != nil
     assert room.players["foo"].direction != nil
@@ -32,13 +32,13 @@ defmodule TextBasedFPS.Game.Command.RespawnPlayerTest do
   test "doesn't respawn player if they're alive" do
     join_room("foo", "spaceship")
 
-    GameState.Room.update("spaceship", fn room ->
+    GameState.update_room("spaceship", fn room ->
       Room.update_player(room, "foo", &Map.put(&1, :health, 90))
     end)
 
     assert {:error, "You're already alive!"} = CommandExecutor.execute("foo", "respawn")
 
-    room = GameState.Room.get("spaceship")
+    room = GameState.get_room("spaceship")
     assert room.players["foo"].health == 90
   end
 end

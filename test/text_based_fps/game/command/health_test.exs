@@ -11,13 +11,13 @@ defmodule TextBasedFPS.Game.Command.HealthTest do
   end
 
   test "requires player to be in a room" do
-    GameState.Players.update_player("foo", &%{&1 | room: nil})
+    GameState.update_player("foo", &%{&1 | room: nil})
     assert {:error, error_message} = CommandExecutor.execute("foo", "health")
     assert error_message =~ "You need to be in a room"
   end
 
   test "returns health" do
-    GameState.Room.update("spaceship", fn room ->
+    GameState.update_room("spaceship", fn room ->
       Room.update_player(room, "foo", &%{&1 | health: 50})
     end)
 
@@ -25,7 +25,7 @@ defmodule TextBasedFPS.Game.Command.HealthTest do
   end
 
   test "works when the player is dead" do
-    GameState.Room.update("spaceship", &Room.kill_player(&1, "foo"))
+    GameState.update_room("spaceship", &Room.kill_player(&1, "foo"))
     assert {:ok, "Health: 0%"} = CommandExecutor.execute("foo", "health")
   end
 end

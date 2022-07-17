@@ -16,7 +16,7 @@ defmodule TextBasedFPS.Game.Command.LookTest do
 
   test "requires player to be alive" do
     join_room("foo", "spaceship")
-    GameState.Room.update("spaceship", &Room.kill_player(&1, "foo"))
+    GameState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
     assert {:error, error_message} = CommandExecutor.execute("foo", "turn east")
     assert error_message =~ "You're dead"
@@ -51,7 +51,7 @@ defmodule TextBasedFPS.Game.Command.LookTest do
       join_room("enemy2", "spaceship")
       join_room("enemy3", "spaceship")
 
-      GameState.Room.update("spaceship", fn room ->
+      GameState.update_room("spaceship", fn room ->
         room
         |> Room.remove_player_from_map("foo")
         |> Room.remove_player_from_map("enemy1")

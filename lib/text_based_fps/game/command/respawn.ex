@@ -9,7 +9,7 @@ defmodule TextBasedFPS.Game.Command.Respawn do
   @impl true
   def execute(player, _) do
     with {:ok, _} <- require_room(player) do
-      GameState.Room.get_and_update(player.room, fn room ->
+      GameState.get_and_update_room(player.room, fn room ->
         case Room.respawn_player(room, player.key) do
           {:ok, updated_room} ->
             {{:ok, "You're back!"}, updated_room}

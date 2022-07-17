@@ -9,7 +9,7 @@ defmodule TextBasedFPS.Game.Command.Reload do
   @impl true
   def execute(player, _) do
     with {:ok, _} <- require_alive_player(player) do
-      GameState.Room.get_and_update(player.room, fn room ->
+      GameState.get_and_update_room(player.room, fn room ->
         room_player = Room.get_player(room, player.key)
 
         case RoomPlayer.reload_gun(room_player) do

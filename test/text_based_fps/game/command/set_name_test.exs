@@ -11,7 +11,7 @@ defmodule TextBasedFPS.Game.Command.SetNameTest do
 
   test "changes the player name" do
     assert {:ok, message} = CommandExecutor.execute("foo", "set-name gui")
-    assert GameState.Players.get_player("foo").name == "gui"
+    assert GameState.get_player("foo").name == "gui"
     assert message =~ "Your name is now gui."
   end
 

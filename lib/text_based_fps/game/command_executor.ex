@@ -21,7 +21,7 @@ defmodule TextBasedFPS.Game.CommandExecutor do
   @spec execute(Game.Player.key_t(), String.t(), Map.t()) ::
           {:ok, String.t() | nil} | {:error, String.t()}
   def execute(player_key, command_text, commands \\ @commands) do
-    player = GameState.Players.update_player(player_key, &Game.Player.touch/1)
+    player = GameState.update_player(player_key, &Game.Player.touch/1)
     {command, command_arg} = parse_command(command_text, commands)
     execute_command_with_args(player, command, command_arg)
   end

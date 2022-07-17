@@ -14,13 +14,13 @@ defmodule TextBasedFPS.GameState.Room do
   end
 
   @doc "Gets the current state of the room with the given name or PID"
-  @spec get(String.t() | pid) :: Game.Room.t() | no_return()
-  def get(pid) when is_pid(pid), do: Agent.get(pid, & &1)
-  def get(room_name), do: Agent.get(get_process_reference(room_name), & &1)
+  @spec get_room(String.t() | pid) :: Game.Room.t() | no_return()
+  def get_room(pid) when is_pid(pid), do: Agent.get(pid, & &1)
+  def get_room(room_name), do: Agent.get(get_process_reference(room_name), & &1)
 
   @doc "Updates the room with the given name using the function passed"
-  @spec update(String.t(), (Room.t() -> Room.t())) :: Room.t() | nil
-  def update(room_name, fun) do
+  @spec update_room(String.t(), (Room.t() -> Room.t())) :: Room.t() | nil
+  def update_room(room_name, fun) do
     get_process_reference(room_name)
     |> Agent.get_and_update(fn room ->
       room = fun.(room)
@@ -28,11 +28,11 @@ defmodule TextBasedFPS.GameState.Room do
     end)
   end
 
-  def get_and_update(room_name, fun) do
+  def get_and_update_room(room_name, fun) do
     get_process_reference(room_name) |> Agent.get_and_update(fun)
   end
 
-  def exists?(room_name), do: whereis(room_name) != :undefined
+  def room_exists?(room_name), do: whereis(room_name) != :undefined
 
   @doc """
   Returns PID of the room with the given name, or :undefined if it doesn't exist.

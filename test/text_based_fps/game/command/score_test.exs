@@ -21,7 +21,7 @@ defmodule TextBasedFPS.Game.Command.ScoreTest do
     join_room("bar", "spaceship")
     join_room("qux", "spaceship")
 
-    GameState.Room.update("spaceship", fn room ->
+    GameState.update_room("spaceship", fn room ->
       room
       |> Room.update_player("bar", &%{&1 | kills: 5, killed: 10})
       |> Room.update_player("qux", &%{&1 | kills: 10, killed: 5})

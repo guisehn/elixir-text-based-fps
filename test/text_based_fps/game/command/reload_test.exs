@@ -11,14 +11,14 @@ defmodule TextBasedFPS.Game.Command.ReloadTest do
   end
 
   test "requires player to be in a room" do
-    GameState.Players.update_player("foo", &%{&1 | room: nil})
+    GameState.update_player("foo", &%{&1 | room: nil})
     assert {:error, error_message} = CommandExecutor.execute("foo", "move")
     assert error_message =~ "You need to be in a room"
   end
 
   test "requires player to be alive" do
     join_room("foo", "spaceship")
-    GameState.Room.update("spaceship", &Room.kill_player(&1, "foo"))
+    GameState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
     assert {:error, error_message} = CommandExecutor.execute("foo", "turn east")
     assert error_message =~ "You're dead"
@@ -27,14 +27,14 @@ defmodule TextBasedFPS.Game.Command.ReloadTest do
   test "reloads the gun" do
     join_room("foo", "spaceship")
 
-    GameState.Room.update("spaceship", fn room ->
+    GameState.update_room("spaceship", fn room ->
       Room.update_player(room, "foo", &Map.put(&1, :ammo, {max_loaded_ammo() - 2, 6}))
     end)
 
     assert {:ok, message} = CommandExecutor.execute("foo", "reload")
     assert message == "You've reloaded. Ammo: #{max_loaded_ammo()}/#{6 - 2}"
 
-    assert GameState.Room.get("spaceship").players["foo"].ammo == {max_loaded_ammo(), 6 - 2}
+    assert GameState.get_room("spaceship").players["foo"].ammo == {max_loaded_ammo(), 6 - 2}
   end
 
   test "shows 'no ammo' message if there's no ammo to reload" do
@@ -42,14 +42,14 @@ defmodule TextBasedFPS.Game.Command.ReloadTest do
 
     join_room("foo", "spaceship")
 
-    GameState.Room.update("spaceship", fn room ->
+    GameState.update_room("spaceship", fn room ->
       Room.update_player(room, "foo", &Map.put(&1, :ammo, ammo))
     end)
 
     assert {:error, message} = CommandExecutor.execute("foo", "reload")
     assert message == "You're out of ammo"
 
-    assert GameState.Room.get("spaceship").players["foo"].ammo == ammo
+    assert GameState.get_room("spaceship").players["foo"].ammo == ammo
   end
 
   test "shows 'gun is full' message if gun is full" do
@@ -57,13 +57,13 @@ defmodule TextBasedFPS.Game.Command.ReloadTest do
 
     join_room("foo", "spaceship")
 
-    GameState.Room.update("spaceship", fn room ->
+    GameState.update_room("spaceship", fn room ->
       Room.update_player(room, "foo", &Map.put(&1, :ammo, ammo))
     end)
 
     assert {:error, message} = CommandExecutor.execute("foo", "reload")
     assert message == "Your gun is full"
 
-    assert GameState.Room.get("spaceship").players["foo"].ammo == ammo
+    assert GameState.get_room("spaceship").players["foo"].ammo == ammo
   end
 end

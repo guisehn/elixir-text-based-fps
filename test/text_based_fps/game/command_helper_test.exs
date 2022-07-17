@@ -34,7 +34,7 @@ defmodule TextBasedFPS.Game.CommandHelperTest do
     test "returns {:error, message} when player is in a room but is dead" do
       create_player("foo")
       join_room("foo", "spaceship")
-      GameState.Room.update("spaceship", &Room.kill_player(&1, "foo"))
+      GameState.update_room("spaceship", &Room.kill_player(&1, "foo"))
 
       player = GameState.get_player("foo")
       assert {:error, "You're dead" <> _} = CommandHelper.require_alive_player(player)

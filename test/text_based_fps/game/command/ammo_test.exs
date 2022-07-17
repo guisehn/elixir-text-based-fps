@@ -11,13 +11,13 @@ defmodule TextBasedFPS.Game.Command.AmmoTest do
   end
 
   test "requires player to be in a room" do
-    GameState.Players.update_player("foo", &%{&1 | room: nil})
+    GameState.update_player("foo", &%{&1 | room: nil})
     assert {:error, error_message} = CommandExecutor.execute("foo", "ammo")
     assert error_message =~ "You need to be in a room"
   end
 
   test "returns ammo" do
-    GameState.Room.update("spaceship", fn room ->
+    GameState.update_room("spaceship", fn room ->
       Room.update_player(room, "foo", &%{&1 | ammo: {2, 3}})
     end)
 
