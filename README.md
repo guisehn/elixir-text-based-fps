@@ -78,19 +78,19 @@ The `GameState.Players` agent keeps a map of all players connected to the server
     key: "d5556609-0b58-47cd-ae08-7db873fa5ac5",
     name: "Steve",
     room: "de_dust2",
-    last_command_at: "..."
+    last_command_at: ~U[2021-06-05 23:09:37]
   },
   "e01f611e-4a61-4127-ba7b-4ba85ee73e3e" => %TextBasedFPS.Game.Player{
     key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e",
     name: "John",
     room: "de_dust2",
-    last_command_at: "..."
+    last_command_at: ~U[2021-06-05 23:09:24]
   },
   "161cb888-b9d8-44f6-9d5a-3b90f242e511" => %TextBasedFPS.Game.Player{
     key: "161cb888-b9d8-44f6-9d5a-3b90f242e511",
     name: "Bryan",
-    room: "de_dust2",
-    last_command_at: "..."
+    room: nil,
+    last_command_at: ~U[2021-06-05 23:08:10]
   }
 }
 ```
