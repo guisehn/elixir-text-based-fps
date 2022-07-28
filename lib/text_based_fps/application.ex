@@ -7,6 +7,11 @@ defmodule TextBasedFPS.Application do
 
   @typep boot_mode :: :phoenix | :"cli.server" | :"cli.client"
 
+  @server_processes [
+    TextBasedFPS.GameState.RoomSupervisor,
+    {TextBasedFPS.GameState.Players, %{}}
+  ]
+
   def start(_type, _args) do
     # Starts by default in :phoenix boot mode (`mix phx.server`).
     # It can also be started with `mix cli.server` and `mix cli.client`.
@@ -35,12 +40,11 @@ defmodule TextBasedFPS.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: TextBasedFPS.PubSub},
       # Start the Endpoint (http/https)
-      TextBasedFPSWeb.Endpoint,
-      TextBasedFPS.ServerAgent
-    ]
+      TextBasedFPSWeb.Endpoint
+    ] ++ @server_processes
   end
 
-  defp supervisor_children(:"cli.server"), do: [TextBasedFPS.ServerAgent]
+  defp supervisor_children(:"cli.server"), do: @server_processes
 
   defp supervisor_children(:"cli.client"), do: []
 end

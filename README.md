@@ -10,7 +10,7 @@ You can also see a node.js version of this game I made a few years ago at https:
 
 ## How to run locally
 
-### Running the web server
+### Running as a web server
 
 To start your Phoenix server:
 
@@ -20,9 +20,9 @@ To start your Phoenix server:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-### Running in your terminal
+### Running in the terminal
 
-It can also be played in the terminal using OTP distribution.
+It can also be played directly in the terminal using OTP distribution.
 
   * Install dependencies with `mix deps.get`
   * Ensure that the [epmd daemon](https://erlang.org/doc/man/epmd.html) is active by running `epmd -daemon`.
@@ -49,143 +49,127 @@ The game map is interpreted from the plain text file `priv/map.txt` where:
 
 The engine automatically ignores empty lines at the start and end of the map, and also empty spaces after the last wall of the line. You can add a `.` character to circumvent that if you really mean to have those empty spaces.
 
-## How the game works
+## Server architecture
 
-The entire game state is a big `%TextBasedFPS.ServerState` struct. The `IO.inspect` dump below is for a server with two players `John` and `Jane`, and one room `spaceship`.
+The game server is organized using the following process structure:
 
-The server state is stored in-memory in an [Agent](https://hexdocs.pm/elixir/1.12/Agent.html) at [/lib/text_based_fps/server_agent.ex](/lib/text_based_fps/server_agent.ex).
+```
+                               Application
+                                    |
+               +---------------------------------------------+
+               |                                             |
+        GameState.Players                         GameState.RoomSupervisor
+            (agent)                                 (dynamic supervisor)
+                                                             |
+                                          +------------------+----------------+
+                                          |                  |                |
+                                          |                  |                |
+                                    GameState.Room     GameState.Room    GameState.Room
+                                       (agent)            (agent)           (agent)
+```
 
-The `%TextBasedFPS.ServerState` struct has the following members:
+### `GameState.Players`
 
-  * `players` is a map containing all players of the server of all rooms. The keys are UUIDs that uniquely identify those players in the server. Each player is a `%TextBasedFPS.Player` struct.
-
-  * `rooms` is a map containing all rooms of the game, and each room is a `%TextBasedFPS.Room` struct. Inside this struct, you'll find the keys:
-
-    * `name`: the name of the room
-
-    * `players`: each player is a `%TextBasedFPS.RoomPlayer` with the room session specific information such as coordinates, direction, ammo, kills and killed, etc.
-
-    * `game_map`: contains a matrix with the current state of the map (including players and objects such as ammo and health packs), and a list of respawn positions
-
-  * `notifications` is a list of notifications that are pending to be delivered to someone. When a player joins a room, leaves a room, or changes their name, notification structs are generated for each user on that room.
+The `GameState.Players` agent keeps a map of all players connected to the server. Here's an example of its internal state:
 
 ```elixir
-%TextBasedFPS.ServerState{
+%{
+  "d5556609-0b58-47cd-ae08-7db873fa5ac5" => %TextBasedFPS.Game.Player{
+    key: "d5556609-0b58-47cd-ae08-7db873fa5ac5",
+    name: "Steve",
+    room: "de_dust2",
+    last_command_at: "..."
+  },
+  "e01f611e-4a61-4127-ba7b-4ba85ee73e3e" => %TextBasedFPS.Game.Player{
+    key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e",
+    name: "John",
+    room: "de_dust2",
+    last_command_at: "..."
+  },
+  "161cb888-b9d8-44f6-9d5a-3b90f242e511" => %TextBasedFPS.Game.Player{
+    key: "161cb888-b9d8-44f6-9d5a-3b90f242e511",
+    name: "Bryan",
+    room: "de_dust2",
+    last_command_at: "..."
+  }
+}
+```
+
+### `GameState.Room`
+
+In order to play, players have to join a room. Each room has its own process using the `GameState.Room` agent. This guarantees that if a room crashes, players from other rooms are not affected.
+
+The state of the agent is a `Game.Room` struct, containing the list of players on that room with their relevant game information such as score, coordinates, health, ammo, position in the map, etc. The room struct also holds the map of the game, with information like where the walls, empty spaces and game items ,(like ammo and health packs) are located, as well as where are the respawn positions.
+
+Here's the example of a room agent state:
+
+```elixir
+%TextBasedFPS.Game.Room{
+  name: "de_dust2",
   players: %{
-    "d5556609-0b58-47cd-ae08-7db873fa5ac5" => %TextBasedFPS.Player{
-      key: "d5556609-0b58-47cd-ae08-7db873fa5ac5",
-      last_command_at: ~U[2021-06-05 23:09:37.075344Z],
-      name: "Jane",
-      room: "spaceship"
+    "d5556609-0b58-47cd-ae08-7db873fa5ac5" => %TextBasedFPS.Game.RoomPlayer{
+      ammo: {8, 24},
+      coordinates: {8, 5},
+      direction: :south,
+      health: 100,
+      killed: 1,
+      kills: 3,
+      player_key: "d5556609-0b58-47cd-ae08-7db873fa5ac5"
     },
-    "e01f611e-4a61-4127-ba7b-4ba85ee73e3e" => %TextBasedFPS.Player{
-      key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e",
-      last_command_at: ~U[2021-06-05 23:09:37.072602Z],
-      name: "John",
-      room: "spaceship"
-    }
-  },
-  rooms: %{
-    "spaceship" => %TextBasedFPS.Room{
-      name: "spaceship",
-      players: %{
-        "d5556609-0b58-47cd-ae08-7db873fa5ac5" => %TextBasedFPS.RoomPlayer{
-          ammo: {8, 24},
-          coordinates: {8, 5},
-          direction: :south,
-          health: 100,
-          killed: 0,
-          kills: 0,
-          player_key: "d5556609-0b58-47cd-ae08-7db873fa5ac5"
-        },
-        "e01f611e-4a61-4127-ba7b-4ba85ee73e3e" => %TextBasedFPS.RoomPlayer{
-          ammo: {8, 24},
-          coordinates: {5, 1},
-          direction: :south,
-          health: 100,
-          killed: 0,
-          kills: 0,
-          player_key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e"
-        }
-      },
-      game_map: %TextBasedFPS.GameMap{
-        matrix: [
-          [:"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#"],
-          [
-            :"#",
-            :" ",
-            :" ",
-            :" ",
-            :"#",
-            %TextBasedFPS.GameMap.Objects.Player{
-              player_key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e"
-            },
-            :" ",
-            :" ",
-            :" ",
-            :"#"
-          ],
-          [:"#", :" ", :"#", :" ", :" ", :" ", :"#", :"#", :" ", :"#"],
-          [:"#", :" ", :"#", :" ", :"#", :" ", :" ", :" ", :" ", :"#"],
-          [:"#", :" ", :" ", :" ", :"#", :"#", :" ", :"#", :"#", :"#"],
-          [
-            :"#",
-            :"#",
-            :" ",
-            :" ",
-            :" ",
-            :" ",
-            :" ",
-            :" ",
-            %TextBasedFPS.GameMap.Objects.Player{
-              player_key: "d5556609-0b58-47cd-ae08-7db873fa5ac5"
-            },
-            :"#"
-          ],
-          [:"#", :" ", :" ", :"#", :" ", :"#", :"#", :"#", :" ", :"#"],
-          [:"#", :" ", :"#", :"#", :" ", :" ", :" ", :"#", :" ", :"#"],
-          [:"#", :" ", :" ", :" ", :" ", :"#", :" ", :" ", :" ", :"#"],
-          [:"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#"]
-        ],
-        respawn_positions: [
-          %TextBasedFPS.GameMap.RespawnPosition{
-            coordinates: {1, 1},
-            direction: :east
-          },
-          %TextBasedFPS.GameMap.RespawnPosition{
-            coordinates: {5, 1},
-            direction: :south
-          },
-          %TextBasedFPS.GameMap.RespawnPosition{
-            coordinates: {8, 3},
-            direction: :north
-          },
-          %TextBasedFPS.GameMap.RespawnPosition{
-            coordinates: {3, 4},
-            direction: :west
-          },
-          %TextBasedFPS.GameMap.RespawnPosition{
-            coordinates: {8, 5},
-            direction: :south
-          },
-          %TextBasedFPS.GameMap.RespawnPosition{
-            coordinates: {6, 7},
-            direction: :west
-          },
-          %TextBasedFPS.GameMap.RespawnPosition{
-            coordinates: {1, 8},
-            direction: :north
-          }
-        ]
-      }
-    }
-  },
-  notifications: [
-    %TextBasedFPS.Notification{
-      body: "Jane joined the room!",
-      created_at: ~U[2021-06-05 23:09:37.075358Z],
+    "e01f611e-4a61-4127-ba7b-4ba85ee73e3e" => %TextBasedFPS.Game.RoomPlayer{
+      ammo: {8, 24},
+      coordinates: {5, 1},
+      direction: :south,
+      health: 100,
+      killed: 3,
+      kills: 1,
       player_key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e"
     }
-  ]
+  },
+  game_map: %TextBasedFPS.GameMap{
+    matrix: [
+      [:"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#"],
+      [
+        :"#",
+        :" ",
+        :" ",
+        :" ",
+        :"#",
+        %TextBasedFPS.GameMap.Objects.Player{player_key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e"},
+        :" ",
+        :" ",
+        :" ",
+        :"#"
+      ],
+      [:"#", :" ", :"#", :" ", :" ", :" ", :"#", :"#", :" ", :"#"],
+      [:"#", :" ", :"#", :" ", :"#", :" ", :" ", :" ", :" ", :"#"],
+      [:"#", :" ", :" ", :" ", :"#", :"#", :" ", :"#", :"#", :"#"],
+      [
+        :"#",
+        :"#",
+        :" ",
+        :" ",
+        :" ",
+        :" ",
+        :" ",
+        :" ",
+        %TextBasedFPS.GameMap.Objects.Player{player_key: "d5556609-0b58-47cd-ae08-7db873fa5ac5"},
+        :"#"
+      ],
+      [:"#", :" ", :" ", :"#", :" ", :"#", :"#", :"#", :" ", :"#"],
+      [:"#", :" ", :"#", :"#", :" ", :" ", :" ", :"#", :" ", :"#"],
+      [:"#", :" ", :" ", :" ", :" ", :"#", :" ", :" ", :" ", :"#"],
+      [:"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#", :"#"]
+    ],
+    respawn_positions: [
+      %TextBasedFPS.GameMap.RespawnPosition{coordinates: {1, 1}, direction: :east},
+      %TextBasedFPS.GameMap.RespawnPosition{coordinates: {5, 1}, direction: :south},
+      %TextBasedFPS.GameMap.RespawnPosition{coordinates: {8, 3}, direction: :north},
+      %TextBasedFPS.GameMap.RespawnPosition{coordinates: {3, 4}, direction: :west},
+      %TextBasedFPS.GameMap.RespawnPosition{coordinates: {8, 5}, direction: :south},
+      %TextBasedFPS.GameMap.RespawnPosition{coordinates: {6, 7}, direction: :west},
+      %TextBasedFPS.GameMap.RespawnPosition{coordinates: {1, 8}, direction: :north}
+    ]
+  }
 }
 ```
