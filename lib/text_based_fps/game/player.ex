@@ -1,4 +1,11 @@
 defmodule TextBasedFPS.Game.Player do
+  @moduledoc """
+  Represents a player on the server, which may or may not be playing in a room.
+
+  This struct doesn't have any in-game information such as ammo, health, etc.
+  That kind of info is held by %TextBasedFPS.Game.RoomPlayer{}
+  """
+
   alias __MODULE__
 
   defstruct [:key, name: nil, room: nil, last_command_at: nil]
@@ -23,9 +30,7 @@ defmodule TextBasedFPS.Game.Player do
   def generate_key, do: SecureRandom.uuid()
 
   @spec touch(t) :: t
-  def touch(player) do
-    Map.put(player, :last_command_at, DateTime.utc_now())
-  end
+  def touch(player), do: Map.put(player, :last_command_at, DateTime.utc_now())
 
   @spec validate_name(String.t()) ::
           :ok

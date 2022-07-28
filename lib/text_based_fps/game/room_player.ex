@@ -1,4 +1,6 @@
 defmodule TextBasedFPS.Game.RoomPlayer do
+  @moduledoc "Represents a player, playing in a room"
+
   alias __MODULE__
   alias TextBasedFPS.Game.{Direction, Player}
 

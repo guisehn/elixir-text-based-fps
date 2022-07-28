@@ -1,5 +1,6 @@
 defmodule TextBasedFPS.Game.Room do
-  alias TextBasedFPS.Game.{Player, Room, RoomPlayer}
+  alias __MODULE__
+  alias TextBasedFPS.Game.{Player, RoomPlayer}
   alias TextBasedFPS.GameMap
 
   defstruct [:name, :game_map, :players, :notifications]
