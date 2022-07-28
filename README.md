@@ -74,20 +74,20 @@ The `GameState.Players` agent keeps a map of all players connected to the server
 
 ```elixir
 %{
-  "a" => %TextBasedFPS.Game.Player{
-    key: "a",
+  "d5556609-0b58-47cd-ae08-7db873fa5ac5" => %TextBasedFPS.Game.Player{
+    key: "d5556609-0b58-47cd-ae08-7db873fa5ac5",
     name: "Steve",
     room: "de_dust2",
     last_command_at: "..."
   },
-  "b" => %TextBasedFPS.Game.Player{
-    key: "a",
+  "e01f611e-4a61-4127-ba7b-4ba85ee73e3e" => %TextBasedFPS.Game.Player{
+    key: "e01f611e-4a61-4127-ba7b-4ba85ee73e3e",
     name: "John",
     room: "de_dust2",
     last_command_at: "..."
   },
-  "c" => %TextBasedFPS.Game.Player{
-    key: "a",
+  "161cb888-b9d8-44f6-9d5a-3b90f242e511" => %TextBasedFPS.Game.Player{
+    key: "161cb888-b9d8-44f6-9d5a-3b90f242e511",
     name: "Bryan",
     room: "de_dust2",
     last_command_at: "..."
