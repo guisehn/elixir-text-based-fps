@@ -11,6 +11,12 @@ defmodule TextBasedFPS.Game.Direction do
   def from_string("south"), do: :south
   def from_string("west"), do: :west
   def from_string("east"), do: :east
+
+  def from_string("up"), do: :north
+  def from_string("down"), do: :south
+  def from_string("left"), do: :west
+  def from_string("right"), do: :east
+
   def from_string(_), do: nil
 
   @spec inverse_of(t) :: t
