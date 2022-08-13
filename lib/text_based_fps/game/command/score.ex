@@ -7,6 +7,9 @@ defmodule TextBasedFPS.Game.Command.Score do
   @behaviour Command
 
   @impl true
+  def description, do: "Show score table"
+
+  @impl true
   def execute(player, _) do
     with {:ok, room} <- require_room(player) do
       {:ok, generate_table(room.players)}

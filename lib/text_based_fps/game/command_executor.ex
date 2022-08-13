@@ -1,26 +1,12 @@
 defmodule TextBasedFPS.Game.CommandExecutor do
   alias TextBasedFPS.{Game, GameState}
-  alias TextBasedFPS.Game.Command
+  alias TextBasedFPS.Game.{Command, CommandList}
 
-  @commands %{
-    "room-list" => Command.RoomList,
-    "join-room" => Command.JoinRoom,
-    "leave-room" => Command.LeaveRoom,
-    "set-name" => Command.SetName,
-    "health" => Command.Health,
-    "ammo" => Command.Ammo,
-    "reload" => Command.Reload,
-    "score" => Command.Score,
-    "respawn" => Command.Respawn,
-    "turn" => Command.Turn,
-    "move" => Command.Move,
-    "look" => Command.Look,
-    "fire" => Command.Fire
-  }
+  @commands_map Enum.into(CommandList.all(), %{})
 
   @spec execute(Game.Player.key_t(), String.t(), Map.t()) ::
           {:ok, String.t() | nil} | {:error, String.t()}
-  def execute(player_key, command_text, commands \\ @commands) do
+  def execute(player_key, command_text, commands \\ @commands_map) do
     player = GameState.update_player(player_key, &Game.Player.touch/1)
     {command, command_arg} = parse_command(command_text, commands)
     execute_command_with_args(player, command, command_arg)

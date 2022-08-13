@@ -7,6 +7,9 @@ defmodule TextBasedFPS.Game.Command.LeaveRoom do
   @behaviour Command
 
   @impl true
+  def description, do: "Leave the room"
+
+  @impl true
   def execute(player, _) do
     with {:ok, _room} <- require_room(player) do
       GameState.leave_room(player.key)

@@ -67,6 +67,7 @@ defmodule TextBasedFPSWeb do
       import Phoenix.View
 
       import TextBasedFPSWeb.ErrorHelpers
+      import TextBasedFPSWeb.CommandHelpers
       import TextBasedFPSWeb.Gettext
       alias TextBasedFPSWeb.Router.Helpers, as: Routes
     end

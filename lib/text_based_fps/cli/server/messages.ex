@@ -4,12 +4,10 @@ defmodule TextBasedFPS.CLI.Server.Messages do
 
   def display_start_failed_warning do
     IO.puts(
-      Text.danger(
-        """
-        Could not start node. Make sure epmd is running and there is not another server
-        instance running in this machine.
-        """
-      )
+      Text.danger("""
+      Could not start node. Make sure epmd is running and there is not another server
+      instance running in this machine.
+      """)
     )
 
     IO.puts("")

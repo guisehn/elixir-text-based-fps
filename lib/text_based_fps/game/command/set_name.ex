@@ -12,6 +12,12 @@ defmodule TextBasedFPS.Game.Command.SetName do
   }
 
   @impl true
+  def arg_example, do: "new name"
+
+  @impl true
+  def description, do: "Change your name"
+
+  @impl true
   def execute(player, name) do
     name = String.trim(name)
 

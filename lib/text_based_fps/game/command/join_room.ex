@@ -15,6 +15,12 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
   }
 
   @impl true
+  def arg_example, do: "room name"
+
+  @impl true
+  def description, do: "Join a room"
+
+  @impl true
   def execute(player, room_name) do
     with :ok <- require_player_name(player),
          :ok <- check_already_in_room(player, room_name),

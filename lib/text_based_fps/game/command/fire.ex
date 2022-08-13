@@ -7,6 +7,9 @@ defmodule TextBasedFPS.Game.Command.Fire do
   @behaviour Command
 
   @impl true
+  def description, do: "Shoot towards your current direction"
+
+  @impl true
   def execute(player, _) do
     with {:ok, room} <- require_alive_player(player) do
       room_player = Room.get_player(room, player.key)

@@ -5,8 +5,7 @@ defmodule Mix.Tasks.Cli.Client do
 
   @impl Mix.Task
   def run(args) do
-    {options, _, _} =
-      OptionParser.parse(args, strict: [server: :string, cookie: :string])
+    {options, _, _} = OptionParser.parse(args, strict: [server: :string, cookie: :string])
 
     Application.put_env(TextBasedFPS.Application, :boot_mode, :"cli.client", persistent: true)
     Mix.Tasks.Run.run([])
