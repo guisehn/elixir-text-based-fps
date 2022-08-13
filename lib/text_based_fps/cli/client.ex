@@ -2,9 +2,9 @@ defmodule TextBasedFPS.CLI.Client do
   alias TextBasedFPS.{CLI, Text}
 
   @type options :: %{
-    optional(:server) => boolean(),
-    optional(:cookie) => String.t()
-  }
+          optional(:server) => boolean(),
+          optional(:cookie) => String.t()
+        }
 
   def start(options) do
     start_node(options)

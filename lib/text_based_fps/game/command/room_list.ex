@@ -6,6 +6,9 @@ defmodule TextBasedFPS.Game.Command.RoomList do
   @behaviour Command
 
   @impl true
+  def description, do: "View list of rooms"
+
+  @impl true
   def execute(_, _) do
     case GameState.count_rooms() do
       0 -> {:ok, empty_message()}

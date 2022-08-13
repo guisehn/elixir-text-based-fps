@@ -20,19 +20,9 @@
     <div class="cheat-sheet">
       <h2>Commands</h2>
       <ul>
-        <li><span>set-name &lt;new name&gt;</span>: Change name</li>
-        <li><span>join-room &lt;room name&gt;</span>: Join room</li>
-        <li><span>room-list &lt;room name&gt;</span>: View list of rooms</li>
-        <li><span>look</span>: Show the room map and the enemies on your front</li>
-        <li><span>move &lt;north/south/west/east&gt;</span>: Move to another place</li>
-        <li><span>turn &lt;north/south/west/east/around&gt;</span>: Turn to another direction so you can see and shoot your enemies</li>
-        <li><span>fire</span>: Shoot towards your current direction</li>
-        <li><span>ammo</span>: Show how much ammo you have</li>
-        <li><span>reload</span>: Reload your gun</li>
-        <li><span>health</span>: Show how much health you have</li>
-        <li><span>score</span>: Show score table</li>
-        <li><span>respawn</span>: Respawn if you're dead</li>
-        <li><span>leave-room</span>: Leave the room</li>
+        <%= for {command_name, command} <- TextBasedFPS.Game.CommandList.all() do %>
+          <li><%= render "_command.html", command_name: command_name, command: command %></li>
+        <% end %>
       </ul>
     </div>
   </div>

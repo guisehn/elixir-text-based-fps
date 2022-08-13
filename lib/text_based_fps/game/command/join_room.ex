@@ -4,15 +4,11 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
 
   @behaviour Command
 
-  @error_messages %{
-    already_in_room: "You're already in this room",
-    name_empty: "Room name cannot be empty",
-    name_too_large: "Room name cannot exceed #{Room.name_max_length()} characters",
-    name_invalid_chars: "Room name can only contain letters, numbers and hyphens",
-    player_name_required:
-      "You need to have a name before joining a room. Type #{Text.highlight("set-name <name>")} to set your name.",
-    room_full: "This room is full"
-  }
+  @impl true
+  def arg_example, do: "room name"
+
+  @impl true
+  def description, do: "Join a room"
 
   @impl true
   def execute(player, room_name) do
@@ -90,6 +86,15 @@ defmodule TextBasedFPS.Game.Command.JoinRoom do
     "You're now on #{room_name}! Type #{Text.highlight("look")} to see where you are in the map."
   end
 
+  @error_messages %{
+    already_in_room: "You're already in this room",
+    name_empty: "Room name cannot be empty",
+    name_too_large: "Room name cannot exceed #{Room.name_max_length()} characters",
+    name_invalid_chars: "Room name can only contain letters, numbers and hyphens",
+    player_name_required:
+      "You need to have a name before joining a room. Type #{Text.highlight("set-name <name>")} to set your name.",
+    room_full: "This room is full"
+  }
   @spec error_message(atom) :: String.t()
   defp error_message(reason) do
     @error_messages[reason] || "Error: #{reason}"

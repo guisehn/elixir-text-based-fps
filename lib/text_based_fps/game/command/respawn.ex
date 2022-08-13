@@ -7,6 +7,9 @@ defmodule TextBasedFPS.Game.Command.Respawn do
   @behaviour Command
 
   @impl true
+  def description, do: "Respawn if you're dead"
+
+  @impl true
   def execute(player, _) do
     with {:ok, _} <- require_room(player) do
       GameState.get_and_update_room(player.room, fn room ->

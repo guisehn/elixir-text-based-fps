@@ -7,6 +7,9 @@ defmodule TextBasedFPS.Game.Command.Reload do
   @behaviour Command
 
   @impl true
+  def description, do: "Reload your gun"
+
+  @impl true
   def execute(player, _) do
     with {:ok, _} <- require_alive_player(player) do
       GameState.get_and_update_room(player.room, fn room ->

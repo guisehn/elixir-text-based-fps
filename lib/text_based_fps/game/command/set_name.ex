@@ -4,12 +4,11 @@ defmodule TextBasedFPS.Game.Command.SetName do
 
   @behaviour Command
 
-  @error_messages %{
-    already_in_use: "Name is already in use",
-    empty: "Name cannot be empty",
-    invalid_chars: "Name can only contain letters, numbers and hyphens.",
-    too_large: "Name cannot exceed #{Player.name_max_length()} characters"
-  }
+  @impl true
+  def arg_example, do: "new name"
+
+  @impl true
+  def description, do: "Change your name"
 
   @impl true
   def execute(player, name) do
@@ -49,6 +48,12 @@ defmodule TextBasedFPS.Game.Command.SetName do
     "Your name is now #{name}."
   end
 
+  @error_messages %{
+    already_in_use: "Name is already in use",
+    empty: "Name cannot be empty",
+    invalid_chars: "Name can only contain letters, numbers and hyphens.",
+    too_large: "Name cannot exceed #{Player.name_max_length()} characters"
+  }
   @spec error_message(atom) :: String.t()
   defp error_message(reason) do
     @error_messages[reason] || "Error: #{reason}"

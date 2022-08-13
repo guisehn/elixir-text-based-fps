@@ -8,6 +8,9 @@ defmodule TextBasedFPS.Game.Command.Look do
   @behaviour Command
 
   @impl true
+  def description, do: "Show the room map and where you and the other players are"
+
+  @impl true
   def execute(player, _) do
     with {:ok, room} <- require_alive_player(player) do
       {:ok, generate_vision(player, room)}

@@ -7,6 +7,12 @@ defmodule TextBasedFPS.Game.Command.Move do
   @behaviour Command
 
   @impl true
+  def arg_example, do: "north/south/west/east"
+
+  @impl true
+  def description, do: "Move to another place (direction is optional)"
+
+  @impl true
   def execute(player, direction) do
     with {:ok, _} <- require_alive_player(player) do
       GameState.get_and_update_room(player.room, fn room ->

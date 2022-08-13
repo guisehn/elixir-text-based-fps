@@ -1,0 +1,2 @@
+<span><%= @command_name %><%= command_arg_example(@command) %></span>:
+<%= @command.description() %>
