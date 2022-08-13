@@ -34,7 +34,7 @@ defmodule TextBasedFPS.Game.Command do
   The function that is going to be executed when the player runs the command.
 
   The first argument is the player executing the command, and the second argument
-  is the arguments passed.
+  contains the arguments passed.
   When running `set-name foo`, for example, the arguments will be `foo`.
   If the user doesn't pass any arguments, `args` will be an empty string.
 
