@@ -1,9 +1,15 @@
 defmodule TextBasedFPS.Game.CommandExecutor do
+  @moduledoc "Module responsible for parsing a command string and executing it"
+
   alias TextBasedFPS.{Game, GameState}
   alias TextBasedFPS.Game.CommandList
 
   @commands_map Enum.into(CommandList.all(), %{})
 
+  @doc """
+  Takes a player_key and a command text (e.g. `set-name foo`), and executes
+  the command, returning its result.
+  """
   @spec execute(Game.Player.key_t(), String.t(), Map.t()) ::
           {:ok, String.t() | nil} | {:error, String.t()}
   def execute(player_key, command_text, commands \\ @commands_map) do

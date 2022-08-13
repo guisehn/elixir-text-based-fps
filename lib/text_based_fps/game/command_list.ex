@@ -1,4 +1,6 @@
 defmodule TextBasedFPS.Game.CommandList do
+  @moduledoc "List of all game commands available"
+
   alias TextBasedFPS.Game.Command
 
   @commands [
