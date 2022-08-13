@@ -61,9 +61,9 @@ The game server is organized using the following process structure:
         GameState.Players                         GameState.RoomSupervisor
             (agent)                                 (dynamic supervisor)
                                                              |
-                                          +------------------+----------------+
-                                          |                  |                |
-                                          |                  |                |
+                                          +------------------+-----------------+
+                                          |                  |                 |
+                                          |                  |                 |
                                     GameState.Room     GameState.Room    GameState.Room
                                        (agent)            (agent)           (agent)
 ```
