@@ -1,6 +1,6 @@
 defmodule TextBasedFPS.Game.CommandExecutor do
   alias TextBasedFPS.{Game, GameState}
-  alias TextBasedFPS.Game.{Command, CommandList}
+  alias TextBasedFPS.Game.CommandList
 
   @commands_map Enum.into(CommandList.all(), %{})
 
