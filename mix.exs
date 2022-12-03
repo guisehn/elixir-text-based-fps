@@ -45,7 +45,8 @@ defmodule TextBasedFPS.MixProject do
       {:secure_random, "~> 0.5"},
       {:table_rex, "~> 3.1.1"},
       {:mox, "~> 1.0", only: :test},
-      {:esbuild, "~> 0.2", runtime: Mix.env() == :dev}
+      {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
+      {:dart_sass, "~> 0.5", runtime: Mix.env() == :dev}
     ]
   end
 
@@ -58,7 +59,11 @@ defmodule TextBasedFPS.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "cmd npm install --prefix assets"],
-      "assets.deploy": ["esbuild default --minify", "phx.digest"]
+      "assets.deploy": [
+        "esbuild default --minify",
+        "sass default --no-source-map --style=compressed",
+        "phx.digest"
+      ]
     ]
   end
 end

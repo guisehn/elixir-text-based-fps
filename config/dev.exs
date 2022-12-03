@@ -16,7 +16,12 @@ config :text_based_fps, TextBasedFPSWeb.Endpoint,
   secret_key_base: "kjCdujuFTrQ+cZqe8jY7NXb1Eacp2EbEze4V9vBbWgS8rUzuRXzhK2i43FFUnpDe",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    sass: {
+      DartSass,
+      :install_and_run,
+      [:default, ~w(--embed-source-map --source-map-urls=absolute --watch)]
+    }
   ]
 
 # ## SSL Support
