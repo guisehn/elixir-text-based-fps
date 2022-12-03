@@ -2,10 +2,6 @@
   "repository": {},
   "description": " ",
   "license": "MIT",
-  "scripts": {
-    "deploy": "webpack --mode production",
-    "watch": "webpack --mode development --watch"
-  },
   "dependencies": {
     "ansi_up": "^5.0.1",
     "phoenix": "file:../deps/phoenix",
