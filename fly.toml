@@ -1,4 +1,4 @@
-# fly.toml file generated for elixir-text-based-fps on 2022-12-03T13:37:35-03:00
+# fly.toml file generated for elixir-text-based-fps on 2022-12-03T13:54:13-03:00
 
 app = "elixir-text-based-fps"
 kill_signal = "SIGTERM"
