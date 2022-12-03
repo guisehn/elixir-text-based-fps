@@ -1,6 +1,6 @@
 # elixir-text-based-fps
 
-Online multiplayer text-based FPS game using Elixir + Phoenix. The game is live at [elixir-text-based-fps.herokuapp.com](https://elixir-text-based-fps.herokuapp.com/)
+Online multiplayer text-based FPS game using Elixir + Phoenix.
 
 ![Screenshot of the game](misc/screenshot.png)
 
@@ -33,12 +33,6 @@ Communicating between multiple computers:
 
   * Run `mix cli.server --external --cookie mysecret` to start the server.
   * Run `mix cli.client --server=text-based-fps-server@192.168.0.xx --cookie mysecret` (replace with the server private network IP address).
-
-## How to deploy
-
-Click on the button below to deploy to Heroku:
-
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/guisehn/elixir-text-based-fps)
 
 ## Editing the map
 
