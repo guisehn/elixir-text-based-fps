@@ -1,6 +1,6 @@
 # elixir-text-based-fps
 
-Online multiplayer text-based FPS game using Elixir + Phoenix.
+Online multiplayer text-based FPS game using Elixir + Phoenix. The game is live at [elixir-text-based-fps.fly.dev](https://elixir-text-based-fps.fly.dev/)
 
 ![Screenshot of the game](misc/screenshot.png)
 
